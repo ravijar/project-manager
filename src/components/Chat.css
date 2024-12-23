@@ -1,0 +1,25 @@
+.chat {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px 5px 10px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    background-color: #fff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .chat:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .chat-name {
+    margin-left: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  

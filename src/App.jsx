@@ -1,12 +1,22 @@
 import './App.css'
-import Avatar from './components/Avatar'
+import Chat from './components/Chat'
 
 function App() {
 
   return (
     <>
-      <Avatar size={50}/>
-      <Avatar src="https://i.pravatar.cc/150" size={50}/>
+      <div style={{width: '400px'}}>
+        <Chat
+          height={40}
+          avatarSrc="https://i.pravatar.cc/150"
+          name="John Doe"
+        />
+        <Chat
+          height={40}
+          avatarSrc=""
+          name="Jane Smith"
+        />
+      </div>
     </>
   )
 }
