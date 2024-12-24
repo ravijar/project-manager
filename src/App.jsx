@@ -1,4 +1,5 @@
 import ChatList from './components/ChatList';
+import Message from './components/Message';
 import './App.css';
 
 const App = () => {
@@ -28,6 +29,11 @@ const App = () => {
   return (
     <div style={{ display: 'flex', width: '100%' }}>
       <ChatList chats={chats} />
+      <div style={{ display: 'flex', flexDirection: 'column', padding: '20px', height: '100vh' }}>
+        <Message text="Hey, how are you?" time="10:30 AM" isSender={false} />
+        <Message text="I'm good! How about you?" time="10:31 AM" isSender={true} />
+        <Message text="Doing well, thanks!" time="10:32 AM" isSender={false} />
+      </div>
     </div>
   );
 };
