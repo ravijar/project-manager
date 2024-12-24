@@ -3,7 +3,7 @@ import './ChatList.css';
 import SearchBar from './SearchBar';
 import Chat from './Chat';
 
-const ChatList = ({ chats }) => {
+const ChatList = ({ chats, onSelectChat }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredChats = chats.filter((chat) =>
@@ -22,9 +22,11 @@ const ChatList = ({ chats }) => {
         {filteredChats.map((chat) => (
           <Chat
             key={chat.id}
+            chatId={chat.id}
             height={60}
             avatarSrc={chat.avatarSrc}
             name={chat.name}
+            onChatClick ={onSelectChat}
           />
         ))}
       </div>

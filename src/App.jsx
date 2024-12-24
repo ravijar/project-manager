@@ -1,6 +1,7 @@
 import ChatList from './components/ChatList';
 import ChatWindow from './components/ChatWindow';
 import './App.css';
+import { useState } from 'react';
 
 const App = () => {
   const chats = [
@@ -52,11 +53,17 @@ const App = () => {
     { text: "Perfect. See you then!", time: "7:15 PM", isSender: false, date: "June 7, 2023" },
   ];
   
+  const [selectedChat, setSelectedChat] = useState(chats[0]);
+
+  const handleChatSelect = (chatId) => {
+    const chat = chats.find((c) => c.id === chatId);
+    setSelectedChat(chat);
+  };
 
   return (
     <div style={{ display: 'flex', width: '100vw' }}>
-      <ChatList chats={chats} />
-      <ChatWindow messages={messages} />
+      <ChatList chats={chats} onSelectChat={handleChatSelect}/>
+      <ChatWindow messages={messages} chatUser={selectedChat}/>
     </div>
   );
 };

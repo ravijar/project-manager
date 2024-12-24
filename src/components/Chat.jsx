@@ -1,9 +1,13 @@
 import './Chat.css';
 import Avatar from './Avatar';
 
-const Chat = ({ height, avatarSrc, avatarSize, name }) => {
+const Chat = ({ height, avatarSrc, name, onChatClick, chatId }) => {
   return (
-    <div className="chat" style={{ height: height }}>
+    <div 
+      className="chat" 
+      style={{ height: height }}
+      onClick={() => onChatClick(chatId)}
+    >
       <Avatar src={avatarSrc} size={height - 16} />
       <span className="chat-name">{name}</span>
     </div>
