@@ -2,7 +2,9 @@ import ChatList from './components/ChatList';
 import ChatWindow from './components/ChatWindow';
 import Login from './components/Login';
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { signOut } from "firebase/auth";
+import { auth } from "./firebaseConfig";
 
 const App = () => {
   const chats = [
@@ -58,6 +60,21 @@ const App = () => {
   const [messages, setMessages] = useState(testMessages);
   const [user, setUser] = useState(null);
 
+  const handleSignIn = (user) => {
+    setUser(user)
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("user");
+      setUser(null);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   const handleChatSelect = (chatId) => {
     const chat = chats.find((c) => c.id === chatId);
     setSelectedChat(chat);
@@ -71,13 +88,25 @@ const App = () => {
     ]);
   };
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   if (!user) {
-    return <Login onLoginSuccess={setUser} />;
+    return <Login onSignIn={handleSignIn} />;
   }
 
   return (
     <div style={{ display: 'flex', width: '100vw' }}>
-      <ChatList chats={chats} onSelectChat={handleChatSelect}/>
+      <ChatList 
+        chats={chats} 
+        onSelectChat={handleChatSelect}
+        user={user}
+        onSignOut={handleSignOut}
+      />
       <ChatWindow 
         messages={messages} 
         chatUser={selectedChat}

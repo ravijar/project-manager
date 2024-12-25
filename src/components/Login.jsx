@@ -3,7 +3,7 @@ import { auth, db } from "../firebaseConfig";
 import { doc, setDoc, Timestamp } from "firebase/firestore";
 import "./Login.css";
 
-const Login = ({ onLoginSuccess }) => {
+const Login = ({ onSignIn }) => {
   const handleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
@@ -18,7 +18,7 @@ const Login = ({ onLoginSuccess }) => {
         lastLogin: Timestamp.fromDate(new Date(user.metadata.lastSignInTime)),
       });
 
-      onLoginSuccess(user);
+      onSignIn(user);
     } catch (error) {
       console.error("Login failed:", error);
     }

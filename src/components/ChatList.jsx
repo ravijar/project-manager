@@ -4,7 +4,7 @@ import SearchBar from './SearchBar';
 import Chat from './Chat';
 import Profile from './Profile';
 
-const ChatList = ({ chats, onSelectChat }) => {
+const ChatList = ({ chats, onSelectChat, user, onSignOut }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredChats = chats.filter((chat) =>
@@ -13,7 +13,7 @@ const ChatList = ({ chats, onSelectChat }) => {
 
   return (
     <div className="chat-list">
-      <Profile />
+      <Profile user={user} onSignOut={onSignOut}/>
       <div className="chat-list-header">
         Chats
       </div>
