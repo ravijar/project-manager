@@ -2,7 +2,7 @@ import './SearchBar.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-const SearchBar = ({ value, onChange }) => {
+const SearchBar = ({ value, onChange, placeholder, onKeyDown }) => {
   return (
     <div className="search-bar">
       <input
@@ -10,7 +10,8 @@ const SearchBar = ({ value, onChange }) => {
         className="search-input"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Search..."
+        onKeyDown={onKeyDown}
+        placeholder={placeholder || "Search..."}
       />
       <span className="search-icon">
         <FontAwesomeIcon icon={faSearch} />

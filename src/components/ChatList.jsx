@@ -6,6 +6,7 @@ import Profile from './Profile';
 import Popup from './Popup';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import FindUser from './FindUser';
 
 const ChatList = ({ chats, onSelectChat, user, onSignOut }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,9 +49,8 @@ const ChatList = ({ chats, onSelectChat, user, onSignOut }) => {
         ))}
       </div>
       {showPopup && (
-        <Popup onClose={closePopup}>
-          <h3>New Chat</h3>
-          <p>Start a new conversation with someone.</p>
+        <Popup onClose={closePopup} width="300px">
+          <FindUser />
         </Popup>
       )}
     </div>

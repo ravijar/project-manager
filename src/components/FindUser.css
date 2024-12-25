@@ -1,0 +1,26 @@
+.find-user-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+  }
+  
+  .error-message {
+    background-color: #ecc3c0;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .find-user-header {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .search-bar-container {
+    margin-bottom: 20px;
+  }
+  
