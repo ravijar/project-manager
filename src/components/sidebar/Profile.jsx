@@ -1,5 +1,5 @@
 import "./Profile.css";
-import Avatar from "./Avatar";
+import Avatar from "../common/Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 

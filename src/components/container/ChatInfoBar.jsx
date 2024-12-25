@@ -1,9 +1,10 @@
+import Avatar from '../common/Avatar';
 import './ChatInfoBar.css';
 
 const ChatInfoBar = ({ avatarSrc, name }) => {
   return (
     <div className="chat-info-bar">
-      <img src={avatarSrc} alt="Avatar" className="chat-info-avatar" />
+      <Avatar src={avatarSrc} size={40} />
       <span className="chat-info-name">{name}</span>
     </div>
   );

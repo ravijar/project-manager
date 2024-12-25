@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import './ChatList.css';
-import SearchBar from './SearchBar';
+import './SideWindow.css';
+import SearchBar from '../common/SearchBar';
 import Chat from './Chat';
 import Profile from './Profile';
-import Popup from './Popup';
+import Popup from '../common/Popup';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import FindUser from './FindUser';

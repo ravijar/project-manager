@@ -1,5 +1,5 @@
 import './Chat.css';
-import Avatar from './Avatar';
+import Avatar from '../common/Avatar';
 
 const Chat = ({ height, avatarSrc, name, onChatClick, chatId }) => {
   return (
