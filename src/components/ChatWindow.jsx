@@ -2,8 +2,9 @@ import React, { useEffect, useRef } from "react";
 import "./ChatWindow.css";
 import Message from "./Message";
 import ChatInfoBar from "./ChatInfoBar";
+import FooterBar from "./FooterBar";
 
-const ChatWindow = ({ messages, chatUser }) => {
+const ChatWindow = ({ messages, chatUser, onNewMessage }) => {
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ const ChatWindow = ({ messages, chatUser }) => {
           </div>
         ))}
       </div>
+      <FooterBar onSendMessage={onNewMessage} />
     </div>
   );
 };

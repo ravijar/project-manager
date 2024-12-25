@@ -27,7 +27,7 @@ const App = () => {
     { id: 20, name: 'Taylor Young', avatarSrc: 'https://i.pravatar.cc/50?img=20' },
   ];
 
-  const messages = [
+  const testMessages = [
     { text: "Hey there!", time: "10:30 AM", isSender: false, date: "June 5, 2023" },
     { text: "Hi! How are you?", time: "10:31 AM", isSender: true, date: "June 5, 2023" },
     { text: "I'm doing great, thanks! How about you?", time: "10:32 AM", isSender: false, date: "June 5, 2023" },
@@ -54,16 +54,29 @@ const App = () => {
   ];
   
   const [selectedChat, setSelectedChat] = useState(chats[0]);
+  const [messages, setMessages] = useState(testMessages);
 
   const handleChatSelect = (chatId) => {
     const chat = chats.find((c) => c.id === chatId);
     setSelectedChat(chat);
   };
 
+  const handleNewMessage = (newMessage) => {
+    const currentTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: newMessage, time: currentTime, isSender: true, date: "June 5, 2023" },
+    ]);
+  };
+
   return (
     <div style={{ display: 'flex', width: '100vw' }}>
       <ChatList chats={chats} onSelectChat={handleChatSelect}/>
-      <ChatWindow messages={messages} chatUser={selectedChat}/>
+      <ChatWindow 
+        messages={messages} 
+        chatUser={selectedChat}
+        onNewMessage={handleNewMessage}
+      />
     </div>
   );
 };
