@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { findUserByEmail } from "../../firebase/userService";
+import { createChat } from "../../firebase/chatService";
 import SearchBar from "../common/SearchBar";
 import Chat from "./Chat";
 import "./FindUser.css";
 
-const FindUser = () => {
+const FindUser = ({ currentUser, onChatCreated }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult] = useState(null);
   const [error, setError] = useState("");
@@ -28,6 +29,18 @@ const FindUser = () => {
     }
   };
 
+  const handleResultClick = async () => {
+    if (searchResult) {
+      try {
+        const chatId = await createChat(currentUser, searchResult);
+        console.log("Chat created with ID:", chatId);
+        onChatCreated(chatId);
+      } catch (error) {
+        console.error("Failed to create chat. Please try again.");
+      }
+    }
+  };
+
   return (
     <div className="find-user-container">
       <div className="find-user-header">Find User</div>
@@ -45,7 +58,7 @@ const FindUser = () => {
           chatId={searchResult.id}
           avatarSrc={searchResult.photoURL}
           name={searchResult.name}
-          onChatClick={() => console.log("Start chat with:", searchResult)}
+          onChatClick={handleResultClick}
           height={60}
         />
       )}

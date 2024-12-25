@@ -50,7 +50,7 @@ const ChatList = ({ chats, onSelectChat, user, onSignOut }) => {
       </div>
       {showPopup && (
         <Popup onClose={closePopup} width="300px">
-          <FindUser />
+          <FindUser currentUser={user} onChatCreated={closePopup}/>
         </Popup>
       )}
     </div>
