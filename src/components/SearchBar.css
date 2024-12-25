@@ -24,6 +24,8 @@
     font-size: 18px;
     color: #888;
     cursor: pointer;
+    display: flex;
+    align-items: center;
   }
   
   .search-bar:hover {

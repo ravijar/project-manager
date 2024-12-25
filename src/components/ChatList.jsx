@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './ChatList.css';
 import SearchBar from './SearchBar';
 import Chat from './Chat';
+import Profile from './Profile';
 
 const ChatList = ({ chats, onSelectChat }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +13,7 @@ const ChatList = ({ chats, onSelectChat }) => {
 
   return (
     <div className="chat-list">
+      <Profile />
       <div className="chat-list-header">
         Chats
       </div>
