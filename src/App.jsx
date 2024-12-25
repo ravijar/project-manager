@@ -1,5 +1,6 @@
 import ChatList from './components/ChatList';
 import ChatWindow from './components/ChatWindow';
+import Login from './components/Login';
 import './App.css';
 import { useState } from 'react';
 
@@ -55,6 +56,7 @@ const App = () => {
   
   const [selectedChat, setSelectedChat] = useState(chats[0]);
   const [messages, setMessages] = useState(testMessages);
+  const [user, setUser] = useState(null);
 
   const handleChatSelect = (chatId) => {
     const chat = chats.find((c) => c.id === chatId);
@@ -68,6 +70,10 @@ const App = () => {
       { text: newMessage, time: currentTime, isSender: true, date: "June 5, 2023" },
     ]);
   };
+
+  if (!user) {
+    return <Login onLoginSuccess={setUser} />;
+  }
 
   return (
     <div style={{ display: 'flex', width: '100vw' }}>
