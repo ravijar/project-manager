@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { findUserByEmail } from "../firebase/userService";
 import SearchBar from "./SearchBar";
 import Chat from "./Chat";
 import "./FindUser.css";
@@ -16,13 +15,9 @@ const FindUser = () => {
         setError("");
         setSearchResult(null);
 
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("email", "==", searchTerm.trim()));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          const userDoc = querySnapshot.docs[0];
-          setSearchResult({ id: userDoc.id, ...userDoc.data() });
+        const user = await findUserByEmail(searchTerm.trim());
+        if (user) {
+          setSearchResult(user);
         } else {
           setError("No user found with this email.");
         }

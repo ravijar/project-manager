@@ -3,9 +3,8 @@ import ChatWindow from './components/ChatWindow';
 import Login from './components/Login';
 import './App.css';
 import { useState, useEffect } from 'react';
-import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
-import { auth, db } from "./firebaseConfig";
-import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { googleSignIn, commonSignOut } from './firebase/authService';
+
 
 const App = () => {
   const chats = [
@@ -62,34 +61,23 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   const handleSignIn = async () => {
-      const provider = new GoogleAuthProvider();
       try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-  
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          lastLogin: Timestamp.fromDate(new Date(user.metadata.lastSignInTime)),
-        });
-  
-        setUser(user)
-        localStorage.setItem("user", JSON.stringify(user));
+        const loggedUser = await googleSignIn();
+        setUser(loggedUser)
+        localStorage.setItem("user", JSON.stringify(loggedUser));
       } catch (error) {
         console.error("Login failed:", error);
       }
     };
 
   const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      localStorage.removeItem("user");
-      setUser(null);
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+      try {
+        await commonSignOut();
+        localStorage.removeItem("user");
+        setUser(null);
+      } catch (error) {
+        console.error("Error signing out:", error);
+      }
   };
 
   const handleChatSelect = (chatId) => {
