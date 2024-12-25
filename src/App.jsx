@@ -3,8 +3,9 @@ import ChatWindow from './components/ChatWindow';
 import Login from './components/Login';
 import './App.css';
 import { useState, useEffect } from 'react';
-import { signOut } from "firebase/auth";
-import { auth } from "./firebaseConfig";
+import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import { auth, db } from "./firebaseConfig";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 
 const App = () => {
   const chats = [
@@ -60,10 +61,26 @@ const App = () => {
   const [messages, setMessages] = useState(testMessages);
   const [user, setUser] = useState(null);
 
-  const handleSignIn = (user) => {
-    setUser(user)
-    localStorage.setItem("user", JSON.stringify(user));
-  };
+  const handleSignIn = async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+  
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          lastLogin: Timestamp.fromDate(new Date(user.metadata.lastSignInTime)),
+        });
+  
+        setUser(user)
+        localStorage.setItem("user", JSON.stringify(user));
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
+    };
 
   const handleSignOut = async () => {
     try {
