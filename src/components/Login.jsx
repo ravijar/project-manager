@@ -1,5 +1,6 @@
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import "./Login.css";
 
 const Login = ({ onLoginSuccess }) => {
@@ -8,6 +9,15 @@ const Login = ({ onLoginSuccess }) => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        lastLogin: Timestamp.fromDate(new Date(user.metadata.lastSignInTime)),
+      });
+
       onLoginSuccess(user);
     } catch (error) {
       console.error("Login failed:", error);
