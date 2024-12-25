@@ -19,8 +19,8 @@
   
   .signout-icon {
     position: absolute;
-    bottom: 10px;
-    right: 20px;
+    top: 10px;
+    right: 15px;
     font-size: 18px;
     color: #ccc;
     cursor: pointer;
