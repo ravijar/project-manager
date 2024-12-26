@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, Timestamp, arrayUnion, getDoc } from "firebase/firestore";
+import { collection, doc, setDoc, Timestamp, arrayUnion, getDoc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
 export const addChatToUserChats = async (userId, chatId) => {
@@ -26,11 +26,10 @@ export const createChat = async (currentUser, otherUser) => {
     return chatId;
 };
 
-export const addMessageToChat = async (chatId, sender, receiver, message) => {
+export const addMessageToChat = async (chatId, sender, message) => {
     const messagesRef = collection(doc(db, "chats", chatId), "messages");
     const messageData = {
       sender,
-      receiver,
       message,
       timestamp: Timestamp.fromDate(new Date()),
     };
@@ -67,4 +66,20 @@ export const getChatsForCurrentUser = async (currentUserUid) => {
     );
 
     return chats.filter((chat) => chat !== null);
+};
+
+export const getMessagesForChat = (chatId, callback) => {
+    const messagesRef = collection(db, "chats", chatId, "messages");
+
+    const q = query(messagesRef, orderBy("timestamp", "asc"));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const messages = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      callback(messages);
+    });
+
+    return unsubscribe; 
 };
