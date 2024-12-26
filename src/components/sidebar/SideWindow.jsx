@@ -13,7 +13,7 @@ const ChatList = ({ chats, onSelectChat, user, onSignOut }) => {
   const [showPopup, setShowPopup] = useState(false);
 
   const filteredChats = chats.filter((chat) =>
-    chat.name.toLowerCase().includes(searchTerm.toLowerCase())
+    chat.user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleNewChatClick = () => {
@@ -39,11 +39,11 @@ const ChatList = ({ chats, onSelectChat, user, onSignOut }) => {
       <div className="chat-list-scroll">
         {filteredChats.map((chat) => (
           <Chat
-            key={chat.id}
-            chatId={chat.id}
+            key={chat.chatId}
+            chatId={chat.chatId}
             height={60}
-            avatarSrc={chat.avatarSrc}
-            name={chat.name}
+            avatarSrc={chat.user.photoURL}
+            name={chat.user.name}
             onChatClick={onSelectChat}
           />
         ))}

@@ -4,7 +4,7 @@ import Message from "./Message";
 import ChatInfoBar from "./ChatInfoBar";
 import FooterBar from "./FooterBar";
 
-const ChatWindow = ({ messages, chatUser, onNewMessage }) => {
+const ChatWindow = ({ messages, selectedChat, onNewMessage }) => {
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const ChatWindow = ({ messages, chatUser, onNewMessage }) => {
 
   return (
     <div className="chat-window">
-      <ChatInfoBar avatarSrc={chatUser.avatarSrc} name={chatUser.name} />
+      <ChatInfoBar avatarSrc={selectedChat.user.photoURL} name={selectedChat.user.name} />
       <div className="chat-messages" ref={scrollRef}>
         {messages.map((message, index) => (
           <div key={index} style={{ display: "flex", flexDirection: "column" }}>
