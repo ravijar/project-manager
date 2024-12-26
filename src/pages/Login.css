@@ -14,6 +14,10 @@
   }
   
   .login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     padding: 10px 20px;
     font-size: 16px;
     color: white;
@@ -26,5 +30,10 @@
   
   .login-button:hover {
     background-color: #357ae8;
+  }
+  
+  .login-button:disabled {
+    background-color: #7eb2ff;
+    cursor: not-allowed;
   }
   

@@ -6,7 +6,8 @@ import { getChatsForCurrentUser, getMessagesForChat, addMessageToChat } from '..
 
 const Home = ({ user, handleSignOut }) => {
   const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingChats, setLoadingChats] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const [error, setError] = useState(""); 
   const [selectedChat, setSelectedChat] = useState(chats[0]);
   const [messages, setMessages] = useState([]);
@@ -20,7 +21,7 @@ const Home = ({ user, handleSignOut }) => {
 
   const fetchChats = async () => {
     try {
-      setLoading(true);
+      setLoadingChats(true);
       setError("");
       const userChats = await getChatsForCurrentUser(user.uid);
       setChats(userChats);
@@ -31,11 +32,13 @@ const Home = ({ user, handleSignOut }) => {
       console.error("Error fetching chats:", err);
       setError("Failed to load chats. Please try again.");
     } finally {
-      setLoading(false);
+      setLoadingChats(false);
     }
   };
 
   const handleChatSelect = (chatId) => {
+    setLoadingMessages(true);
+    setMessages([]);
     if (unsubscribe) {
       unsubscribe();
     }
@@ -54,6 +57,7 @@ const Home = ({ user, handleSignOut }) => {
     });
 
     setUnsubscribe(() => unsubscribeFunction);
+    setLoadingMessages(false);
   };
 
   const handleNewMessage = async (newMessage) => {
@@ -86,12 +90,14 @@ const Home = ({ user, handleSignOut }) => {
         onSelectChat={handleChatSelect}
         user={user}
         onSignOut={handleSignOut}
+        loadingChats={loadingChats}
       />
-      {!loading && !error && selectedChat && (
+      {!loadingChats && !error && selectedChat && (
         <ChatWindow 
         messages={messages} 
         selectedChat={selectedChat}
         onNewMessage={handleNewMessage}
+        loadingMessages={loadingMessages}
       />
       )}
     </div>

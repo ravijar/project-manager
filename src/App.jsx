@@ -7,6 +7,7 @@ import Home from './pages/Home';
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -16,12 +17,15 @@ const App = () => {
   }, []);
 
   const handleSignIn = async () => {
+      setLoading(true);
       try {
         const loggedUser = await googleSignIn();
         setUser(loggedUser)
         localStorage.setItem("user", JSON.stringify(loggedUser));
       } catch (error) {
         console.error("Login failed:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -36,7 +40,7 @@ const App = () => {
   };
 
   if (!user) {
-    return <Login onSignIn={handleSignIn} />;
+    return <Login onSignIn={handleSignIn} loading={loading} />;
   }
 
   return (

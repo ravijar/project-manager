@@ -7,8 +7,9 @@ import Popup from '../common/Popup';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import FindUser from './FindUser';
+import LoadingSpinner from '../common/LoadingSpinner';
 
-const ChatList = ({ chats, onSelectChat, user, onSignOut }) => {
+const ChatList = ({ chats, onSelectChat, user, onSignOut, loadingChats }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showPopup, setShowPopup] = useState(false);
 
@@ -28,7 +29,10 @@ const ChatList = ({ chats, onSelectChat, user, onSignOut }) => {
     <div className="chat-list">
       <Profile user={user} onSignOut={onSignOut}/>
       <div className="chat-list-header">
-        <span className="chats-label">Chats</span>
+        <span className="chats-label">
+          Chats
+          {loadingChats && <LoadingSpinner size={18} color="#4caf50" />}
+        </span>
         <div className="new-chat-icon" onClick={handleNewChatClick}>
             <FontAwesomeIcon icon={faAdd} />
         </div>

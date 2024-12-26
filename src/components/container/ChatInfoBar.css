@@ -1,6 +1,7 @@
 .chat-info-bar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 10px 15px;
     background-color: #fff;
     border-bottom: 1px solid #ddd;
@@ -15,5 +16,12 @@
     font-weight: bold;
     color: #333;
     margin-left: 20px;
+    flex-grow: 1;
+  }
+  
+  .chat-info-spinner {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
   }
   

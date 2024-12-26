@@ -14,10 +14,14 @@
   }
   
   .find-user-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 10px;
     font-size: 18px;
     font-weight: bold;
     text-align: center;
+    gap: 10px;
   }
 
   .search-bar-container {
