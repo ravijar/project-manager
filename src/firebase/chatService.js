@@ -37,12 +37,13 @@ export const addMessageToChat = async (chatId, sender, message) => {
     await setDoc(doc(messagesRef), messageData);
 };
 
-export const getChatsForCurrentUser = async (currentUserUid) => {
-    const userChatsRef = doc(db, "user_chats", currentUserUid);
-    const userChatsSnapshot = await getDoc(userChatsRef);
+export const getChatsForCurrentUser = (currentUserUid, callback) => {
+  const userChatsRef = doc(db, "user_chats", currentUserUid);
 
+  const unsubscribe = onSnapshot(userChatsRef, async (userChatsSnapshot) => {
     if (!userChatsSnapshot.exists()) {
-      return [];
+      callback([]);
+      return;
     }
 
     const { chatIds = [] } = userChatsSnapshot.data();
@@ -65,7 +66,10 @@ export const getChatsForCurrentUser = async (currentUserUid) => {
       })
     );
 
-    return chats.filter((chat) => chat !== null);
+    callback(chats.filter((chat) => chat !== null));
+  });
+
+  return unsubscribe;
 };
 
 export const getMessagesForChat = (chatId, callback) => {

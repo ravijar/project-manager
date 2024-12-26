@@ -9,32 +9,39 @@ const Home = ({ user, handleSignOut }) => {
   const [loadingChats, setLoadingChats] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [error, setError] = useState(""); 
-  const [selectedChat, setSelectedChat] = useState(chats[0]);
+  const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [unsubscribe, setUnsubscribe] = useState(null);
 
   useEffect(() => {
-    if (user?.uid) {
-      fetchChats();
-    }
+    const cleanup = fetchChats();
+  
+    return () => {
+      if (cleanup) cleanup();
+    };
   }, [user]);
 
-  const fetchChats = async () => {
-    try {
-      setLoadingChats(true);
-      setError("");
-      const userChats = await getChatsForCurrentUser(user.uid);
-      setChats(userChats);
-      if (userChats.length > 0) {
-        handleChatSelect(userChats[0].chatId);
+  const fetchChats = () => {
+    if (!user?.uid) return;
+  
+    setLoadingChats(true);
+    setError("");
+  
+    const unsubscribe = getChatsForCurrentUser(user.uid, (updatedChats) => {
+      setChats(updatedChats);
+      if (updatedChats.length > 0) {
+        setSelectedChat(updatedChats[0]);
+        handleChatSelect(updatedChats[0].chatId);
       }
-    } catch (err) {
-      console.error("Error fetching chats:", err);
-      setError("Failed to load chats. Please try again.");
-    } finally {
       setLoadingChats(false);
-    }
+    });
+  
+    return () => {
+      unsubscribe();
+      setLoadingChats(false);
+    };
   };
+  
 
   const handleChatSelect = (chatId) => {
     setLoadingMessages(true);
@@ -92,7 +99,7 @@ const Home = ({ user, handleSignOut }) => {
         onSignOut={handleSignOut}
         loadingChats={loadingChats}
       />
-      {!loadingChats && !error && selectedChat && (
+      {!loadingChats && !error && (
         <ChatWindow 
         messages={messages} 
         selectedChat={selectedChat}
