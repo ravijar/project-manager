@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { findUserByEmail } from "../../firebase/userService";
+import { findNewUserByEmail } from "../../firebase/userService";
 import { createChat } from "../../firebase/chatService";
 import SearchBar from "../common/SearchBar";
 import Chat from "./Chat";
@@ -16,11 +16,11 @@ const FindUser = ({ currentUser, onChatCreated }) => {
         setError("");
         setSearchResult(null);
 
-        const user = await findUserByEmail(searchTerm.trim());
+        const user = await findNewUserByEmail(searchTerm.trim(), currentUser.uid);
         if (user) {
           setSearchResult(user);
         } else {
-          setError("No user found with this email.");
+          setError("No New user found with this email!");
         }
       } catch (err) {
         console.error("Error finding user:", err);

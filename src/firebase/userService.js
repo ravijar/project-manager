@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
 export const findUserByEmail = async (email) => {
@@ -13,3 +13,26 @@ export const findUserByEmail = async (email) => {
         return null;
     }
 };
+
+export const findNewUserByEmail = async (email, currentUserUid) => {
+      const foundUser = await findUserByEmail(email);
+      if (!foundUser) {
+        return null;
+      }
+  
+      const userChatsRef = doc(db, "user_chats", currentUserUid);
+      const userChatsSnapshot = await getDoc(userChatsRef);
+  
+      if (userChatsSnapshot.exists()) {
+        const { chatIds = [] } = userChatsSnapshot.data();
+        const chatExists = chatIds.some((chatId) =>
+          chatId.includes(foundUser.id)
+        );
+  
+        if (chatExists) {
+          return null;
+        }
+      }
+  
+      return foundUser;  
+  };
