@@ -1,5 +1,5 @@
-import { db } from "../firebaseConfig";
-import { doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where, getDocs, collection } from "firebase/firestore";
+import { db } from "../config";
+import { doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where, getDocs, collection, onSnapshot } from "firebase/firestore";
 
 export const addChatToUser = async (userId, chatId) => {
   try {
@@ -82,6 +82,27 @@ export const chatExistForUser = async (userId, chatId) => {
       return !querySnapshot.empty;
     } catch (error) {
       console.error("Error checking if chat exists for user:", error);
+      throw error;
+    }
+  };
+
+  export const listenToChatIds = (userId, callback) => {
+    try {
+      const userChatsRef = doc(db, "user_chats", userId);
+  
+      const unsubscribe = onSnapshot(userChatsRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const chatIds = snapshot.data().chatIds || [];
+          callback(chatIds);
+        } else {
+          console.warn(`No chats found for user ${userId}`);
+          callback([]);
+        }
+      });
+  
+      return unsubscribe;
+    } catch (error) {
+      console.error("Error listening to chat IDs for user:", error);
       throw error;
     }
   };

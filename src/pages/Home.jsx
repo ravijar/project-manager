@@ -2,8 +2,9 @@ import SideWindow from '../components/sidebar/SideWindow';
 import ChatWindow from '../components/container/ChatWindow';
 import './Home.css';
 import { useState, useEffect } from 'react';
-import { getChatsForCurrentUser, getMessagesForChat } from '../firebase/chatRepository';
 import { sendMessage } from '../services/messageService';
+import { syncMessages } from '../services/messageService';
+import { syncChats } from '../services/chatService';
 
 const Home = ({ user, handleSignOut }) => {
   const [chats, setChats] = useState([]);
@@ -28,7 +29,7 @@ const Home = ({ user, handleSignOut }) => {
     setLoadingChats(true);
     setError("");
   
-    const unsubscribe = getChatsForCurrentUser(user.uid, (updatedChats) => {
+    const unsubscribe = syncChats(user.uid, (updatedChats) => {
       setChats(updatedChats);
       if (updatedChats.length > 0) {
         setSelectedChat(updatedChats[0]);
@@ -54,7 +55,7 @@ const Home = ({ user, handleSignOut }) => {
     const chat = chats.find((c) => c.chatId === chatId);
     setSelectedChat(chat);
 
-    const unsubscribeFunction = getMessagesForChat(chatId, (fetchedMessages) => {
+    const unsubscribeFunction = syncMessages(chatId, (fetchedMessages) => {
       const formattedMessages = fetchedMessages.map((msg) => ({
         text: msg.message,
         time: new Date(msg.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
