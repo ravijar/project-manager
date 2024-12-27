@@ -2,7 +2,7 @@ import SideWindow from '../components/sidebar/SideWindow';
 import ChatWindow from '../components/container/ChatWindow';
 import './Home.css';
 import { useState, useEffect } from 'react';
-import { getChatsForCurrentUser, getMessagesForChat, addMessageToChat } from '../firebase/chatService';
+import { getChatsForCurrentUser, getMessagesForChat, addMessageToChat } from '../firebase/chatRepository';
 
 const Home = ({ user, handleSignOut }) => {
   const [chats, setChats] = useState([]);

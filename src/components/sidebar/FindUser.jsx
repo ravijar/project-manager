@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { findNewUserByEmail } from "../../firebase/userService";
-import { createChat } from "../../firebase/chatService";
+import { findNewUserByEmail } from "../../firebase/userRepository";
+import { createChat } from "../../firebase/chatRepository";
 import SearchBar from "../common/SearchBar";
 import Chat from "./Chat";
 import "./FindUser.css";

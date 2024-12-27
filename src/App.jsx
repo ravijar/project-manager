@@ -1,8 +1,8 @@
 import Login from './pages/Login';
 import './App.css';
 import { useState, useEffect } from 'react';
-import { googleSignIn, commonSignOut } from './firebase/authService';
 import Home from './pages/Home';
+import { getStoredUser, signIn, signOut } from './services/authService';
 
 
 const App = () => {
@@ -10,18 +10,17 @@ const App = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = getStoredUser();
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      setUser(storedUser);
     }
   }, []);
 
   const handleSignIn = async () => {
       setLoading(true);
       try {
-        const loggedUser = await googleSignIn();
+        const loggedUser = await signIn();
         setUser(loggedUser)
-        localStorage.setItem("user", JSON.stringify(loggedUser));
       } catch (error) {
         console.error("Login failed:", error);
       } finally {
@@ -31,8 +30,7 @@ const App = () => {
 
   const handleSignOut = async () => {
       try {
-        await commonSignOut();
-        localStorage.removeItem("user");
+        await signOut();
         setUser(null);
       } catch (error) {
         console.error("Error signing out:", error);
