@@ -8,11 +8,16 @@ export const getStoredUser = () => {
 
 export const signIn = async () => {
     const loggedUser = await googleSignIn();
-    const user = await readUser(loggedUser.uid);
-
+    const user = null;
+    try {
+        user = await readUser(loggedUser.uid);
+    } catch (error) {
+        console.warn("Registering user:", error);
+    }
     if (!user) {
         await createUser(loggedUser);
     };
+    
     localStorage.setItem("user", JSON.stringify(loggedUser));
     
     return loggedUser;

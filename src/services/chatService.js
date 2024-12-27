@@ -3,12 +3,12 @@ import { addChatToUser, listenToChatIds } from "../firebase/firestore/userChatSt
 import { readUser } from "../firebase/firestore/userStore";
 
 export const createNewPrivateChat = async (currentUser, otherUser) => {
-    const participants = [currentUser.uid, otherUser.uid];
+    const participants = [currentUser.uid, otherUser.id];
     const chatId = participants.sort().join("_");
 
     await createChat(chatId, participants);
     await addChatToUser(currentUser.uid, chatId);
-    await addChatToUser(otherUser.uid, chatId);
+    await addChatToUser(otherUser.id, chatId);
 
     return chatId;
 };

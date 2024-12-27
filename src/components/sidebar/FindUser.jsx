@@ -67,8 +67,8 @@ const FindUser = ({ currentUser, onChatCreated }) => {
         <div className="search-results">
           {searchResults.map((user) => (
             <Chat
-              key={user.uid}
-              chatId={user.uid}
+              key={user.id}
+              chatId={user.id}
               avatarSrc={user.photoURL}
               name={user.name}
               onChatClick={() => handleResultClick(user)}

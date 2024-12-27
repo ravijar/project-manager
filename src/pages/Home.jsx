@@ -31,10 +31,6 @@ const Home = ({ user, handleSignOut }) => {
   
     const unsubscribe = syncChats(user.uid, (updatedChats) => {
       setChats(updatedChats);
-      if (updatedChats.length > 0) {
-        setSelectedChat(updatedChats[0]);
-        handleChatSelect(updatedChats[0].chatId);
-      }
       setLoadingChats(false);
     });
   
@@ -101,7 +97,7 @@ const Home = ({ user, handleSignOut }) => {
         onSignOut={handleSignOut}
         loadingChats={loadingChats}
       />
-      {!loadingChats && !error && (
+      {!loadingChats && !error && selectedChat && (
         <ChatWindow 
         messages={messages} 
         selectedChat={selectedChat}
