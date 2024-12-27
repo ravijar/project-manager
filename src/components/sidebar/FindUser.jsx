@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { createChat } from "../../firebase/chatRepository";
 import SearchBar from "../common/SearchBar";
 import Chat from "./Chat";
 import "./FindUser.css";
 import LoadingSpinner from "../common/LoadingSpinner";
 import { findNewUsers } from "../../services/userService";
+import { createNewPrivateChat } from "../../services/chatService";
 
 const FindUser = ({ currentUser, onChatCreated }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,7 +38,7 @@ const FindUser = ({ currentUser, onChatCreated }) => {
     if (user) {
       setLoading(true);
       try {
-        const chatId = await createChat(currentUser, user);
+        const chatId = await createNewPrivateChat(currentUser, user);
         onChatCreated(chatId);
       } catch (error) {
         console.error("Failed to create chat. Please try again.");

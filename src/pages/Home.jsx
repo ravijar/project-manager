@@ -2,7 +2,8 @@ import SideWindow from '../components/sidebar/SideWindow';
 import ChatWindow from '../components/container/ChatWindow';
 import './Home.css';
 import { useState, useEffect } from 'react';
-import { getChatsForCurrentUser, getMessagesForChat, addMessageToChat } from '../firebase/chatRepository';
+import { getChatsForCurrentUser, getMessagesForChat } from '../firebase/chatRepository';
+import { sendMessage } from '../services/messageService';
 
 const Home = ({ user, handleSignOut }) => {
   const [chats, setChats] = useState([]);
@@ -83,7 +84,7 @@ const Home = ({ user, handleSignOut }) => {
     ]);
   
     try {
-      await addMessageToChat(selectedChat.chatId, user.uid, newMessage);
+      await sendMessage(selectedChat.chatId, user.uid, newMessage);
     } catch (error) {
       console.error("Failed to send message:", error);
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.text !== newMessage));
