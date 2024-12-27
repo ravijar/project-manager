@@ -1,4 +1,5 @@
-import { googleSignIn, commonSignOut } from "../firebase/authRepository";
+import { googleSignIn, commonSignOut } from "../firebase/auth";
+import { createUser, readUser } from "../firebase/firestore/userStore";
 
 export const getStoredUser = () => {
     const storedUser = localStorage.getItem("user");
@@ -7,7 +8,18 @@ export const getStoredUser = () => {
 
 export const signIn = async () => {
     const loggedUser = await googleSignIn();
+    const user = null;
+    try {
+        user = await readUser(loggedUser.uid);
+    } catch (error) {
+        console.warn("Registering user:", error);
+    }
+    if (!user) {
+        await createUser(loggedUser);
+    };
+    
     localStorage.setItem("user", JSON.stringify(loggedUser));
+    
     return loggedUser;
 };
 

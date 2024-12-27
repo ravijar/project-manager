@@ -7,7 +7,7 @@ const Profile = ({ user, onSignOut }) => {
 
   return (
     <div className="profile-container">
-      <Avatar size={100} />
+      <Avatar src={user.photoURL} size={100} />
       <div className="profile-name">{user.displayName}</div>
       <div className="signout-icon" onClick={onSignOut}>
         <FontAwesomeIcon icon={faPowerOff} />
