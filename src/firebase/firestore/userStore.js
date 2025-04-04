@@ -1,13 +1,14 @@
 import { db } from '../config'
 import { doc, setDoc, getDoc, getDocs, query, where, updateDoc, deleteDoc, Timestamp, collection } from "firebase/firestore";
 
-export const createUser = async (user) => {
+export const createUser = async (user, role = "student") => {
     try {
         const userDocRef = doc(db, "users", user.uid);
         await setDoc(userDocRef, {
             name: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
+            role: role,
             lastLogin: Timestamp.fromDate(new Date(user.metadata.lastSignInTime)),
         });
     } catch (error) {

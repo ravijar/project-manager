@@ -16,11 +16,11 @@ const App = () => {
     }
   }, []);
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (role) => {
       setLoading(true);
       try {
-        const loggedUser = await signIn();
-        setUser(loggedUser)
+        const loggedUser = await signIn(role);
+        setUser(loggedUser);
       } catch (error) {
         console.error("Login failed:", error);
       } finally {

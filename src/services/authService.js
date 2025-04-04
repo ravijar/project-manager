@@ -6,7 +6,8 @@ export const getStoredUser = () => {
     return storedUser ? JSON.parse(storedUser) : null;
 };
 
-export const signIn = async () => {
+export const signIn = async (selectedRole) => {
+    console.log(selectedRole);
     const loggedUser = await googleSignIn();
     const user = null;
     try {
@@ -15,7 +16,10 @@ export const signIn = async () => {
         console.warn("Registering user:", error);
     }
     if (!user) {
-        await createUser(loggedUser);
+        await createUser(loggedUser, selectedRole);
+        loggedUser.role = selectedRole;
+    } else {
+        loggedUser.role = user.role;
     };
     
     localStorage.setItem("user", JSON.stringify(loggedUser));
