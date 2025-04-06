@@ -100,6 +100,7 @@ const Home = ({user, handleSignOut}) => {
                 user={user}
                 onSignOut={handleSignOut}
                 loadingChats={loadingChats}
+                selectedChat={selectedChat}
             />
             {!loadingChats && !error && selectedChat && (
                 <ChatWindow
