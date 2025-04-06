@@ -10,7 +10,8 @@ import {
     query,
     orderBy,
     Timestamp,
-    onSnapshot
+    onSnapshot,
+    limit
 } from "firebase/firestore";
 
 export const createChat = async (chatId, participants) => {
@@ -109,6 +110,27 @@ export const listenToMessages = (chatId, callback) => {
         return unsubscribe;
     } catch (error) {
         console.error("Error listening to messages for chat:", error);
+        throw error;
+    }
+};
+
+export const listenToLastMessage = (chatId, callback) => {
+    try {
+        const lastMessageQuery = query(
+            collection(db, "chats", chatId, "messages"),
+            orderBy("timestamp", "desc"),
+            limit(1)
+        );
+
+        return onSnapshot(lastMessageQuery, (snapshot) => {
+            if (!snapshot.empty) {
+                callback(snapshot.docs[0].data());
+            } else {
+                callback(null);
+            }
+        });
+    } catch (error) {
+        console.error("Error listening to last message:", error);
         throw error;
     }
 };

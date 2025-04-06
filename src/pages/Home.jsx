@@ -29,8 +29,12 @@ const Home = ({user, handleSignOut}) => {
         setLoadingChats(true);
         setError("");
 
-        const unsubscribe = syncChats(user.uid, (updatedChats) => {
-            setChats(updatedChats);
+        const unsubscribe = syncChats(user.uid, (updateFnOrChats) => {
+            if (typeof updateFnOrChats === "function") {
+                setChats(prev => updateFnOrChats(prev));
+            } else {
+                setChats(updateFnOrChats);
+            }
             setLoadingChats(false);
         });
 

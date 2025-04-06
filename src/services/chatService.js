@@ -1,5 +1,6 @@
 import {createChat} from "../firebase/firestore/chatStore";
 import {addChatToUser, listenToChatIds} from "../firebase/firestore/userChatStore";
+import { listenToLastMessage } from "../firebase/firestore/chatStore";
 import {readUser} from "../firebase/firestore/userStore";
 
 export const createNewPrivateChat = async (currentUser, otherUser) => {
@@ -14,25 +15,49 @@ export const createNewPrivateChat = async (currentUser, otherUser) => {
 };
 
 export const syncChats = (userId, callback) => {
-    try {
-        const unsubscribe = listenToChatIds(userId, async (chatIds) => {
-            const chats = await Promise.all(
-                chatIds.map(async (chatId) => {
-                    const otherUserId = chatId.split("_").find((id) => id !== userId);
+    const chatListeners = new Map();
 
-                    if (!otherUserId) return null;
+    const unsubscribe = listenToChatIds(userId, async (chatIds) => {
+        const chatDetails = await Promise.all(chatIds.map(async (chatId) => {
+            const otherUserId = chatId.split("_").find(id => id !== userId);
+            if (!otherUserId) return null;
 
-                    const otherUserData = await readUser(otherUserId);
-                    return {chatId, user: otherUserData};
-                })
-            );
+            const userData = await readUser(otherUserId);
 
-            callback(chats.filter((chat) => chat !== null));
+            return {
+                chatId,
+                user: userData,
+                lastMessage: null,
+                lastTimestamp: null
+            };
+        }));
+
+        const enrichedChats = chatDetails.filter(Boolean);
+
+        enrichedChats.forEach((chat) => {
+            if (chatListeners.has(chat.chatId)) return;
+
+            const unsub = listenToLastMessage(chat.chatId, (lastMsg) => {
+                chat.lastMessage = lastMsg?.message || "";
+                chat.lastTimestamp = lastMsg?.timestamp?.toMillis?.() || 0;
+
+                // Update chat list and sort
+                callback((prevChats = []) => {
+                    const updated = prevChats.map((c) => (c.chatId === chat.chatId ? { ...c, ...chat } : c));
+                    return updated.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
+                });
+            });
+
+            chatListeners.set(chat.chatId, unsub);
         });
 
-        return unsubscribe;
-    } catch (error) {
-        console.error("Error syncing chats:", error);
-        throw error;
-    }
+        callback(() =>
+            enrichedChats.sort((a, b) => b.lastTimestamp - a.lastTimestamp)
+        );
+    });
+
+    return () => {
+        unsubscribe();
+        chatListeners.forEach((unsub) => unsub());
+    };
 };
