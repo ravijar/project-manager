@@ -7,36 +7,36 @@
     padding: 10px;
     border-radius: 8px;
     position: relative;
-  }
-  
-  .sender {
+}
+
+.sender {
     align-self: flex-end;
     background-color: #dcf8c6;
-  }
-  
-  .receiver {
+}
+
+.receiver {
     align-self: flex-start;
     background-color: #fff;
     border: 1px solid #ddd;
-  }
-  
-  .message-body {
+}
+
+.message-body {
     position: relative;
-  }
-  
-  .message-text {
+}
+
+.message-text {
     margin: 0 0 18px 0;
     font-size: 16px;
     color: #333;
     word-wrap: break-word;
-  }
-  
-  .message-time {
+}
+
+.message-time {
     font-size: 10px;
     color: #888;
     text-align: right;
     position: absolute;
     bottom: 0;
     right: 0;
-  }
+}
   

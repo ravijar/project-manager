@@ -1,5 +1,16 @@
-import { db } from '../config'
-import { doc, setDoc, getDoc, getDocs, query, where, updateDoc, deleteDoc, Timestamp, collection } from "firebase/firestore";
+import {db} from '../config'
+import {
+    doc,
+    setDoc,
+    getDoc,
+    getDocs,
+    query,
+    where,
+    updateDoc,
+    deleteDoc,
+    Timestamp,
+    collection
+} from "firebase/firestore";
 
 export const createUser = async (user, role = "student") => {
     try {
@@ -22,7 +33,7 @@ export const readUser = async (userId) => {
         const userDocRef = doc(db, "users", userId);
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
-            return { id: userDoc.id, ...userDoc.data() };
+            return {id: userDoc.id, ...userDoc.data()};
         } else {
             throw new Error(`User with ID ${userId} does not exist.`);
         }
@@ -59,12 +70,12 @@ export const queryUserByField = async (field, value) => {
         const usersRef = collection(db, "users");
         const userQuery = query(usersRef, where(field, "==", value));
         const querySnapshot = await getDocs(userQuery);
-    
+
         if (querySnapshot.empty) {
             throw new Error(`No user found with ${field} equal to ${value}`);
         }
-    
-        const users = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        const users = querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
         return users;
     } catch (error) {
         console.error("Error querying user by field:", error);

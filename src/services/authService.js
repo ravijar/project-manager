@@ -1,5 +1,5 @@
-import { googleSignIn, commonSignOut } from "../firebase/auth";
-import { createUser, readUser } from "../firebase/firestore/userStore";
+import {googleSignIn, commonSignOut} from "../firebase/auth";
+import {createUser, readUser} from "../firebase/firestore/userStore";
 
 export const getStoredUser = () => {
     const storedUser = localStorage.getItem("user");
@@ -20,10 +20,11 @@ export const signIn = async (selectedRole) => {
         loggedUser.role = selectedRole;
     } else {
         loggedUser.role = user.role;
-    };
-    
+    }
+    ;
+
     localStorage.setItem("user", JSON.stringify(loggedUser));
-    
+
     return loggedUser;
 };
 
