@@ -1,13 +1,19 @@
-import {createChat} from "../firebase/firestore/chatStore";
+import {createChat, listenToLastMessage} from "../firebase/firestore/chatStore";
 import {addChatToUser, listenToChatIds} from "../firebase/firestore/userChatStore";
-import { listenToLastMessage } from "../firebase/firestore/chatStore";
-import {readUser} from "../firebase/firestore/userStore";
+import {getOtherUserFromChatId} from "./userService.js";
+
+export const generateChatId = (userId1, userId2) => {
+    return [userId1, userId2].sort().join("_");
+};
+
+export const sortChatsByLastMessage = (chats) => {
+    return chats.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
+};
 
 export const createNewPrivateChat = async (currentUser, otherUser) => {
-    const participants = [currentUser.uid, otherUser.id];
-    const chatId = participants.sort().join("_");
+    const chatId = generateChatId(currentUser.uid, otherUser.id);
 
-    await createChat(chatId, participants);
+    await createChat(chatId, [currentUser.uid, otherUser.id]);
     await addChatToUser(currentUser.uid, chatId);
     await addChatToUser(otherUser.id, chatId);
 
@@ -19,10 +25,8 @@ export const syncChats = (userId, callback) => {
 
     const unsubscribe = listenToChatIds(userId, async (chatIds) => {
         const chatDetails = await Promise.all(chatIds.map(async (chatId) => {
-            const otherUserId = chatId.split("_").find(id => id !== userId);
-            if (!otherUserId) return null;
-
-            const userData = await readUser(otherUserId);
+            const userData = await getOtherUserFromChatId(chatId, userId);
+            if (!userData) return null;
 
             return {
                 chatId,
@@ -44,16 +48,14 @@ export const syncChats = (userId, callback) => {
                 // Update chat list and sort
                 callback((prevChats = []) => {
                     const updated = prevChats.map((c) => (c.chatId === chat.chatId ? { ...c, ...chat } : c));
-                    return updated.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
+                    return sortChatsByLastMessage(updated);
                 });
             });
 
             chatListeners.set(chat.chatId, unsub);
         });
 
-        callback(() =>
-            enrichedChats.sort((a, b) => b.lastTimestamp - a.lastTimestamp)
-        );
+        callback(() => sortChatsByLastMessage(enrichedChats));
     });
 
     return () => {
