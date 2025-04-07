@@ -98,8 +98,9 @@ export const syncChats = (userId, callback) => {
 };
 
 export const selectChat = async (chatId, userId, onMessages) => {
-    const unsubscribeFunction = syncMessages(chatId, (fetchedMessages) => {
+    const unsubscribeFunction = syncMessages(chatId, async (fetchedMessages) => {
         onMessages(fetchedMessages);
+        await updateReadStatus(chatId, userId);
     });
 
     await updateReadStatus(chatId, userId);
