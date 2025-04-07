@@ -50,6 +50,7 @@ const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selecte
                         name={chat.user.name}
                         onChatClick={onSelectChat}
                         selected={selectedChat && selectedChat.chatId === chat.chatId}
+                        hasUnread={chat?.lastRead < chat?.lastTimestamp}
                     />
                 ))}
             </div>

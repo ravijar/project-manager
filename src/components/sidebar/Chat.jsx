@@ -1,7 +1,7 @@
 import './Chat.css';
 import Avatar from '../common/Avatar';
 
-const Chat = ({height, avatarSrc, name, onChatClick, chatId, selected}) => {
+const Chat = ({height, avatarSrc, name, onChatClick, chatId, selected, hasUnread}) => {
     return (
         <div
             className={`chat ${selected ? 'chat-active' : ''}`}
@@ -10,6 +10,8 @@ const Chat = ({height, avatarSrc, name, onChatClick, chatId, selected}) => {
         >
             <Avatar src={avatarSrc} size={height - 16}/>
             <span className="chat-name">{name}</span>
+
+            {hasUnread && <div className="unread-indicator" />}
         </div>
     );
 };

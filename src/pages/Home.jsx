@@ -4,7 +4,7 @@ import './Home.css';
 import {useState, useEffect} from 'react';
 import {sendMessage} from '../services/messageService';
 import {syncMessages} from '../services/messageService';
-import {syncChats} from '../services/chatService';
+import {syncChats, selectChat} from '../services/chatService';
 
 const Home = ({user, handleSignOut}) => {
     const [chats, setChats] = useState([]);
@@ -45,27 +45,30 @@ const Home = ({user, handleSignOut}) => {
     };
 
 
-    const handleChatSelect = (chatId) => {
+    const handleChatSelect = async (chatId) => {
         setLoadingMessages(true);
         setMessages([]);
-        if (unsubscribe) {
-            unsubscribe();
-        }
+        if (unsubscribe) unsubscribe();
 
         const chat = chats.find((c) => c.chatId === chatId);
+        if (!chat) return;
+
         setSelectedChat(chat);
 
-        const unsubscribeFunction = syncMessages(chatId, (fetchedMessages) => {
+        const unsub = await selectChat(chatId, user.uid, (fetchedMessages) => {
             const formattedMessages = fetchedMessages.map((msg) => ({
                 text: msg.message,
-                time: new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
+                time: new Date(msg.timestamp.toDate()).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }),
                 isSender: msg.sender === user.uid,
-                date: new Date(msg.timestamp.toDate()).toLocaleDateString(),
+                date: new Date(msg.timestamp.toDate()).toLocaleDateString()
             }));
             setMessages(formattedMessages);
         });
 
-        setUnsubscribe(() => unsubscribeFunction);
+        setUnsubscribe(() => unsub);
         setLoadingMessages(false);
     };
 

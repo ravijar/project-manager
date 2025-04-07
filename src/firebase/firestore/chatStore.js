@@ -6,6 +6,7 @@ import {
     deleteDoc,
     collection,
     getDocs,
+    getDoc,
     addDoc,
     query,
     orderBy,
@@ -15,10 +16,16 @@ import {
 } from "firebase/firestore";
 
 export const createChat = async (chatId, participants) => {
+    const readStatus = {};
+    participants.forEach(uid => {
+        readStatus[uid] = Timestamp.fromDate(new Date());
+    });
+
     try {
         await setDoc(doc(db, "chats", chatId), {
             participants,
             createdAt: Timestamp.fromDate(new Date()),
+            readStatus
         });
     } catch (error) {
         console.error("Error creating chat:", error);
@@ -131,6 +138,27 @@ export const listenToLastMessage = (chatId, callback) => {
         });
     } catch (error) {
         console.error("Error listening to last message:", error);
+        throw error;
+    }
+};
+
+export const updateReadStatus = async (chatId, userId) => {
+    const chatRef = doc(db, "chats", chatId);
+    await updateDoc(chatRef, {
+        [`readStatus.${userId}`]: Timestamp.fromDate(new Date())
+    });
+};
+
+export const listenToChatMeta = (chatId, callback) => {
+    try {
+        const chatRef = doc(db, "chats", chatId);
+        return onSnapshot(chatRef, (snapshot) => {
+            if (snapshot.exists()) {
+                callback(snapshot.data());
+            }
+        });
+    } catch (error) {
+        console.error("Error listening to chat metadata:", error);
         throw error;
     }
 };

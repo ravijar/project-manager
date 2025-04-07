@@ -1,6 +1,13 @@
-import {createChat, listenToLastMessage} from "../firebase/firestore/chatStore";
+import {
+    createChat,
+    getChat,
+    listenToChatMeta,
+    listenToLastMessage,
+    updateReadStatus
+} from "../firebase/firestore/chatStore";
 import {addChatToUser, listenToChatIds} from "../firebase/firestore/userChatStore";
 import {getOtherUserFromChatId} from "./userService.js";
+import {syncMessages} from "./messageService.js";
 
 export const generateChatId = (userId1, userId2) => {
     return [userId1, userId2].sort().join("_");
@@ -28,11 +35,21 @@ export const syncChats = (userId, callback) => {
             const userData = await getOtherUserFromChatId(chatId, userId);
             if (!userData) return null;
 
+            let lastRead = 0;
+            try {
+                const chatMeta = await getChat(chatId);
+                const timestamp = chatMeta?.readStatus?.[userId];
+                lastRead = timestamp?.toMillis?.() || 0;
+            } catch (err) {
+                console.warn(`Error getting chat metadata for ${chatId}:`, err);
+            }
+
             return {
                 chatId,
                 user: userData,
                 lastMessage: null,
-                lastTimestamp: null
+                lastTimestamp: null,
+                lastRead
             };
         }));
 
@@ -41,18 +58,34 @@ export const syncChats = (userId, callback) => {
         enrichedChats.forEach((chat) => {
             if (chatListeners.has(chat.chatId)) return;
 
-            const unsub = listenToLastMessage(chat.chatId, (lastMsg) => {
+            const unsubLastMsg = listenToLastMessage(chat.chatId, (lastMsg) => {
                 chat.lastMessage = lastMsg?.message || "";
                 chat.lastTimestamp = lastMsg?.timestamp?.toMillis?.() || 0;
 
-                // Update chat list and sort
                 callback((prevChats = []) => {
-                    const updated = prevChats.map((c) => (c.chatId === chat.chatId ? { ...c, ...chat } : c));
+                    const updated = prevChats.map((c) =>
+                        c.chatId === chat.chatId ? { ...c, ...chat } : c
+                    );
                     return sortChatsByLastMessage(updated);
                 });
             });
 
-            chatListeners.set(chat.chatId, unsub);
+            const unsubMeta = listenToChatMeta(chat.chatId, (chatData) => {
+                const read = chatData?.readStatus?.[userId]?.toMillis?.() || 0;
+                chat.lastRead = read;
+
+                callback((prevChats = []) => {
+                    const updated = prevChats.map((c) =>
+                        c.chatId === chat.chatId ? { ...c, lastRead: read } : c
+                    );
+                    return sortChatsByLastMessage(updated);
+                });
+            });
+
+            chatListeners.set(chat.chatId, () => {
+                unsubLastMsg();
+                unsubMeta();
+            });
         });
 
         callback(() => sortChatsByLastMessage(enrichedChats));
@@ -62,4 +95,13 @@ export const syncChats = (userId, callback) => {
         unsubscribe();
         chatListeners.forEach((unsub) => unsub());
     };
+};
+
+export const selectChat = async (chatId, userId, onMessages) => {
+    const unsubscribeFunction = syncMessages(chatId, (fetchedMessages) => {
+        onMessages(fetchedMessages);
+    });
+
+    await updateReadStatus(chatId, userId);
+    return unsubscribeFunction;
 };
