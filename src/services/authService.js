@@ -1,12 +1,13 @@
-import { googleSignIn, commonSignOut } from "../firebase/auth";
-import { createUser, readUser } from "../firebase/firestore/userStore";
+import {googleSignIn, commonSignOut} from "../firebase/auth";
+import {createUser, readUser} from "../firebase/firestore/userStore";
 
 export const getStoredUser = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
 };
 
-export const signIn = async () => {
+export const signIn = async (selectedRole) => {
+    console.log(selectedRole);
     const loggedUser = await googleSignIn();
     const user = null;
     try {
@@ -15,11 +16,15 @@ export const signIn = async () => {
         console.warn("Registering user:", error);
     }
     if (!user) {
-        await createUser(loggedUser);
-    };
-    
+        await createUser(loggedUser, selectedRole);
+        loggedUser.role = selectedRole;
+    } else {
+        loggedUser.role = user.role;
+    }
+    ;
+
     localStorage.setItem("user", JSON.stringify(loggedUser));
-    
+
     return loggedUser;
 };
 

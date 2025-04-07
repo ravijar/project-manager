@@ -1,4 +1,5 @@
 .chat {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 5px 10px 5px 10px;
@@ -10,17 +11,34 @@
     background-color: #fff;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
-  }
+}
 
-  .chat:hover {
+.chat:hover {
     background-color: #f9f9f9;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  .chat-name {
+    cursor: pointer;
+}
+
+.chat-active {
+    background-color: #e8f0fe;
+    border: 2px solid #4285f4;
+}
+
+.chat-name {
     margin-left: 20px;
     font-size: 16px;
     font-weight: bold;
     color: #333;
-  }
+}
+
+.unread-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    background-color: #4285f4;
+    border-radius: 50%;
+    z-index: 1;
+}
   
