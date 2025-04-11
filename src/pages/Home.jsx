@@ -63,7 +63,8 @@ const Home = ({user, handleSignOut}) => {
                     minute: '2-digit'
                 }),
                 isSender: msg.sender === user.uid,
-                date: new Date(msg.timestamp.toDate()).toLocaleDateString()
+                date: new Date(msg.timestamp.toDate()).toLocaleDateString(),
+                isFile: msg.isFile
             }));
             setMessages(formattedMessages);
         });
@@ -72,7 +73,7 @@ const Home = ({user, handleSignOut}) => {
         setLoadingMessages(false);
     };
 
-    const handleNewMessage = async (newMessage) => {
+    const handleNewMessage = async (newMessage, isFile = false) => {
         if (!selectedChat) {
             console.error("No chat selected.");
             return;
@@ -84,11 +85,11 @@ const Home = ({user, handleSignOut}) => {
 
         setMessages((prevMessages) => [
             ...prevMessages,
-            {text: newMessage, time: formattedTime, isSender: true, date: formattedDate},
+            {text: newMessage, time: formattedTime, isSender: true, date: formattedDate, isFile},
         ]);
 
         try {
-            await sendMessage(selectedChat.chatId, user.uid, newMessage);
+            await sendMessage(selectedChat.chatId, user.uid, newMessage, isFile);
         } catch (error) {
             console.error("Failed to send message:", error);
             setMessages((prevMessages) => prevMessages.filter((msg) => msg.text !== newMessage));

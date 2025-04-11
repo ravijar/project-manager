@@ -13,8 +13,8 @@ export const getOriginalFileName = (storedFileName) => {
     const uuidSeparator = "--UUID--";
     const extIndex = storedFileName.lastIndexOf(".");
     const extension = storedFileName.slice(extIndex);
-    const nameWithoutUuid = storedFileName.split(uuidSeparator)[0];
-    return `${nameWithoutUuid}${extension}`;
+    const nameWithEncoded = storedFileName.split(uuidSeparator)[0];
+    return decodeURIComponent(`${nameWithEncoded}${extension}`);
 };
 
 export const uploadChatFile = async (file, chatId) => {

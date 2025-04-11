@@ -1,7 +1,7 @@
 import {addMessageToChat, listenToMessages} from "../firebase/firestore/chatStore";
 
-export const sendMessage = async (chatId, sender, message) => {
-    await addMessageToChat(chatId, sender, message);
+export const sendMessage = async (chatId, sender, message, isFile) => {
+    await addMessageToChat(chatId, sender, message, isFile);
 };
 
 export const syncMessages = (chatId, callback) => {

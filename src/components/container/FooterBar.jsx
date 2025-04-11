@@ -39,7 +39,7 @@ const FooterBar = ({onSendMessage, chatId}) => {
                 <Popup onClose={closePopup} width="400px">
                     <FileUpload
                         chatId={chatId}
-                        onFileUploaded={(url) => onSendMessage(url)}
+                        onFileUploaded={(url) => onSendMessage(url, true)}
                         onClose={closePopup}
                     />
                 </Popup>

@@ -32,6 +32,7 @@ const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages}) => 
                             text={message.text}
                             time={message.time}
                             isSender={message.isSender}
+                            isFile={message.isFile}
                         />
                     </div>
                 ))}
