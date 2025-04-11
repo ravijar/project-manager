@@ -17,4 +17,16 @@
     border-radius: 20px;
     outline: none;
 }
-  
+
+.attach-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+    color: #555;
+}
+
+.attach-btn:hover {
+    color: #007bff;
+}

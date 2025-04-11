@@ -11,7 +11,7 @@ const Chat = ({height, avatarSrc, name, onChatClick, chatId, selected, hasUnread
             <Avatar src={avatarSrc} size={height - 16}/>
             <span className="chat-name">{name}</span>
 
-            {hasUnread && <div className="unread-indicator" />}
+            {hasUnread && <div className="unread-indicator"/>}
         </div>
     );
 };

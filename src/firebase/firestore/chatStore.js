@@ -69,11 +69,12 @@ export const deleteChat = async (chatId) => {
     }
 };
 
-export const addMessageToChat = async (chatId, sender, message) => {
+export const addMessageToChat = async (chatId, sender, message, isFile) => {
     try {
         await addDoc(collection(db, "chats", chatId, "messages"), {
             sender,
             message,
+            isFile,
             timestamp: Timestamp.fromDate(new Date()),
         });
     } catch (error) {

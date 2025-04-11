@@ -64,7 +64,7 @@ export const syncChats = (userId, callback) => {
 
                 callback((prevChats = []) => {
                     const updated = prevChats.map((c) =>
-                        c.chatId === chat.chatId ? { ...c, ...chat } : c
+                        c.chatId === chat.chatId ? {...c, ...chat} : c
                     );
                     return sortChatsByLastMessage(updated);
                 });
@@ -76,7 +76,7 @@ export const syncChats = (userId, callback) => {
 
                 callback((prevChats = []) => {
                     const updated = prevChats.map((c) =>
-                        c.chatId === chat.chatId ? { ...c, lastRead: read } : c
+                        c.chatId === chat.chatId ? {...c, lastRead: read} : c
                     );
                     return sortChatsByLastMessage(updated);
                 });
