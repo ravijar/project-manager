@@ -23,6 +23,32 @@ const Home = ({user, handleSignOut}) => {
         };
     }, [user]);
 
+    const timeFormatOptions = {
+        hour: "2-digit",
+        minute: "2-digit"
+    }
+
+    const formatMessages = (rawMessages, userId) => {
+        return rawMessages.map((msg) => ({
+            text: msg.message,
+            time: new Date(msg.timestamp.toDate()).toLocaleTimeString([], timeFormatOptions),
+            isSender: msg.sender === userId,
+            date: new Date(msg.timestamp.toDate()).toLocaleDateString(),
+            isFile: msg.isFile
+        }));
+    };
+
+    const createLocalMessage = (text, isFile) => {
+        const now = new Date();
+        return {
+            text,
+            isSender: true,
+            time: now.toLocaleTimeString([], timeFormatOptions),
+            date: now.toLocaleDateString(),
+            isFile
+        };
+    };
+
     const fetchChats = () => {
         if (!user?.uid) return;
 
@@ -56,17 +82,7 @@ const Home = ({user, handleSignOut}) => {
         setSelectedChat(chat);
 
         const unsub = await selectChat(chatId, user.uid, (fetchedMessages) => {
-            const formattedMessages = fetchedMessages.map((msg) => ({
-                text: msg.message,
-                time: new Date(msg.timestamp.toDate()).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }),
-                isSender: msg.sender === user.uid,
-                date: new Date(msg.timestamp.toDate()).toLocaleDateString(),
-                isFile: msg.isFile
-            }));
-            setMessages(formattedMessages);
+            setMessages(formatMessages(fetchedMessages, user.uid));
         });
 
         setUnsubscribe(() => unsub);
@@ -79,14 +95,7 @@ const Home = ({user, handleSignOut}) => {
             return;
         }
 
-        const currentTime = new Date();
-        const formattedTime = currentTime.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
-        const formattedDate = currentTime.toLocaleDateString();
-
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            {text: newMessage, time: formattedTime, isSender: true, date: formattedDate, isFile},
-        ]);
+        setMessages((prevMessages) => [...prevMessages, createLocalMessage(newMessage, isFile)]);
 
         try {
             await sendMessage(selectedChat.chatId, user.uid, newMessage, isFile);
