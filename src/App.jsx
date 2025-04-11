@@ -1,7 +1,7 @@
 import Login from './pages/Login';
 import './App.css';
 import {useState, useEffect} from 'react';
-import Home from './pages/Home';
+import Dashboard from './pages/Dashboard.jsx';
 import {getStoredUser, signIn, signOut} from './services/authService';
 
 
@@ -42,7 +42,7 @@ const App = () => {
     }
 
     return (
-        <Home user={user} handleSignOut={handleSignOut}/>
+        <Dashboard user={user} handleSignOut={handleSignOut}/>
     );
 };
 

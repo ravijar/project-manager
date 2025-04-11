@@ -1,12 +1,12 @@
 import SideWindow from '../components/sidebar/SideWindow';
 import ChatWindow from '../components/container/ChatWindow';
-import './Home.css';
+import './Dashboard.css';
 import {useState, useEffect} from 'react';
 import {sendMessage} from '../services/messageService';
 import {syncMessages} from '../services/messageService';
 import {syncChats, selectChat} from '../services/chatService';
 
-const Home = ({user, handleSignOut}) => {
+const Dashboard = ({user, handleSignOut}) => {
     const [chats, setChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(true);
     const [loadingMessages, setLoadingMessages] = useState(false);
@@ -127,4 +127,4 @@ const Home = ({user, handleSignOut}) => {
     );
 };
 
-export default Home;
+export default Dashboard;
