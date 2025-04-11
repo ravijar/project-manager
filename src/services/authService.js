@@ -9,7 +9,7 @@ export const getStoredUser = () => {
 export const signIn = async (selectedRole) => {
     console.log(selectedRole);
     const loggedUser = await googleSignIn();
-    const user = null;
+    let user = null;
     try {
         user = await readUser(loggedUser.uid);
     } catch (error) {

@@ -36,7 +36,7 @@ const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages}) => 
                     </div>
                 ))}
             </div>
-            <FooterBar onSendMessage={onNewMessage}/>
+            <FooterBar onSendMessage={onNewMessage} chatId={selectedChat.chatId}/>
         </div>
     );
 };
