@@ -1,44 +1,17 @@
 import "./Login.css";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import {useState} from "react";
+import googleLogo from "../assets/google-logo.png";
 
 const Login = ({onSignIn, loading}) => {
-    const [selectedRole, setSelectedRole] = useState("student");
-
-    const handleSignIn = () => {
-        onSignIn(selectedRole);
-    };
-
     return (
         <div className="login-page">
-            <h1>Welcome to Chat App</h1>
-            <div className="role-selection">
-                <label>
-                    <input
-                        type="radio"
-                        value="student"
-                        checked={selectedRole === "student"}
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                    />
-                    Student
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="tutor"
-                        checked={selectedRole === "tutor"}
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                    />
-                    Tutor
-                </label>
-            </div>
-
             <button
                 className="login-button"
-                onClick={handleSignIn}
+                onClick={onSignIn}
                 disabled={loading}
             >
-                <span>Sign in</span>
+                <img src={googleLogo} alt="Google logo" className="google-logo" />
+                <span>Continue with Google</span>
                 {loading && <LoadingSpinner size={18} color="white"/>}
             </button>
         </div>
