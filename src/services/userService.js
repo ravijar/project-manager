@@ -8,7 +8,7 @@ export const findNewUsers = async (currentUserId, field, fieldValue) => {
 
         const newUsers = [];
         for (const user of matchedUsers) {
-            const chatId = generateChatId(currentUserId, user.uid);
+            const chatId = generateChatId(currentUserId, user.id);
             const chatExists = await chatExistForUser(currentUserId, chatId);
             if (!chatExists) {
                 newUsers.push(user);

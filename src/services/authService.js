@@ -7,25 +7,22 @@ export const getStoredUser = () => {
 };
 
 export const signIn = async (selectedRole) => {
-    console.log(selectedRole);
     const loggedUser = await googleSignIn();
-    let user = null;
+    let userFromStore = null;
+
     try {
-        user = await readUser(loggedUser.uid);
+        userFromStore = await readUser(loggedUser.uid);
     } catch (error) {
-        console.warn("Registering user:", error);
+        console.warn("Registering new user:", error);
     }
-    if (!user) {
+
+    if (!userFromStore) {
         await createUser(loggedUser, selectedRole);
-        loggedUser.role = selectedRole;
-    } else {
-        loggedUser.role = user.role;
+        userFromStore = await readUser(loggedUser.uid);
     }
-    ;
 
-    localStorage.setItem("user", JSON.stringify(loggedUser));
-
-    return loggedUser;
+    localStorage.setItem("user", JSON.stringify(userFromStore));
+    return userFromStore;
 };
 
 export const signOut = async () => {

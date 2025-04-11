@@ -50,12 +50,12 @@ const Home = ({user, handleSignOut}) => {
     };
 
     const fetchChats = () => {
-        if (!user?.uid) return;
+        if (!user?.id) return;
 
         setLoadingChats(true);
         setError("");
 
-        const unsubscribe = syncChats(user.uid, (updateFnOrChats) => {
+        const unsubscribe = syncChats(user.id, (updateFnOrChats) => {
             if (typeof updateFnOrChats === "function") {
                 setChats(prev => updateFnOrChats(prev));
             } else {
@@ -81,8 +81,8 @@ const Home = ({user, handleSignOut}) => {
 
         setSelectedChat(chat);
 
-        const unsub = await selectChat(chatId, user.uid, (fetchedMessages) => {
-            setMessages(formatMessages(fetchedMessages, user.uid));
+        const unsub = await selectChat(chatId, user.id, (fetchedMessages) => {
+            setMessages(formatMessages(fetchedMessages, user.id));
         });
 
         setUnsubscribe(() => unsub);
@@ -98,7 +98,7 @@ const Home = ({user, handleSignOut}) => {
         setMessages((prevMessages) => [...prevMessages, createLocalMessage(newMessage, isFile)]);
 
         try {
-            await sendMessage(selectedChat.chatId, user.uid, newMessage, isFile);
+            await sendMessage(selectedChat.chatId, user.id, newMessage, isFile);
         } catch (error) {
             console.error("Failed to send message:", error);
             setMessages((prevMessages) => prevMessages.filter((msg) => msg.text !== newMessage));

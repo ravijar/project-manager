@@ -19,7 +19,7 @@ const FindUser = ({currentUser, onChatCreated}) => {
                 setSearchResults(null);
                 setLoading(true);
 
-                const users = await findNewUsers(currentUser.uid, "email", searchTerm.trim());
+                const users = await findNewUsers(currentUser.id, "email", searchTerm.trim());
                 if (users.length > 0) {
                     setSearchResults(users);
                 } else {
