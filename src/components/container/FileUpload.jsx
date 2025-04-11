@@ -59,7 +59,7 @@ const FileUpload = ({chatId, onFileUploaded}) => {
                     <p className="file-name">{selectedFile.name}</p>
 
                     {uploading ? (
-                        <LoadingSpinner size={24} color="#4285f4" />
+                        <LoadingSpinner size={24} color="#4285f4"/>
                     ) : (
                         <div className="file-buttons">
                             <button className="upload-btn" onClick={handleUpload}>Upload</button>

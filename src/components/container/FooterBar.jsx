@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import "./FooterBar.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPaperclip} from "@fortawesome/free-solid-svg-icons";
 import Popup from "../common/Popup";
 import FileUpload from "./FileUpload.jsx";
 
@@ -23,7 +23,7 @@ const FooterBar = ({onSendMessage, chatId}) => {
     return (
         <div className="footer-bar">
             <button className="attach-btn" onClick={() => setShowPopup(true)}>
-                <FontAwesomeIcon icon={faPaperclip} />
+                <FontAwesomeIcon icon={faPaperclip}/>
             </button>
 
             <input

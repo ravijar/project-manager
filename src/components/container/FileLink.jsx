@@ -1,6 +1,6 @@
 import {getOriginalFileName} from "../../services/fileService.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faDownload } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faFile, faDownload} from "@fortawesome/free-solid-svg-icons";
 
 const FileLink = ({url}) => {
     try {
@@ -10,7 +10,7 @@ const FileLink = ({url}) => {
 
         return (
             <a href={url} target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faFile} style={{ marginRight: 6 }} />
+                <FontAwesomeIcon icon={faFile} style={{marginRight: 6}}/>
                 {originalFileName}
             </a>
         );
@@ -18,7 +18,7 @@ const FileLink = ({url}) => {
         console.error("Failed to extract file name:", err);
         return (
             <a href={url} target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faDownload} style={{ marginRight: 6 }} />
+                <FontAwesomeIcon icon={faDownload} style={{marginRight: 6}}/>
                 Download File
             </a>
         );

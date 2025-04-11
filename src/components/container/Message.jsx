@@ -6,7 +6,7 @@ const Message = ({text, time, isSender, isFile}) => {
         <div className={`message-container ${isSender ? 'sender' : 'receiver'}`}>
             <div className="message-body">
                 <p className="message-text">
-                    {isFile ? <FileLink url={text} /> : text}
+                    {isFile ? <FileLink url={text}/> : text}
                 </p>
                 <span className="message-time">{time}</span>
             </div>
