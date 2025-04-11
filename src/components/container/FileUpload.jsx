@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { uploadFile } from "../../supabase/storage/media";
+import "./FileUpload.css";
 
 const FileUpload = ({chatId, onFileUploaded, onClose}) => {
     const [selectedFile, setSelectedFile] = useState(null);
+    const fileInputRef = useRef();
 
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0]);
@@ -22,13 +24,31 @@ const FileUpload = ({chatId, onFileUploaded, onClose}) => {
         }
     };
 
+    const handleRemove = () => {
+        setSelectedFile(null);
+        fileInputRef.current.value = null;
+    };
+
     return (
         <div className="file-upload-container">
-            <input type="file" onChange={handleFileChange} />
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="file-input-hidden"
+                id="fileInput"
+            />
+            <label htmlFor="fileInput" className="choose-btn">
+                Choose File
+            </label>
+
             {selectedFile && (
-                <div style={{ marginTop: "10px" }}>
+                <div className="file-preview">
                     <p>{selectedFile.name}</p>
-                    <button onClick={handleUpload}>Upload</button>
+                    <div className="file-buttons">
+                        <button className="upload-btn" onClick={handleUpload}>Upload</button>
+                        <button className="remove-btn" onClick={handleRemove}>Remove</button>
+                    </div>
                 </div>
             )}
         </div>

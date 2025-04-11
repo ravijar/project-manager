@@ -22,7 +22,7 @@ const FooterBar = ({onSendMessage, chatId}) => {
 
     return (
         <div className="footer-bar">
-            <button className="upload-btn" onClick={() => setShowPopup(true)}>
+            <button className="attach-btn" onClick={() => setShowPopup(true)}>
                 <FontAwesomeIcon icon={faPaperclip} />
             </button>
 
@@ -36,7 +36,7 @@ const FooterBar = ({onSendMessage, chatId}) => {
             />
 
             {showPopup && (
-                <Popup onClose={closePopup} width="300px">
+                <Popup onClose={closePopup} width="400px">
                     <FileUpload
                         chatId={chatId}
                         onFileUploaded={(url) => onSendMessage(url)}
