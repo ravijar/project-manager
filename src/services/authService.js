@@ -1,5 +1,6 @@
 import {googleSignIn, commonSignOut} from "../firebase/auth";
 import {createUser, readUser} from "../firebase/firestore/userStore";
+import {RoleMismatchError} from "../errors/RoleMismatchError";
 
 export const getStoredUser = () => {
     const storedUser = localStorage.getItem("user");
@@ -19,6 +20,8 @@ export const signIn = async (selectedRole) => {
     if (!userFromStore) {
         await createUser(loggedUser, selectedRole);
         userFromStore = await readUser(loggedUser.uid);
+    } else if (userFromStore.role !== selectedRole) {
+        throw new RoleMismatchError(selectedRole, userFromStore.role);
     }
 
     localStorage.setItem("user", JSON.stringify(userFromStore));

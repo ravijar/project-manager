@@ -6,11 +6,13 @@ import ProtectedRoute from './components/routes/ProtectedRoute';
 import PublicRoute from './components/routes/PublicRoute';
 import {getStoredUser, signIn, signOut} from './services/authService';
 import {useState, useEffect} from "react";
+import {RoleMismatchError} from "./errors/RoleMismatchError"
 
 const App = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedRole, setSelectedRole] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const storedUser = getStoredUser();
@@ -24,6 +26,11 @@ const App = () => {
             const loggedUser = await signIn(selectedRole);
             setUser(loggedUser);
         } catch (error) {
+            if (error instanceof RoleMismatchError) {
+                setError(error.message);
+            } else {
+                setError("An error occurred while signing in. Please try again.")
+            }
             console.error("Login failed:", error);
         } finally {
             setLoading(false);
@@ -54,7 +61,12 @@ const App = () => {
                     path="/login"
                     element={
                         <PublicRoute user={user} selectedRole={selectedRole}>
-                            <Login onSignIn={handleSignIn} loading={loading} />
+                            <Login
+                                onSignIn={handleSignIn}
+                                loading={loading}
+                                error={error}
+                                selectedRole={selectedRole}
+                            />
                         </PublicRoute>
                     }
                 />
