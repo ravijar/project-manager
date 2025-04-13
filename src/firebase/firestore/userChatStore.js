@@ -29,58 +29,6 @@ export const addChatToUser = async (userId, chatId) => {
     }
 };
 
-export const getChatsForUser = async (userId) => {
-    try {
-        const userChatsRef = doc(db, "user_chats", userId);
-        const userChatsDoc = await getDoc(userChatsRef);
-
-        if (userChatsDoc.exists()) {
-            return userChatsDoc.data().chatIds || [];
-        } else {
-            console.warn(`No chat data found for user ${userId}`);
-            return [];
-        }
-    } catch (error) {
-        console.error("Error fetching chats for user:", error);
-        throw error;
-    }
-};
-
-export const updateChatsForUser = async (userId, newChatIds) => {
-    try {
-        const userChatsRef = doc(db, "user_chats", userId);
-        await updateDoc(userChatsRef, {chatIds: newChatIds});
-        console.log(`Chats for user ${userId} updated successfully.`);
-    } catch (error) {
-        console.error("Error updating chats for user:", error);
-        throw error;
-    }
-};
-
-export const removeChatFromUser = async (userId, chatId) => {
-    try {
-        const userChatsRef = doc(db, "user_chats", userId);
-        await updateDoc(userChatsRef, {
-            chatIds: arrayRemove(chatId),
-        });
-        console.log(`Chat ID ${chatId} removed from user ${userId} successfully.`);
-    } catch (error) {
-        console.error("Error removing chat from user:", error);
-        throw error;
-    }
-};
-
-export const deleteUserChats = async (userId) => {
-    try {
-        const userChatsRef = doc(db, "user_chats", userId);
-        await deleteDoc(userChatsRef);
-        console.log(`Chats for user ${userId} deleted successfully.`);
-    } catch (error) {
-        console.error("Error deleting user chats:", error);
-        throw error;
-    }
-};
-
 export const chatExistForUser = async (userId, chatId) => {
     try {
         const userChatsRef = collection(db, "user_chats");

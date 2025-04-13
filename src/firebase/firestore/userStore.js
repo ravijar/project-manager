@@ -47,28 +47,6 @@ export const readUser = async (userId) => {
     throw new Error(`User with ID ${userId} does not exist.`);
 };
 
-export const updateUser = async (userId, updatedFields) => {
-    const user = await readUser(userId); // get role
-    const userDocRef = getUserDocRef(userId, user.role);
-    try {
-        await updateDoc(userDocRef, updatedFields);
-    } catch (error) {
-        console.error("Error updating user in Firestore:", error);
-        throw error;
-    }
-};
-
-export const deleteUser = async (userId) => {
-    const user = await readUser(userId); // get role
-    const userDocRef = getUserDocRef(userId, user.role);
-    try {
-        await deleteDoc(userDocRef);
-    } catch (error) {
-        console.error("Error deleting user from Firestore:", error);
-        throw error;
-    }
-};
-
 export const queryUserByField = async (field, value) => {
     const foundUsers = [];
 
@@ -83,10 +61,4 @@ export const queryUserByField = async (field, value) => {
     }
 
     return foundUsers;
-};
-
-export const getUsersByRole = async (role) => {
-    const collectionRef = getUserCollectionRef(role);
-    const snapshot = await getDocs(collectionRef);
-    return snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
 };

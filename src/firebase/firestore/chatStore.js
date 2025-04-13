@@ -47,28 +47,6 @@ export const getChat = async (chatId) => {
     }
 };
 
-export const updateChat = async (chatId, updatedFields) => {
-    try {
-        await updateDoc(doc(db, "chats", chatId), updatedFields);
-    } catch (error) {
-        console.error("Error updating chat:", error);
-        throw error;
-    }
-};
-
-export const deleteChat = async (chatId) => {
-    try {
-        const chatRef = doc(db, "chats", chatId);
-        const messagesSnapshot = await getDocs(collection(chatRef, "messages"));
-        const deletePromises = messagesSnapshot.docs.map((messageDoc) => deleteDoc(messageDoc.ref));
-        await Promise.all(deletePromises);
-        await deleteDoc(chatRef);
-    } catch (error) {
-        console.error("Error deleting chat:", error);
-        throw error;
-    }
-};
-
 export const addMessageToChat = async (chatId, sender, message, isFile) => {
     try {
         await addDoc(collection(db, "chats", chatId, "messages"), {
@@ -79,26 +57,6 @@ export const addMessageToChat = async (chatId, sender, message, isFile) => {
         });
     } catch (error) {
         console.error("Error adding message to chat:", error);
-        throw error;
-    }
-};
-
-export const getMessagesForChat = async (chatId) => {
-    try {
-        const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
-        const messagesSnapshot = await getDocs(q);
-        return messagesSnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
-    } catch (error) {
-        console.error("Error fetching messages for chat:", error);
-        throw error;
-    }
-};
-
-export const deleteMessage = async (chatId, messageId) => {
-    try {
-        await deleteDoc(doc(db, "chats", chatId, "messages", messageId));
-    } catch (error) {
-        console.error("Error deleting message:", error);
         throw error;
     }
 };
