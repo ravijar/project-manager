@@ -123,25 +123,41 @@ const AddAssignment = ({ userId, onClose }) => {
                 onChange={handleInputChange}
             />
 
-            <input type="file" onChange={handleFileChange} disabled={uploading} />
-
-            {uploading && <LoadingSpinner size={18} color="#3498db" />}
-            {error && <p className="assignment-error">{error}</p>}
-
-            {formData.docs.length > 0 && (
-                <div className="file-list-container">
-                    <ul className="file-list">
-                        {formData.docs.map((url, idx) => (
-                            <li key={idx}>
-                                <span className="file-index">{idx + 1}.</span>
-                                <a href={url} target="_blank" rel="noreferrer">
-                                    {getOriginalFileName(getFileNameFromUrl(url))}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
+            <div className="file-upload-wrapper">
+                <div className="file-upload-top-row">
+                    <span className="upload-label">Relevant Documents</span>
+                    <label className="file-upload-button">
+                        {uploading ? (
+                            <LoadingSpinner size={10} color="#fff" />
+                        ) : (
+                            <span>Choose File</span>
+                        )}
+                        <input
+                            type="file"
+                            onChange={handleFileChange}
+                            disabled={uploading}
+                            hidden
+                        />
+                    </label>
                 </div>
-            )}
+
+                {formData.docs.length > 0 && (
+                    <div className="file-list-container">
+                        <ul className="file-list">
+                            {formData.docs.map((url, idx) => (
+                                <li key={idx}>
+                                    <span className="file-index">{idx + 1}.</span>
+                                    <a href={url} target="_blank" rel="noreferrer">
+                                        {getOriginalFileName(getFileNameFromUrl(url))}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
+
+            {error && <p className="assignment-error">{error}</p>}
 
             <div className="assignment-actions">
                 <button onClick={handleSubmit}>Add</button>
