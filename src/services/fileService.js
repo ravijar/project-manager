@@ -19,7 +19,7 @@ export const getOriginalFileName = (storedFileName) => {
 
 export const getFileNameFromUrl = (url) => {
     const parts = url.split("/");
-    return  decodeURIComponent(parts[parts.length - 1]);
+    return decodeURIComponent(parts[parts.length - 1]);
 }
 
 export const uploadFile = async (file, id) => {

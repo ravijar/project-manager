@@ -80,14 +80,14 @@
     color: #fff;
 }
 
-.role-box.student:hover .role-label .subtext{
+.role-box.student:hover .role-label .subtext {
     color: #eee;
 }
 
-.role-box.tutor:hover .role-label .subtext{
+.role-box.tutor:hover .role-label .subtext {
     color: #eee;
 }
 
-.role-box.admin:hover .role-label .subtext{
+.role-box.admin:hover .role-label .subtext {
     color: #eee;
 }

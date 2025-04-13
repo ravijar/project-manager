@@ -1,6 +1,6 @@
-import { addAssignment } from "../firebase/firestore/assignmentsCollection.js";
-import { addAssignmentToUser } from "../firebase/firestore/userAssignmentsCollection.js";
-import { v4 as uuidv4 } from "uuid";
+import {addAssignment} from "../firebase/firestore/assignmentsCollection.js";
+import {addAssignmentToUser} from "../firebase/firestore/userAssignmentsCollection.js";
+import {v4 as uuidv4} from "uuid";
 
 export const generateAssignmentId = () => {
     return "ASSIGNMENT--" + uuidv4()

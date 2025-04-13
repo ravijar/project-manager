@@ -18,7 +18,7 @@ const Login = ({onSignIn, loading, error, selectedRole}) => {
                         onClick={onSignIn}
                         disabled={loading}
                     >
-                        <img src={googleLogo} alt="Google logo" className="google-logo" />
+                        <img src={googleLogo} alt="Google logo" className="google-logo"/>
                         <span>Continue with Google</span>
                     </button>
 

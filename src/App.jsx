@@ -53,7 +53,7 @@ const App = () => {
                     path="/"
                     element={
                         <PublicRoute user={user}>
-                            <Home setSelectedRole={setSelectedRole} />
+                            <Home setSelectedRole={setSelectedRole}/>
                         </PublicRoute>
                     }
                 />
@@ -74,7 +74,7 @@ const App = () => {
                     path="/dashboard"
                     element={
                         <ProtectedRoute user={user}>
-                            <Dashboard user={user} handleSignOut={handleSignOut} />
+                            <Dashboard user={user} handleSignOut={handleSignOut}/>
                         </ProtectedRoute>
                     }
                 />

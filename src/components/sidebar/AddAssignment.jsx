@@ -12,7 +12,7 @@ import {addNewAssignment, generateAssignmentId} from "../../services/assignmentS
 
 const FIELDS = ["Mathematics", "Physics", "Chemistry", "Biology", "Computer Science", "Economics", "History", "Geography"];
 
-const AddAssignment = ({ userId, onClose }) => {
+const AddAssignment = ({userId, onClose}) => {
     const [formData, setFormData] = useState({
         name: "",
         field: "",
@@ -36,11 +36,11 @@ const AddAssignment = ({ userId, onClose }) => {
                 cleanupUploadedFiles();
             }
         }
-    },[])
+    }, [])
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setFormData((prev) => ({...prev, [name]: value}));
     };
 
     const handleFileChange = async (e) => {
@@ -51,7 +51,7 @@ const AddAssignment = ({ userId, onClose }) => {
         setError("");
         try {
             const url = await uploadFile(file, assignmentIdRef.current);
-            setFormData((prev) => ({ ...prev, docs: [...prev.docs, url] }));
+            setFormData((prev) => ({...prev, docs: [...prev.docs, url]}));
         } catch (err) {
             console.error("File upload failed:", err);
             setError("File upload failed. Please try again.");
@@ -118,7 +118,7 @@ const AddAssignment = ({ userId, onClose }) => {
     return (
         <div className="add-assignment-container">
             <div className="form-title">
-                {loading && <LoadingSpinner size={10} color="#555" />}
+                {loading && <LoadingSpinner size={10} color="#555"/>}
                 <span>Add New Assignment</span>
             </div>
 
@@ -160,7 +160,7 @@ const AddAssignment = ({ userId, onClose }) => {
                     <span className="upload-label">Relevant Documents</span>
                     <label className="file-upload-button">
                         {uploading ? (
-                            <LoadingSpinner size={7} color="#fff" />
+                            <LoadingSpinner size={7} color="#fff"/>
                         ) : (
                             <span>Upload</span>
                         )}

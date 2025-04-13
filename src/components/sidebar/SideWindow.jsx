@@ -64,7 +64,7 @@ const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selecte
 
             {showChatPopup && (
                 <Popup onClose={closeChatPopup} width="300px">
-                    <FindUser currentUser={user} onChatCreated={closeChatPopup} />
+                    <FindUser currentUser={user} onChatCreated={closeChatPopup}/>
                 </Popup>
             )}
 

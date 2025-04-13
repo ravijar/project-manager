@@ -1,4 +1,4 @@
-import { db } from "../config";
+import {db} from "../config";
 import {
     doc,
     setDoc,
@@ -45,7 +45,7 @@ export const addAssignment = async (assignmentId, initialData) => {
 
 export const updateAssignment = async (status, assignmentId, updatedFields) => {
     const ref = getAssignmentRef(status, assignmentId);
-    await setDoc(ref, updatedFields, { merge: true });
+    await setDoc(ref, updatedFields, {merge: true});
 };
 
 export const moveAssignment = async (fromStatus, toStatus, assignmentId) => {

@@ -19,7 +19,7 @@ export const uploadFileToBucket = async (file, fileName, id) => {
 
 export const deleteFileFromBucket = async (fileName, id) => {
     const filePath = `${id}/${fileName}`;
-    const { error } = await supabase.storage
+    const {error} = await supabase.storage
         .from(BUCKET_NAME)
         .remove([filePath]);
 
@@ -30,10 +30,10 @@ export const deleteFileFromBucket = async (fileName, id) => {
 };
 
 export const deleteAllFilesInFolder = async (id) => {
-    const { data, error: listError } = await supabase
+    const {data, error: listError} = await supabase
         .storage
         .from(BUCKET_NAME)
-        .list(id, { recursive: true });
+        .list(id, {recursive: true});
 
     if (listError) {
         console.error("Failed to list files in folder:", listError);
@@ -47,7 +47,7 @@ export const deleteAllFilesInFolder = async (id) => {
 
     const filePaths = data.map(file => `${id}/${file.name}`);
 
-    const { error: deleteError } = await supabase
+    const {error: deleteError} = await supabase
         .storage
         .from(BUCKET_NAME)
         .remove(filePaths);
