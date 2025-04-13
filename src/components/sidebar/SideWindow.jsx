@@ -9,37 +9,23 @@ import {faAdd, faFileAlt} from "@fortawesome/free-solid-svg-icons";
 import FindUser from './FindUser';
 import LoadingSpinner from '../common/LoadingSpinner';
 import AddAssignment from './AddAssignment'
-import {addNewAssignment, generateAssignmentId} from "../../services/assignmentService.js";
 
 const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selectedChat}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showChatPopup, setShowChatPopup] = useState(false);
     const [showAssignmentPopup, setShowAssignmentPopup] = useState(false);
-    const [assignmentId, setAssignmentId] = useState(null);
 
     const filteredChats = chats.filter((chat) =>
         chat.user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const openAssignmentPopup = () => {
-        setAssignmentId(generateAssignmentId());
-        setShowAssignmentPopup(true);
-    }
+    const openAssignmentPopup = () => setShowAssignmentPopup(true);
 
-    const closeAssignmentPopup = () => {
-        setAssignmentId(null);
-        setShowAssignmentPopup(false)
-    };
+    const closeAssignmentPopup = () => setShowAssignmentPopup(false)
 
     const openChatPopup = () => setShowChatPopup(true);
 
     const closeChatPopup = () => setShowChatPopup(false);
-
-    const handleAddAssignment = (assignmentId, assignmentData) => {
-        console.log("Assignment Data Submitted:", assignmentData);
-        addNewAssignment(assignmentId, assignmentData, user.id);
-        setShowAssignmentPopup(false);
-    };
 
     return (
         <div className="chat-list">
@@ -84,11 +70,7 @@ const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selecte
 
             {showAssignmentPopup && (
                 <Popup onClose={closeAssignmentPopup} width="400px">
-                    <AddAssignment
-                        assignmentId={assignmentId}
-                        onSubmit={handleAddAssignment}
-                        onClose={closeAssignmentPopup}
-                    />
+                    <AddAssignment userId={user.id} onClose={closeAssignmentPopup}/>
                 </Popup>
             )}
         </div>

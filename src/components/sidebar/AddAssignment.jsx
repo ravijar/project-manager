@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./AddAssignment.css";
 import {getFileNameFromUrl, getOriginalFileName, uploadFile} from "../../services/fileService";
 import LoadingSpinner from "../common/LoadingSpinner";
+import {addNewAssignment, generateAssignmentId} from "../../services/assignmentService.js";
 
 const FIELDS = ["Mathematics", "Physics", "Chemistry", "Biology", "Computer Science", "Economics", "History", "Geography"];
 
-const AddAssignment = ({ assignmentId, onSubmit, onClose }) => {
+const AddAssignment = ({ userId, onClose }) => {
     const [formData, setFormData] = useState({
         name: "",
         field: "",
@@ -16,6 +17,11 @@ const AddAssignment = ({ assignmentId, onSubmit, onClose }) => {
 
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
+    const [assignmentId, setAssignmentId] = useState("");
+
+    useEffect(() => {
+        setAssignmentId(generateAssignmentId())
+    },[])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -45,7 +51,7 @@ const AddAssignment = ({ assignmentId, onSubmit, onClose }) => {
             setError("Please fill in all required fields.");
             return;
         }
-        onSubmit(assignmentId, formData);
+        addNewAssignment(assignmentId, formData, userId);
     };
 
     return (
