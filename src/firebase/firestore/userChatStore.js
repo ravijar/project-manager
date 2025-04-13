@@ -3,22 +3,18 @@ import {
     doc,
     setDoc,
     getDoc,
-    updateDoc,
     arrayUnion,
-    arrayRemove,
-    deleteDoc,
-    query,
-    where,
-    getDocs,
-    collection,
     onSnapshot
 } from "firebase/firestore";
 
+const COLLECTION = "user_chats";
+
+const getUserChatDocRef = (userId) => doc(db, COLLECTION, userId);
+
 export const addChatToUser = async (userId, chatId) => {
     try {
-        const userChatsRef = doc(db, "user_chats", userId);
         await setDoc(
-            userChatsRef,
+            getUserChatDocRef(userId),
             {chatIds: arrayUnion(chatId)},
             {merge: true}
         );
@@ -29,18 +25,14 @@ export const addChatToUser = async (userId, chatId) => {
     }
 };
 
-export const chatExistForUser = async (userId, chatId) => {
+export const chatExistsForUser = async (userId, chatId) => {
     try {
-        const userChatsRef = collection(db, "user_chats");
-        const chatQuery = query(
-            userChatsRef,
-            where("chatIds", "array-contains", chatId),
-            where("__name__", "==", userId)
-        );
-
-        const querySnapshot = await getDocs(chatQuery);
-
-        return !querySnapshot.empty;
+        const docSnap = await getDoc(getUserChatDocRef(userId));
+        if (docSnap.exists()) {
+            const chatIds = docSnap.data().chatIds || [];
+            return chatIds.includes(chatId);
+        }
+        return false;
     } catch (error) {
         console.error("Error checking if chat exists for user:", error);
         throw error;
@@ -49,9 +41,7 @@ export const chatExistForUser = async (userId, chatId) => {
 
 export const listenToChatIds = (userId, callback) => {
     try {
-        const userChatsRef = doc(db, "user_chats", userId);
-
-        const unsubscribe = onSnapshot(userChatsRef, (snapshot) => {
+        return onSnapshot(getUserChatDocRef(userId), (snapshot) => {
             if (snapshot.exists()) {
                 const chatIds = snapshot.data().chatIds || [];
                 callback(chatIds);
@@ -61,7 +51,6 @@ export const listenToChatIds = (userId, callback) => {
             }
         });
 
-        return unsubscribe;
     } catch (error) {
         console.error("Error listening to chat IDs for user:", error);
         throw error;

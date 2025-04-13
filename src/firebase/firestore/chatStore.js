@@ -15,16 +15,20 @@ import {
     limit
 } from "firebase/firestore";
 
+const COLLECTION = "chats";
+const SUB_COLLECTION = "messages";
+
+const getCurrentTimestamp = () => Timestamp.fromDate(new Date());
+const getChatDocRef = (chatId) => doc(db, COLLECTION, chatId);
+const getMessagesCollectionRef = (chatId) => collection(db, COLLECTION, chatId, SUB_COLLECTION);
+
 export const createChat = async (chatId, participants) => {
-    const readStatus = {};
-    participants.forEach(uid => {
-        readStatus[uid] = Timestamp.fromDate(new Date());
-    });
+    const readStatus = Object.fromEntries(participants.map(uid => [uid, getCurrentTimestamp()]));
 
     try {
-        await setDoc(doc(db, "chats", chatId), {
+        await setDoc(getChatDocRef(chatId), {
             participants,
-            createdAt: Timestamp.fromDate(new Date()),
+            createdAt: getCurrentTimestamp(),
             readStatus
         });
     } catch (error) {
@@ -35,7 +39,7 @@ export const createChat = async (chatId, participants) => {
 
 export const getChat = async (chatId) => {
     try {
-        const chatDoc = await getDoc(doc(db, "chats", chatId));
+        const chatDoc = await getDoc(getChatDocRef(chatId));
         if (chatDoc.exists()) {
             return {id: chatDoc.id, ...chatDoc.data()};
         } else {
@@ -49,11 +53,11 @@ export const getChat = async (chatId) => {
 
 export const addMessageToChat = async (chatId, sender, message, isFile) => {
     try {
-        await addDoc(collection(db, "chats", chatId, "messages"), {
+        await addDoc(getMessagesCollectionRef(chatId), {
             sender,
             message,
             isFile,
-            timestamp: Timestamp.fromDate(new Date()),
+            timestamp: getCurrentTimestamp(),
         });
     } catch (error) {
         console.error("Error adding message to chat:", error);
@@ -63,17 +67,15 @@ export const addMessageToChat = async (chatId, sender, message, isFile) => {
 
 export const listenToMessages = (chatId, callback) => {
     try {
-        const messagesRef = query(
-            collection(db, "chats", chatId, "messages"),
+        const messagesQuery = query(
+            getMessagesCollectionRef(chatId),
             orderBy("timestamp", "asc")
         );
 
-        const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
+        return onSnapshot(messagesQuery, (snapshot) => {
             const messages = snapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
             callback(messages);
         });
-
-        return unsubscribe;
     } catch (error) {
         console.error("Error listening to messages for chat:", error);
         throw error;
@@ -83,17 +85,13 @@ export const listenToMessages = (chatId, callback) => {
 export const listenToLastMessage = (chatId, callback) => {
     try {
         const lastMessageQuery = query(
-            collection(db, "chats", chatId, "messages"),
+            getMessagesCollectionRef(chatId),
             orderBy("timestamp", "desc"),
             limit(1)
         );
 
         return onSnapshot(lastMessageQuery, (snapshot) => {
-            if (!snapshot.empty) {
-                callback(snapshot.docs[0].data());
-            } else {
-                callback(null);
-            }
+            callback(snapshot.empty ? null : snapshot.docs[0].data());
         });
     } catch (error) {
         console.error("Error listening to last message:", error);
@@ -102,16 +100,19 @@ export const listenToLastMessage = (chatId, callback) => {
 };
 
 export const updateReadStatus = async (chatId, userId) => {
-    const chatRef = doc(db, "chats", chatId);
-    await updateDoc(chatRef, {
-        [`readStatus.${userId}`]: Timestamp.fromDate(new Date())
-    });
+    try {
+        await updateDoc(getChatDocRef(chatId), {
+            [`readStatus.${userId}`]: getCurrentTimestamp()
+        });
+    } catch (error) {
+        console.error("Error updating read status:", error);
+        throw error;
+    }
 };
 
 export const listenToChatMeta = (chatId, callback) => {
     try {
-        const chatRef = doc(db, "chats", chatId);
-        return onSnapshot(chatRef, (snapshot) => {
+        return onSnapshot(getChatDocRef(chatId), (snapshot) => {
             if (snapshot.exists()) {
                 callback(snapshot.data());
             }
