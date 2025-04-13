@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import "./AddAssignment.css";
 import {
+    deleteFile,
     deleteFolder,
     getFileNameFromUrl,
     getOriginalFileName,
@@ -67,6 +68,25 @@ const AddAssignment = ({ userId, onClose }) => {
             console.warn("Failed to cleanup uploads.");
         }
     };
+
+    const handleRemoveFile = async (urlToRemove) => {
+        setUploading(true);
+        try {
+            const fileName = getFileNameFromUrl(urlToRemove);
+            await deleteFile(fileName, assignmentIdRef.current);
+
+            setFormData((prev) => ({
+                ...prev,
+                docs: prev.docs.filter((url) => url !== urlToRemove)
+            }));
+        } catch (err) {
+            console.error("Failed to delete file:", err);
+            setError("Could not remove file. Please try again.");
+        } finally {
+            setUploading(false);
+        }
+    };
+
 
     const handleCancel = async () => {
         setLoading(true);
@@ -157,11 +177,18 @@ const AddAssignment = ({ userId, onClose }) => {
                     <div className="file-list-container">
                         <ul className="file-list">
                             {formData.docs.map((url, idx) => (
-                                <li key={idx}>
+                                <li key={idx} className="file-list-item">
                                     <span className="file-index">{idx + 1}.</span>
                                     <a href={url} target="_blank" rel="noreferrer">
                                         {getOriginalFileName(getFileNameFromUrl(url))}
                                     </a>
+                                    <button
+                                        className="remove-file-button"
+                                        onClick={() => handleRemoveFile(url)}
+                                        disabled={uploading || loading}
+                                    >
+                                        X
+                                    </button>
                                 </li>
                             ))}
                         </ul>

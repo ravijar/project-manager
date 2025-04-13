@@ -168,11 +168,38 @@ textarea {
 }
 
 .file-list a:hover {
-    font-weight: bold;
+    text-decoration: underline;
 }
 
-.file-index {
-    margin-right: 6px;
+.file-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.remove-file-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    color: white;
+    background-color: #ca2723;
+    border-radius: 4px;
+    font-size: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 3px 5px;
+    transition: color 0.2s;
+}
+
+.remove-file-button:hover {
+    filter: brightness(1.1);
+}
+
+.remove-file-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .file-list-container::-webkit-scrollbar {
