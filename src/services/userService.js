@@ -2,6 +2,8 @@ import {queryUserByField, readUser} from "../firebase/firestore/userStore";
 import {chatExistForUser} from "../firebase/firestore/userChatStore";
 import {generateChatId} from "./chatService.js";
 
+export const USER_ROLES = ["admin", "student", "tutor"];
+
 export const findNewUsers = async (currentUserId, field, fieldValue) => {
     try {
         const matchedUsers = await queryUserByField(field, fieldValue);
