@@ -91,7 +91,7 @@ const AddAssignment = ({ userId, onClose }) => {
 
     return (
         <div className="add-assignment-container">
-            <h3>Add New Assignment</h3>
+            <div className="form-title">Add New Assignment</div>
 
             <input
                 type="text"
@@ -116,21 +116,24 @@ const AddAssignment = ({ userId, onClose }) => {
                 rows={3}
             />
 
-            <input
-                type="date"
-                name="dueBy"
-                value={formData.dueBy}
-                onChange={handleInputChange}
-            />
+            <div className="due-by-wrapper">
+                <span className="due-by-label">Due By</span>
+                <input
+                    type="date"
+                    name="dueBy"
+                    value={formData.dueBy}
+                    onChange={handleInputChange}
+                />
+            </div>
 
             <div className="file-upload-wrapper">
                 <div className="file-upload-top-row">
                     <span className="upload-label">Relevant Documents</span>
                     <label className="file-upload-button">
                         {uploading ? (
-                            <LoadingSpinner size={10} color="#fff" />
+                            <LoadingSpinner size={7} color="#fff" />
                         ) : (
-                            <span>Choose File</span>
+                            <span>Upload</span>
                         )}
                         <input
                             type="file"
