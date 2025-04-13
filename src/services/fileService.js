@@ -1,5 +1,5 @@
 import {v4 as uuidv4} from "uuid";
-import {deleteAllFilesInFolder, deleteFileFromBucket, uploadFileToBucket} from "../supabase/storage/media.js";
+import {deleteAllFilesInFolder, deleteFileFromBucket, uploadFileToBucket} from "../supabase/storage/mediaBucket.js";
 
 export const generateStoredFileName = (originalName) => {
     const uuid = uuidv4();

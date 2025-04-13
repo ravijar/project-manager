@@ -4,8 +4,8 @@ import {
     listenToChatMeta,
     listenToLastMessage,
     updateReadStatus
-} from "../firebase/firestore/chatStore";
-import {addChatToUser, listenToChatIds} from "../firebase/firestore/userChatStore";
+} from "../firebase/firestore/chatsCollection.js";
+import {addChatToUser, listenToChatIds} from "../firebase/firestore/userChatsCollection.js";
 import {getOtherUserFromChatId} from "./userService.js";
 import {syncMessages} from "./messageService.js";
 

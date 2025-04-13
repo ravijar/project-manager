@@ -1,5 +1,5 @@
-import {queryUserByField, readUser} from "../firebase/firestore/userStore";
-import {chatExistsForUser} from "../firebase/firestore/userChatStore";
+import {queryUserByField, readUser} from "../firebase/firestore/usersCollection.js";
+import {chatExistsForUser} from "../firebase/firestore/userChatsCollection.js";
 import {generateChatId} from "./chatService.js";
 
 export const USER_ROLES = ["admin", "student", "tutor"];

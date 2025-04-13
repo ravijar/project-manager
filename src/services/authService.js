@@ -1,5 +1,5 @@
 import {googleSignIn, commonSignOut} from "../firebase/auth";
-import {createUser, readUser} from "../firebase/firestore/userStore";
+import {createUser, readUser} from "../firebase/firestore/usersCollection.js";
 import {RoleMismatchError} from "../errors/RoleMismatchError";
 
 export const getStoredUser = () => {
