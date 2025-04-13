@@ -9,23 +9,35 @@ import {faAdd, faFileAlt} from "@fortawesome/free-solid-svg-icons";
 import FindUser from './FindUser';
 import LoadingSpinner from '../common/LoadingSpinner';
 import AddAssignment from './AddAssignment'
-import {addNewAssignment} from "../../services/assignmentService.js";
+import {addNewAssignment, generateAssignmentId} from "../../services/assignmentService.js";
 
 const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selectedChat}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showChatPopup, setShowChatPopup] = useState(false);
     const [showAssignmentPopup, setShowAssignmentPopup] = useState(false);
+    const [assignmentId, setAssignmentId] = useState(null);
 
     const filteredChats = chats.filter((chat) =>
         chat.user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const closeChatPopup = () => setShowChatPopup(false);
-    const closeAssignmentPopup = () => setShowAssignmentPopup(false);
+    const openAssignmentPopup = () => {
+        setAssignmentId(generateAssignmentId());
+        setShowAssignmentPopup(true);
+    }
 
-    const handleAddAssignment = (assignmentData) => {
+    const closeAssignmentPopup = () => {
+        setAssignmentId(null);
+        setShowAssignmentPopup(false)
+    };
+
+    const openChatPopup = () => setShowChatPopup(true);
+
+    const closeChatPopup = () => setShowChatPopup(false);
+
+    const handleAddAssignment = (assignmentId, assignmentData) => {
         console.log("Assignment Data Submitted:", assignmentData);
-        addNewAssignment(assignmentData, user.id);
+        addNewAssignment(assignmentId, assignmentData, user.id);
         setShowAssignmentPopup(false);
     };
 
@@ -38,10 +50,10 @@ const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selecte
                     {loadingChats && <LoadingSpinner size={18} color="#4caf50"/>}
                 </span>
                 <div className="chat-icons">
-                    <div className="icon-button" onClick={() => setShowChatPopup(true)} title="New Chat">
+                    <div className="icon-button" onClick={openChatPopup} title="New Chat">
                         <FontAwesomeIcon icon={faAdd}/>
                     </div>
-                    <div className="icon-button" onClick={() => setShowAssignmentPopup(true)} title="New Assignment">
+                    <div className="icon-button" onClick={openAssignmentPopup} title="New Assignment">
                         <FontAwesomeIcon icon={faFileAlt}/>
                     </div>
                 </div>
@@ -72,7 +84,11 @@ const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selecte
 
             {showAssignmentPopup && (
                 <Popup onClose={closeAssignmentPopup} width="400px">
-                    <AddAssignment userId={user.id} onSubmit={handleAddAssignment} onClose={closeAssignmentPopup} />
+                    <AddAssignment
+                        assignmentId={assignmentId}
+                        onSubmit={handleAddAssignment}
+                        onClose={closeAssignmentPopup}
+                    />
                 </Popup>
             )}
         </div>

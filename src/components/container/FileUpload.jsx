@@ -1,5 +1,5 @@
 import React, {useRef, useState} from "react";
-import {uploadChatFile} from "../../services/fileService.js";
+import {uploadFile} from "../../services/fileService.js";
 import LoadingSpinner from "../common/LoadingSpinner";
 import "./FileUpload.css";
 
@@ -19,7 +19,7 @@ const FileUpload = ({chatId, onFileUploaded}) => {
 
         setUploading(true);
         try {
-            const url = await uploadChatFile(selectedFile, chatId);
+            const url = await uploadFile(selectedFile, chatId);
             onFileUploaded(url);
             setUploadStatus("success");
         } catch (error) {

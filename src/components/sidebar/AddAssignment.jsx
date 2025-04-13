@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./AddAssignment.css";
-import { uploadChatFile } from "../../services/fileService";
+import {getFileNameFromUrl, getOriginalFileName, uploadFile} from "../../services/fileService";
 import LoadingSpinner from "../common/LoadingSpinner";
 
 const FIELDS = ["Mathematics", "Physics", "Chemistry", "Biology", "Computer Science", "Economics", "History", "Geography"];
 
-const AddAssignment = ({ userId, onSubmit, onClose }) => {
+const AddAssignment = ({ assignmentId, onSubmit, onClose }) => {
     const [formData, setFormData] = useState({
         name: "",
         field: "",
@@ -29,14 +29,14 @@ const AddAssignment = ({ userId, onSubmit, onClose }) => {
         setUploading(true);
         setError("");
         try {
-            const url = await uploadChatFile(file, userId);
+            const url = await uploadFile(file, assignmentId);
             setFormData((prev) => ({ ...prev, docs: [...prev.docs, url] }));
         } catch (err) {
             console.error("File upload failed:", err);
             setError("File upload failed. Please try again.");
         } finally {
             setUploading(false);
-            e.target.value = null; // Reset file input
+            e.target.value = null;
         }
     };
 
@@ -45,7 +45,7 @@ const AddAssignment = ({ userId, onSubmit, onClose }) => {
             setError("Please fill in all required fields.");
             return;
         }
-        onSubmit(formData);
+        onSubmit(assignmentId, formData);
     };
 
     return (
@@ -89,7 +89,11 @@ const AddAssignment = ({ userId, onSubmit, onClose }) => {
 
             <ul className="file-list">
                 {formData.docs.map((url, idx) => (
-                    <li key={idx}><a href={url} target="_blank" rel="noreferrer">File {idx + 1}</a></li>
+                    <li key={idx}>
+                        <a href={url} target="_blank" rel="noreferrer">
+                            {getOriginalFileName(getFileNameFromUrl(url))}
+                        </a>
+                    </li>
                 ))}
             </ul>
 
