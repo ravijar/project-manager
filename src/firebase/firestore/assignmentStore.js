@@ -1,21 +1,17 @@
 import { db } from "../config";
 import {
     doc,
-    getDoc,
     setDoc,
-    deleteField,
-    updateDoc,
+    getDoc,
+    deleteDoc,
     Timestamp
 } from "firebase/firestore";
 
 const COLLECTION = "assignments";
+const SUB_COLLECTION = "instances";
 
-const ensureDocument = async (docRef) => {
-    const snap = await getDoc(docRef);
-    if (!snap.exists()) {
-        await setDoc(docRef, {});
-    }
-};
+const getAssignmentRef = (status, assignmentId) =>
+    doc(db, COLLECTION, status, SUB_COLLECTION, assignmentId);
 
 export const addAssignment = async (assignmentId, initialData) => {
     const {
@@ -43,41 +39,24 @@ export const addAssignment = async (assignmentId, initialData) => {
         status: null
     };
 
-    const assignmentRef = doc(db, COLLECTION, "new");
-
-    await ensureDocument(assignmentRef);
-
-    await updateDoc(assignmentRef, {
-        [assignmentId]: assignmentData
-    });
+    const ref = getAssignmentRef("new", assignmentId);
+    await setDoc(ref, assignmentData);
 };
 
 export const updateAssignment = async (status, assignmentId, updatedFields) => {
-    const assignmentRef = doc(db, COLLECTION, status);
-
-    await ensureDocument(assignmentRef);
-
-    await updateDoc(assignmentRef, {
-        [assignmentId]: updatedFields
-    });
+    const ref = getAssignmentRef(status, assignmentId);
+    await setDoc(ref, updatedFields, { merge: true });
 };
 
 export const moveAssignment = async (fromStatus, toStatus, assignmentId) => {
-    const fromRef = doc(db, COLLECTION, fromStatus);
-    const toRef = doc(db, COLLECTION, toStatus);
+    const fromRef = getAssignmentRef(fromStatus, assignmentId);
+    const toRef = getAssignmentRef(toStatus, assignmentId);
 
     const fromSnap = await getDoc(fromRef);
-    const assignmentData = fromSnap.data()?.[assignmentId];
+    if (!fromSnap.exists()) throw new Error("Assignment not found in source.");
 
-    if (!assignmentData) throw new Error("Assignment not found in source.");
+    const assignmentData = fromSnap.data();
 
-    await ensureDocument(toRef);
-
-    await updateDoc(toRef, {
-        [assignmentId]: assignmentData
-    });
-
-    await updateDoc(fromRef, {
-        [assignmentId]: deleteField()
-    });
+    await setDoc(toRef, assignmentData);
+    await deleteDoc(fromRef);
 };
