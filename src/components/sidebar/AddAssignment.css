@@ -7,8 +7,12 @@
 }
 
 .form-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
     font-size: 20px;
-    align-self: center;
     font-weight: 500;
     margin-bottom: 10px;
 }
@@ -207,6 +211,15 @@ textarea {
     color: white;
     cursor: pointer;
     transition: background 0.3s;
+}
+
+.assignment-actions button:disabled {
+    background-color: #ccc;
+}
+
+.assignment-actions button:disabled:hover {
+    filter: none;
+    cursor: not-allowed;
 }
 
 .assignment-actions .cancel-btn {

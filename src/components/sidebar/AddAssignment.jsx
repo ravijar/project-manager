@@ -22,6 +22,7 @@ const AddAssignment = ({ userId, onClose }) => {
 
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const assignmentIdRef = useRef("");
     const submittedRef = useRef(false);
@@ -68,7 +69,9 @@ const AddAssignment = ({ userId, onClose }) => {
     };
 
     const handleCancel = async () => {
+        setLoading(true);
         await cleanupUploadedFiles();
+        setLoading(false);
         onClose();
     };
 
@@ -78,6 +81,7 @@ const AddAssignment = ({ userId, onClose }) => {
             return;
         }
 
+        setLoading(true);
         try {
             await addNewAssignment(assignmentIdRef.current, formData, userId)
                 .then(() => submittedRef.current = true);
@@ -86,12 +90,17 @@ const AddAssignment = ({ userId, onClose }) => {
             console.error("Failed to add assignment:", err);
             setError("Assignment submission failed.");
             await cleanupUploadedFiles();
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="add-assignment-container">
-            <div className="form-title">Add New Assignment</div>
+            <div className="form-title">
+                {loading && <LoadingSpinner size={10} color="#555" />}
+                <span>Add New Assignment</span>
+            </div>
 
             <input
                 type="text"
@@ -163,8 +172,8 @@ const AddAssignment = ({ userId, onClose }) => {
             {error && <p className="assignment-error">{error}</p>}
 
             <div className="assignment-actions">
-                <button onClick={handleSubmit}>Add</button>
-                <button onClick={handleCancel} className="cancel-btn">Cancel</button>
+                <button onClick={handleSubmit} disabled={loading}>Add</button>
+                <button onClick={handleCancel} className="cancel-btn" disabled={loading}>Cancel</button>
             </div>
         </div>
     );
