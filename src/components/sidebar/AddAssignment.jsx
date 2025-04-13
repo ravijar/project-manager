@@ -128,15 +128,20 @@ const AddAssignment = ({ userId, onClose }) => {
             {uploading && <LoadingSpinner size={18} color="#3498db" />}
             {error && <p className="assignment-error">{error}</p>}
 
-            <ul className="file-list">
-                {formData.docs.map((url, idx) => (
-                    <li key={idx}>
-                        <a href={url} target="_blank" rel="noreferrer">
-                            {getOriginalFileName(getFileNameFromUrl(url))}
-                        </a>
-                    </li>
-                ))}
-            </ul>
+            {formData.docs.length > 0 && (
+                <div className="file-list-container">
+                    <ul className="file-list">
+                        {formData.docs.map((url, idx) => (
+                            <li key={idx}>
+                                <span className="file-index">{idx + 1}.</span>
+                                <a href={url} target="_blank" rel="noreferrer">
+                                    {getOriginalFileName(getFileNameFromUrl(url))}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <div className="assignment-actions">
                 <button onClick={handleSubmit}>Add</button>
