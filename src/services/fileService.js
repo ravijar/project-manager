@@ -1,5 +1,5 @@
 import {v4 as uuidv4} from "uuid";
-import {deleteFileFromBucket, uploadFileToBucket} from "../supabase/storage/media.js";
+import {deleteAllFilesInFolder, deleteFileFromBucket, uploadFileToBucket} from "../supabase/storage/media.js";
 
 export const generateStoredFileName = (originalName) => {
     const uuid = uuidv4();
@@ -19,7 +19,7 @@ export const getOriginalFileName = (storedFileName) => {
 
 export const getFileNameFromUrl = (url) => {
     const parts = url.split("/");
-    return  parts[parts.length - 1];
+    return  decodeURIComponent(parts[parts.length - 1]);
 }
 
 export const uploadFile = async (file, id) => {
@@ -28,4 +28,8 @@ export const uploadFile = async (file, id) => {
 
 export const deleteFile = async (fileName, id) => {
     return await deleteFileFromBucket(fileName, id);
+}
+
+export const deleteFolder = async (folderName) => {
+    return await deleteAllFilesInFolder(folderName);
 }

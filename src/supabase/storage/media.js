@@ -28,3 +28,34 @@ export const deleteFileFromBucket = async (fileName, id) => {
         throw error;
     }
 };
+
+export const deleteAllFilesInFolder = async (id) => {
+    const { data, error: listError } = await supabase
+        .storage
+        .from(BUCKET_NAME)
+        .list(id, { recursive: true });
+
+    if (listError) {
+        console.error("Failed to list files in folder:", listError);
+        throw listError;
+    }
+
+    if (!data || data.length === 0) {
+        console.log("No files found to delete in folder:", id);
+        return;
+    }
+
+    const filePaths = data.map(file => `${id}/${file.name}`);
+
+    const { error: deleteError } = await supabase
+        .storage
+        .from(BUCKET_NAME)
+        .remove(filePaths);
+
+    if (deleteError) {
+        console.error("Failed to delete files:", deleteError);
+        throw deleteError;
+    }
+
+    console.log(`Deleted ${filePaths.length} file(s) from folder: ${id}`);
+};

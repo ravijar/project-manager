@@ -1,6 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "./AddAssignment.css";
-import {getFileNameFromUrl, getOriginalFileName, uploadFile} from "../../services/fileService";
+import {
+    deleteFolder,
+    getFileNameFromUrl,
+    getOriginalFileName,
+    uploadFile
+} from "../../services/fileService";
 import LoadingSpinner from "../common/LoadingSpinner";
 import {addNewAssignment, generateAssignmentId} from "../../services/assignmentService.js";
 
@@ -17,10 +22,18 @@ const AddAssignment = ({ userId, onClose }) => {
 
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
-    const [assignmentId, setAssignmentId] = useState("");
+
+    const assignmentIdRef = useRef("");
+    const submittedRef = useRef(false);
 
     useEffect(() => {
-        setAssignmentId(generateAssignmentId())
+        assignmentIdRef.current = generateAssignmentId();
+
+        return () => {
+            if (!submittedRef.current) {
+                cleanupUploadedFiles();
+            }
+        }
     },[])
 
     const handleInputChange = (e) => {
@@ -35,7 +48,7 @@ const AddAssignment = ({ userId, onClose }) => {
         setUploading(true);
         setError("");
         try {
-            const url = await uploadFile(file, assignmentId);
+            const url = await uploadFile(file, assignmentIdRef.current);
             setFormData((prev) => ({ ...prev, docs: [...prev.docs, url] }));
         } catch (err) {
             console.error("File upload failed:", err);
@@ -46,12 +59,34 @@ const AddAssignment = ({ userId, onClose }) => {
         }
     };
 
-    const handleSubmit = () => {
+    const cleanupUploadedFiles = async () => {
+        try {
+            await deleteFolder(assignmentIdRef.current);
+        } catch (err) {
+            console.warn("Failed to cleanup uploads.");
+        }
+    };
+
+    const handleCancel = async () => {
+        await cleanupUploadedFiles();
+        onClose();
+    };
+
+    const handleSubmit = async () => {
         if (!formData.name || !formData.field || !formData.description || !formData.dueBy) {
             setError("Please fill in all required fields.");
             return;
         }
-        addNewAssignment(assignmentId, formData, userId);
+
+        try {
+            await addNewAssignment(assignmentIdRef.current, formData, userId)
+                .then(() => submittedRef.current = true);
+            onClose();
+        } catch (err) {
+            console.error("Failed to add assignment:", err);
+            setError("Assignment submission failed.");
+            await cleanupUploadedFiles();
+        }
     };
 
     return (
@@ -105,7 +140,7 @@ const AddAssignment = ({ userId, onClose }) => {
 
             <div className="assignment-actions">
                 <button onClick={handleSubmit}>Add</button>
-                <button onClick={onClose} className="cancel-btn">Cancel</button>
+                <button onClick={handleCancel} className="cancel-btn">Cancel</button>
             </div>
         </div>
     );
