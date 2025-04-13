@@ -39,7 +39,7 @@
     height: 75%;
     background-size: cover;
     background-position: center;
-    filter: grayscale(100%);
+    filter: grayscale(50%);
     transition: filter 0.3s ease;
 }
 
