@@ -9,6 +9,7 @@ import {faAdd, faFileAlt} from "@fortawesome/free-solid-svg-icons";
 import FindUser from './FindUser';
 import LoadingSpinner from '../common/LoadingSpinner';
 import AddAssignment from './AddAssignment'
+import RoleBased from "../common/RoleBased";
 
 const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selectedChat}) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -39,9 +40,11 @@ const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selecte
                     <div className="icon-button" onClick={openChatPopup} title="New Chat">
                         <FontAwesomeIcon icon={faAdd}/>
                     </div>
-                    <div className="icon-button" onClick={openAssignmentPopup} title="New Assignment">
-                        <FontAwesomeIcon icon={faFileAlt}/>
-                    </div>
+                    <RoleBased roles={["student"]} currentRole={user.role}>
+                        <div className="icon-button" onClick={openAssignmentPopup} title="New Assignment">
+                            <FontAwesomeIcon icon={faFileAlt}/>
+                        </div>
+                    </RoleBased>
                 </div>
             </div>
             <div className="chat-list-search">
