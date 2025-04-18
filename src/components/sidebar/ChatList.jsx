@@ -8,9 +8,9 @@ import Popup from "../common/Popup.jsx";
 import FindUser from "./FindUser.jsx";
 import AddAssignment from "./AddAssignment.jsx";
 import {useState} from "react";
-import "./ChatsWindow.css";
+import "./ChatList.css";
 
-const ChatsWindow = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
+const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showChatPopup, setShowChatPopup] = useState(false);
     const [showAssignmentPopup, setShowAssignmentPopup] = useState(false);
@@ -28,8 +28,8 @@ const ChatsWindow = ({chats, selectedChat, onSelectChat, loadingChats, user}) =>
     const closeChatPopup = () => setShowChatPopup(false);
 
     return (
-        <div className="chats-window-container">
-            <div className="chats-window-header">
+        <div className="chat-list-container">
+            <div className="chat-list-header">
                 <span className="chats-label">
                   Chats
                     {loadingChats && <LoadingSpinner size={18} color="#4caf50"/>}
@@ -45,10 +45,10 @@ const ChatsWindow = ({chats, selectedChat, onSelectChat, loadingChats, user}) =>
                     </RoleBased>
                 </div>
             </div>
-            <div className="chats-window-search">
+            <div className="chat-list-search">
                 <SearchBar value={searchTerm} onChange={setSearchTerm}/>
             </div>
-            <div className="chats-window-scroll">
+            <div className="chat-list-scroll">
                 {filteredChats.map((chat) => (
                     <Chat
                         key={chat.chatId}
@@ -78,4 +78,4 @@ const ChatsWindow = ({chats, selectedChat, onSelectChat, loadingChats, user}) =>
     )
 }
 
-export default ChatsWindow;
+export default ChatList;

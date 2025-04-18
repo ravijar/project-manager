@@ -1,6 +1,6 @@
 import './SideWindow.css';
 import Profile from './Profile';
-import ChatsWindow from "./ChatsWindow.jsx";
+import ChatList from "./ChatList.jsx";
 import Tabs from "../common/Tabs.jsx";
 import Tab from "../common/Tab.js";
 
@@ -12,7 +12,7 @@ const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selecte
                 <Tab
                     name="Chats"
                     component={
-                        <ChatsWindow
+                        <ChatList
                             chats={chats}
                             selectedChat={selectedChat}
                             onSelectChat={onSelectChat}
