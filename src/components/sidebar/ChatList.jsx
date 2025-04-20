@@ -9,15 +9,19 @@ import FindUser from "./FindUser.jsx";
 import AddAssignment from "./AddAssignment.jsx";
 import {useState} from "react";
 import "./ChatList.css";
+import ChipSection from "../common/ChipSection.jsx";
 
 const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showChatPopup, setShowChatPopup] = useState(false);
     const [showAssignmentPopup, setShowAssignmentPopup] = useState(false);
+    const [selectedRole, setSelectedRole] = useState(null);
 
-    const filteredChats = chats.filter((chat) =>
-        chat.user.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredChats = chats.filter((chat) => {
+        const matchesSearch = chat.user.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesRole = selectedRole ? chat.user.role === selectedRole : true;
+        return matchesSearch && matchesRole;
+    });
 
     const openAssignmentPopup = () => setShowAssignmentPopup(true);
 
@@ -30,24 +34,33 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
     return (
         <div className="chat-list-container">
             <div className="chat-list-header">
-                <span className="chats-label">
-                  Chats
-                    {loadingChats && <LoadingSpinner size={18} color="#4caf50"/>}
-                </span>
+                <ChipSection
+                    chips={[
+                        { label: "All", value: null },
+                        { label: "Student", value: "student" },
+                        { label: "Tutor", value: "tutor" },
+                        { label: "Admin", value: "admin" },
+                    ]}
+                    onChange={(chip) => setSelectedRole(chip.value)}
+                />
+
                 <div className="chat-icons">
                     <div className="icon-button" onClick={openChatPopup} title="New Chat">
-                        <FontAwesomeIcon icon={faAdd}/>
+                        <FontAwesomeIcon icon={faAdd} />
                     </div>
                     <RoleBased roles={["student"]} currentRole={user.role}>
                         <div className="icon-button" onClick={openAssignmentPopup} title="New Assignment">
-                            <FontAwesomeIcon icon={faFileAlt}/>
+                            <FontAwesomeIcon icon={faFileAlt} />
                         </div>
                     </RoleBased>
+                    {loadingChats && <LoadingSpinner size={18} color="#4caf50" />}
                 </div>
             </div>
+
             <div className="chat-list-search">
                 <SearchBar value={searchTerm} onChange={setSearchTerm}/>
             </div>
+
             <div className="chat-list-scroll">
                 {filteredChats.map((chat) => (
                     <Chat
