@@ -41,7 +41,8 @@ const AssignmentList = (
                         {label: "Completed", value: "completed"},
                         {label: "Ignored", value: "ignored"},
                     ]}
-                    onChange={(chip) => setSelectedStatus(chip.value)}
+                    activeValue={selectedStatus}
+                    setActiveValue={setSelectedStatus}
                 />
 
                 <div className="assignment-icons">

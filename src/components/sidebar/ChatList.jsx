@@ -34,7 +34,8 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
                         {label: "Tutor", value: "tutor"},
                         {label: "Admin", value: "admin"},
                     ]}
-                    onChange={(chip) => setSelectedRole(chip.value)}
+                    activeValue={selectedRole}
+                    setActiveValue={setSelectedRole}
                 />
 
                 <div className="chat-icons">
