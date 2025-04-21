@@ -29,19 +29,19 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
             <div className="chat-list-header">
                 <ChipSection
                     chips={[
-                        { label: "All", value: null },
-                        { label: "Student", value: "student" },
-                        { label: "Tutor", value: "tutor" },
-                        { label: "Admin", value: "admin" },
+                        {label: "All", value: null},
+                        {label: "Student", value: "student"},
+                        {label: "Tutor", value: "tutor"},
+                        {label: "Admin", value: "admin"},
                     ]}
                     onChange={(chip) => setSelectedRole(chip.value)}
                 />
 
                 <div className="chat-icons">
                     <div className="icon-button" onClick={openChatPopup} title="New Chat">
-                        <FontAwesomeIcon icon={faAdd} />
+                        <FontAwesomeIcon icon={faAdd}/>
                     </div>
-                    {loadingChats && <LoadingSpinner size={16} color="#4285f4" />}
+                    {loadingChats && <LoadingSpinner size={16} color="#4285f4"/>}
                 </div>
             </div>
 

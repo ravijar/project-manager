@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import ChipSection from "../common/ChipSection.jsx";
 import SearchBar from "../common/SearchBar.jsx";
 import LoadingSpinner from "../common/LoadingSpinner.jsx";
@@ -37,9 +37,9 @@ const AssignmentList = (
             <div className="assignment-list-header">
                 <ChipSection
                     chips={[
-                        { label: "Ongoing", value: "new" },
-                        { label: "Completed", value: "completed" },
-                        { label: "Ignored", value: "ignored" },
+                        {label: "Ongoing", value: "new"},
+                        {label: "Completed", value: "completed"},
+                        {label: "Ignored", value: "ignored"},
                     ]}
                     onChange={(chip) => setSelectedStatus(chip.value)}
                 />
@@ -47,15 +47,15 @@ const AssignmentList = (
                 <div className="assignment-icons">
                     <RoleBased roles={["student"]} currentRole={user.role}>
                         <div className="icon-button" onClick={openAssignmentPopup} title="New Assignment">
-                            <FontAwesomeIcon icon={faAdd} />
+                            <FontAwesomeIcon icon={faAdd}/>
                         </div>
                     </RoleBased>
-                    {loading && <LoadingSpinner size={16} color="#4285f4" />}
+                    {loading && <LoadingSpinner size={16} color="#4285f4"/>}
                 </div>
             </div>
 
             <div className="assignment-list-search">
-                <SearchBar value={searchTerm} onChange={setSearchTerm} />
+                <SearchBar value={searchTerm} onChange={setSearchTerm}/>
             </div>
 
             <div className="assignment-list-scroll">
@@ -73,7 +73,7 @@ const AssignmentList = (
 
             {showAssignmentPopup && (
                 <Popup onClose={closeAssignmentPopup} width="400px">
-                    <AddAssignment userId={user.id} onClose={closeAssignmentPopup} />
+                    <AddAssignment userId={user.id} onClose={closeAssignmentPopup}/>
                 </Popup>
             )}
         </div>

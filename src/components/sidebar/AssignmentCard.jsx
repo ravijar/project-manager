@@ -1,6 +1,6 @@
 import './AssignmentCard.css';
 
-const AssignmentCard = ({ name, field, dueBy, onClick, selected }) => {
+const AssignmentCard = ({name, field, dueBy, onClick, selected}) => {
     return (
         <div
             className={`assignment-card ${selected ? 'assignment-active' : ''}`}

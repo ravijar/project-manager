@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './ChipSection.css';
 
-const ChipSection = ({ chips = [], onChange }) => {
+const ChipSection = ({chips = [], onChange}) => {
     const [activeValue, setActiveValue] = useState(null);
 
     const handleClick = (chip) => {

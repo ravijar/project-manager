@@ -67,7 +67,7 @@ export const getAssignment = async (status, assignmentId) => {
         const snapshot = await getDoc(assignmentRef);
 
         if (snapshot.exists()) {
-            return { id: snapshot.id, ...snapshot.data() };
+            return {id: snapshot.id, ...snapshot.data()};
         } else {
             throw new Error(`Assignment with ID ${assignmentId} does not exist in status "${status}".`);
         }

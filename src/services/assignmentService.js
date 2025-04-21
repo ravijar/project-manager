@@ -19,7 +19,7 @@ export const syncAssignments = (userId, status, callback) => {
             assignmentIds.map(async (id) => {
                 try {
                     const data = await getAssignment(status, id);
-                    return { id, ...data };
+                    return {id, ...data};
                 } catch (error) {
                     console.warn(`Failed to get assignment ${id}:`, error);
                     return null;

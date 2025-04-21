@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './Tabs.css';
 
-const Tabs = ({ children }) => {
+const Tabs = ({children}) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const tabs = React.Children.toArray(children);
 
