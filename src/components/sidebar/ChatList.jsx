@@ -8,6 +8,7 @@ import FindUser from "./FindUser.jsx";
 import {useState} from "react";
 import "./ChatList.css";
 import ChipSection from "../common/ChipSection.jsx";
+import RoleBased from "../common/RoleBased.js";
 
 const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -27,16 +28,28 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
     return (
         <div className="chat-list-container">
             <div className="chat-list-header">
-                <ChipSection
-                    chips={[
-                        {label: "All", value: null},
-                        {label: "Student", value: "student"},
-                        {label: "Tutor", value: "tutor"},
-                        {label: "Admin", value: "admin"},
-                    ]}
-                    activeValue={selectedRole}
-                    setActiveValue={setSelectedRole}
-                />
+                <RoleBased roles={["admin"]} currentRole={user.role}>
+                    <ChipSection
+                        chips={[
+                            {label: "All", value: null},
+                            {label: "Student", value: "student"},
+                            {label: "Tutor", value: "tutor"},
+                            {label: "Admin", value: "admin"},
+                        ]}
+                        activeValue={selectedRole}
+                        setActiveValue={setSelectedRole}
+                    />
+                </RoleBased>
+
+                <RoleBased roles={["student", "tutor"]} currentRole={user.role}>
+                    <ChipSection
+                        chips={[
+                            {label: "Admin", value: "admin"},
+                        ]}
+                        activeValue={selectedRole}
+                        setActiveValue={setSelectedRole}
+                    />
+                </RoleBased>
 
                 <div className="chat-icons">
                     <div className="icon-button" onClick={openChatPopup} title="New Chat">

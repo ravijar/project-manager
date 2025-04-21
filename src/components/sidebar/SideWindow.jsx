@@ -26,19 +26,6 @@ const SideWindow = (
             <Profile user={user} onSignOut={onSignOut}/>
             <Tabs currentRole={user.role}>
                 <Tab
-                    name="Chats"
-                    component={
-                        <ChatList
-                            chats={chats}
-                            selectedChat={selectedChat}
-                            onSelectChat={onSelectChat}
-                            loadingChats={loadingChats}
-                            user={user}
-                        />
-                    }
-                    roles={["admin"]}
-                />
-                <Tab
                     name="Workspace"
                     component={
                         <AssignmentList
@@ -48,6 +35,18 @@ const SideWindow = (
                             onSelectAssignment={onSelectAssignment}
                             selectedStatus={assignmentStatus}
                             setSelectedStatus={setAssignmentStatus}
+                            user={user}
+                        />
+                    }
+                />
+                <Tab
+                    name="Chats"
+                    component={
+                        <ChatList
+                            chats={chats}
+                            selectedChat={selectedChat}
+                            onSelectChat={onSelectChat}
+                            loadingChats={loadingChats}
                             user={user}
                         />
                     }
