@@ -1,6 +1,13 @@
 import './ChipSection.css';
+import {useEffect} from "react";
 
 const ChipSection = ({chips = [], activeValue, setActiveValue}) => {
+
+    useEffect(() => {
+        if (!activeValue && chips.length > 0) {
+            setActiveValue(chips[0].value);
+        }
+    }, [chips, activeValue, setActiveValue]);
 
     const handleClick = (chip) => {
         setActiveValue(chip.value);

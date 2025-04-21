@@ -19,7 +19,7 @@ const Dashboard = ({user, handleSignOut}) => {
     const [assignments, setAssignments] = useState([]);
     const [loadingAssignments, setLoadingAssignments] = useState(true);
     const [selectedAssignment, setSelectedAssignment] = useState(null);
-    const [assignmentStatus, setAssignmentStatus] = useState("new");
+    const [assignmentStatus, setAssignmentStatus] = useState(null);
     const [assignmentsError, setAssignmentsError] = useState("");
 
     const [unsubscribe, setUnsubscribe] = useState(null);
