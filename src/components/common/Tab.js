@@ -1,3 +1,3 @@
-const Tab = ({name, component}) => null;
+const Tab = ({name, component, roles=[]}) => null;
 
 export default Tab;

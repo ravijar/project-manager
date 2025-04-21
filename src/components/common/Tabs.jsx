@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import './Tabs.css';
 
-const Tabs = ({children}) => {
+const Tabs = ({children, currentRole}) => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const tabs = React.Children.toArray(children);
+
+    const tabs = React.Children.toArray(children).filter((child) => {
+        return !child.props.roles || child.props.roles.includes(currentRole);
+    });
 
     return (
         <div className="tabs-container">
@@ -20,7 +23,7 @@ const Tabs = ({children}) => {
                 ))}
             </div>
             <div className="tabs-content">
-                {tabs[activeIndex].props.component}
+                {tabs[activeIndex]?.props.component}
             </div>
         </div>
     );

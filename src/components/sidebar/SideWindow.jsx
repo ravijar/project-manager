@@ -24,7 +24,7 @@ const SideWindow = (
     return (
         <div className="side-window">
             <Profile user={user} onSignOut={onSignOut}/>
-            <Tabs>
+            <Tabs currentRole={user.role}>
                 <Tab
                     name="Chats"
                     component={
@@ -36,6 +36,7 @@ const SideWindow = (
                             user={user}
                         />
                     }
+                    roles={["admin"]}
                 />
                 <Tab
                     name="Workspace"
