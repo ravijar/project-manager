@@ -5,7 +5,8 @@ import {
     arrayUnion,
     arrayRemove,
     setDoc,
-    getDoc
+    getDoc,
+    onSnapshot
 } from "firebase/firestore";
 
 const COLLECTION = "user_assignments";
@@ -39,4 +40,23 @@ export const moveAssignmentForUser = async (userId, assignmentId, fromStatus, to
         [fromStatus]: arrayRemove(assignmentId),
         [toStatus]: arrayUnion(assignmentId)
     });
+};
+
+export const listenToUserAssignments = (userId, status, callback) => {
+    try {
+        const userRef = doc(db, COLLECTION, userId);
+
+        return onSnapshot(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.data();
+                callback(data[status] || []);
+            } else {
+                console.warn(`No assignment document found for user ${userId}`);
+                callback([]);
+            }
+        });
+    } catch (error) {
+        console.error("Error listening to user assignments:", error);
+        throw error;
+    }
 };

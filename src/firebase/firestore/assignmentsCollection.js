@@ -60,3 +60,19 @@ export const moveAssignment = async (fromStatus, toStatus, assignmentId) => {
     await setDoc(toRef, assignmentData);
     await deleteDoc(fromRef);
 };
+
+export const getAssignment = async (status, assignmentId) => {
+    try {
+        const assignmentRef = getAssignmentRef(status, assignmentId);
+        const snapshot = await getDoc(assignmentRef);
+
+        if (snapshot.exists()) {
+            return { id: snapshot.id, ...snapshot.data() };
+        } else {
+            throw new Error(`Assignment with ID ${assignmentId} does not exist in status "${status}".`);
+        }
+    } catch (error) {
+        console.error("Error fetching assignment:", error);
+        throw error;
+    }
+};
