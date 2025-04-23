@@ -55,7 +55,6 @@ export const queryUserByField = async (role, field, value) => {
 
     querySnapshot.forEach((doc) => {
         foundUsers.push({id: doc.id, ...doc.data()});
-        console.log(doc)
     });
 
     return foundUsers;

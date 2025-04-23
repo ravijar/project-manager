@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import SearchBar from "../common/SearchBar";
-import Chat from "./Chat";
 import "./FindUser.css";
 import LoadingSpinner from "../common/LoadingSpinner";
 import {findNewUsers} from "../../services/userService";
 import {createNewPrivateChat} from "../../services/chatService";
 import ChipSection from "../common/ChipSection";
 import RoleBased from "../common/RoleBased.js";
+import UserDetailsCard from "./UserDetailsCard";
 
 const FindUser = ({currentUser, onChatCreated}) => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -112,13 +112,13 @@ const FindUser = ({currentUser, onChatCreated}) => {
             {searchResults && searchResults.length > 0 && (
                 <div className="search-results">
                     {searchResults.map((user) => (
-                        <Chat
+                        <UserDetailsCard
                             key={user.id}
-                            chatId={user.id}
-                            avatarSrc={user.photoURL}
                             name={user.name}
-                            onChatClick={() => handleResultClick(user)}
-                            height={60}
+                            email={user.email}
+                            role={user.role}
+                            avatarSrc={user.photoURL}
+                            onClick={() => handleResultClick(user)}
                         />
                     ))}
                 </div>
