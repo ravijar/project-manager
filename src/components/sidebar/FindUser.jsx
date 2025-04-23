@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import SearchBar from "../common/SearchBar";
 import "./FindUser.css";
 import LoadingSpinner from "../common/LoadingSpinner";
@@ -13,8 +13,13 @@ const FindUser = ({currentUser, onChatCreated}) => {
     const [searchResults, setSearchResults] = useState(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [selectedRole, setSelectedRole] = useState("student");
-    const [selectedField, setSelectedField] = useState("name");
+    const [selectedRole, setSelectedRole] = useState(null);
+    const [selectedField, setSelectedField] = useState(null);
+
+    useEffect(() => {
+        setSearchResults(null);
+        setSearchTerm("")
+    }, [selectedRole, selectedField])
 
     const handleSearch = async (event) => {
         if (event.key === "Enter" && searchTerm.trim()) {
@@ -62,7 +67,7 @@ const FindUser = ({currentUser, onChatCreated}) => {
         <div className="find-user-container">
             <div className="find-user-header">
                 Find User
-                {loading && <LoadingSpinner size={18} color="#3498db"/>}
+                {loading && <LoadingSpinner size={12} color="#3498db"/>}
             </div>
 
             <div className="chip-section-title">Role</div>
@@ -80,9 +85,7 @@ const FindUser = ({currentUser, onChatCreated}) => {
 
             <RoleBased roles={["student", "tutor"]} currentRole={currentUser.role}>
                 <ChipSection
-                    chips={[
-                        { label: "Admin", value: "admin" },
-                    ]}
+                    chips={[{ label: "Admin", value: "admin" }]}
                     activeValue={selectedRole}
                     setActiveValue={setSelectedRole}
                 />
