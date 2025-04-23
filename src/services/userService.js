@@ -4,9 +4,9 @@ import {generateChatId} from "./chatService.js";
 
 export const USER_ROLES = ["admin", "student", "tutor"];
 
-export const findNewUsers = async (currentUserId, field, fieldValue) => {
+export const findNewUsers = async (currentUserId, role, field, fieldValue) => {
     try {
-        const matchedUsers = await queryUserByField(field, fieldValue);
+        const matchedUsers = await queryUserByField(role, field, fieldValue);
 
         const newUsers = [];
         for (const user of matchedUsers) {

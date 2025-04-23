@@ -47,18 +47,16 @@ export const readUser = async (userId) => {
     throw new Error(`User with ID ${userId} does not exist.`);
 };
 
-export const queryUserByField = async (field, value) => {
+export const queryUserByField = async (role, field, value) => {
     const foundUsers = [];
+    const roleCollectionRef = getUserCollectionRef(role);
+    const userQuery = query(roleCollectionRef, where(field, "==", value));
+    const querySnapshot = await getDocs(userQuery);
 
-    for (const role of roles) {
-        const roleCollectionRef = getUserCollectionRef(role);
-        const userQuery = query(roleCollectionRef, where(field, "==", value));
-        const querySnapshot = await getDocs(userQuery);
-
-        querySnapshot.forEach((doc) => {
-            foundUsers.push({id: doc.id, ...doc.data()});
-        });
-    }
+    querySnapshot.forEach((doc) => {
+        foundUsers.push({id: doc.id, ...doc.data()});
+        console.log(doc)
+    });
 
     return foundUsers;
 };
