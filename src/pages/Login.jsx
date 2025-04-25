@@ -1,46 +1,30 @@
 import "./Login.css";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import {useState} from "react";
+import googleLogo from "../assets/google-logo.png";
 
-const Login = ({onSignIn, loading}) => {
-    const [selectedRole, setSelectedRole] = useState("student");
-
-    const handleSignIn = () => {
-        onSignIn(selectedRole);
-    };
-
+const Login = ({onSignIn, loading, error, selectedRole}) => {
     return (
         <div className="login-page">
-            <h1>Welcome to Chat App</h1>
-            <div className="role-selection">
-                <label>
-                    <input
-                        type="radio"
-                        value="student"
-                        checked={selectedRole === "student"}
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                    />
-                    Student
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="tutor"
-                        checked={selectedRole === "tutor"}
-                        onChange={(e) => setSelectedRole(e.target.value)}
-                    />
-                    Tutor
-                </label>
-            </div>
+            <div className="login-form">
+                <div className="login-content">
+                    <h2 className="login-title">Sign in to your account</h2>
+                    <div className="role-info">
+                        {loading && <LoadingSpinner size={8} color="#666666"/>}
+                        You're signing in as <strong>{selectedRole}</strong>
+                    </div>
 
-            <button
-                className="login-button"
-                onClick={handleSignIn}
-                disabled={loading}
-            >
-                <span>Sign in</span>
-                {loading && <LoadingSpinner size={18} color="white"/>}
-            </button>
+                    <button
+                        className="login-button"
+                        onClick={onSignIn}
+                        disabled={loading}
+                    >
+                        <img src={googleLogo} alt="Google logo" className="google-logo"/>
+                        <span>Continue with Google</span>
+                    </button>
+
+                    {error && <p className="login-error">{error}</p>}
+                </div>
+            </div>
         </div>
     );
 };

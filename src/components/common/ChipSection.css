@@ -1,0 +1,26 @@
+.chip-section {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    gap: 5px;
+}
+
+.chip {
+    padding: 5px 10px;
+    background-color: #e0e0e0;
+    border-radius: 16px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.2s;
+    user-select: none;
+}
+
+.chip:hover {
+    background-color: #d5d5d5;
+}
+
+.chip.active {
+    background-color: #4285f4;
+    color: white;
+}

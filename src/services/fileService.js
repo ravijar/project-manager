@@ -1,5 +1,5 @@
 import {v4 as uuidv4} from "uuid";
-import {uploadFile} from "../supabase/storage/media.js";
+import {deleteAllFilesInFolder, deleteFileFromBucket, uploadFileToBucket} from "../supabase/storage/mediaBucket.js";
 
 export const generateStoredFileName = (originalName) => {
     const uuid = uuidv4();
@@ -17,6 +17,19 @@ export const getOriginalFileName = (storedFileName) => {
     return decodeURIComponent(`${nameWithEncoded}${extension}`);
 };
 
-export const uploadChatFile = async (file, chatId) => {
-    return await uploadFile(file, generateStoredFileName(file.name), chatId);
+export const getFileNameFromUrl = (url) => {
+    const parts = url.split("/");
+    return decodeURIComponent(parts[parts.length - 1]);
+}
+
+export const uploadFile = async (file, id) => {
+    return await uploadFileToBucket(file, generateStoredFileName(file.name), id);
 };
+
+export const deleteFile = async (fileName, id) => {
+    return await deleteFileFromBucket(fileName, id);
+}
+
+export const deleteFolder = async (folderName) => {
+    return await deleteAllFilesInFolder(folderName);
+}

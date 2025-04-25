@@ -1,15 +1,17 @@
-import {queryUserByField, readUser} from "../firebase/firestore/userStore";
-import {chatExistForUser} from "../firebase/firestore/userChatStore";
+import {queryUserByField, readUser} from "../firebase/firestore/usersCollection.js";
+import {chatExistsForUser} from "../firebase/firestore/userChatsCollection.js";
 import {generateChatId} from "./chatService.js";
 
-export const findNewUsers = async (currentUserId, field, fieldValue) => {
+export const USER_ROLES = ["admin", "student", "tutor"];
+
+export const findNewUsers = async (currentUserId, role, field, fieldValue) => {
     try {
-        const matchedUsers = await queryUserByField(field, fieldValue);
+        const matchedUsers = await queryUserByField(role, field, fieldValue);
 
         const newUsers = [];
         for (const user of matchedUsers) {
-            const chatId = generateChatId(currentUserId, user.uid);
-            const chatExists = await chatExistForUser(currentUserId, chatId);
+            const chatId = generateChatId(currentUserId, user.id);
+            const chatExists = await chatExistsForUser(currentUserId, chatId);
             if (!chatExists) {
                 newUsers.push(user);
             }

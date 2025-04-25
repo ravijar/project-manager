@@ -4,8 +4,8 @@ import {
     listenToChatMeta,
     listenToLastMessage,
     updateReadStatus
-} from "../firebase/firestore/chatStore";
-import {addChatToUser, listenToChatIds} from "../firebase/firestore/userChatStore";
+} from "../firebase/firestore/chatsCollection.js";
+import {addChatToUser, listenToChatIds} from "../firebase/firestore/userChatsCollection.js";
 import {getOtherUserFromChatId} from "./userService.js";
 import {syncMessages} from "./messageService.js";
 
@@ -18,10 +18,10 @@ export const sortChatsByLastMessage = (chats) => {
 };
 
 export const createNewPrivateChat = async (currentUser, otherUser) => {
-    const chatId = generateChatId(currentUser.uid, otherUser.id);
+    const chatId = generateChatId(currentUser.id, otherUser.id);
 
-    await createChat(chatId, [currentUser.uid, otherUser.id]);
-    await addChatToUser(currentUser.uid, chatId);
+    await createChat(chatId, [currentUser.id, otherUser.id]);
+    await addChatToUser(currentUser.id, chatId);
     await addChatToUser(otherUser.id, chatId);
 
     return chatId;

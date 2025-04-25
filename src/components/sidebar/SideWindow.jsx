@@ -1,64 +1,57 @@
-import {useState} from 'react';
 import './SideWindow.css';
-import SearchBar from '../common/SearchBar';
-import Chat from './Chat';
 import Profile from './Profile';
-import Popup from '../common/Popup';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAdd} from "@fortawesome/free-solid-svg-icons";
-import FindUser from './FindUser';
-import LoadingSpinner from '../common/LoadingSpinner';
+import ChatList from "./ChatList.jsx";
+import Tabs from "../common/Tabs.jsx";
+import Tab from "../common/Tab.js";
+import AssignmentList from "./AssignmentList.jsx";
 
-const SideWindow = ({chats, onSelectChat, user, onSignOut, loadingChats, selectedChat}) => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [showPopup, setShowPopup] = useState(false);
-
-    const filteredChats = chats.filter((chat) =>
-        chat.user.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const handleNewChatClick = () => {
-        setShowPopup(true);
-    };
-
-    const closePopup = () => {
-        setShowPopup(false);
-    };
-
+const SideWindow = (
+    {
+        chats,
+        loadingChats,
+        selectedChat,
+        onSelectChat,
+        assignments,
+        loadingAssignments,
+        selectedAssignment,
+        onSelectAssignment,
+        assignmentStatus,
+        setAssignmentStatus,
+        user,
+        onSignOut,
+    }
+) => {
     return (
-        <div className="chat-list">
+        <div className="side-window">
             <Profile user={user} onSignOut={onSignOut}/>
-            <div className="chat-list-header">
-                <span className="chats-label">
-                  Chats
-                    {loadingChats && <LoadingSpinner size={18} color="#4caf50"/>}
-                </span>
-                <div className="new-chat-icon" onClick={handleNewChatClick}>
-                    <FontAwesomeIcon icon={faAdd}/>
-                </div>
-            </div>
-            <div className="chat-list-search">
-                <SearchBar value={searchTerm} onChange={setSearchTerm}/>
-            </div>
-            <div className="chat-list-scroll">
-                {filteredChats.map((chat) => (
-                    <Chat
-                        key={chat.chatId}
-                        chatId={chat.chatId}
-                        height={60}
-                        avatarSrc={chat.user.photoURL}
-                        name={chat.user.name}
-                        onChatClick={onSelectChat}
-                        selected={selectedChat && selectedChat.chatId === chat.chatId}
-                        hasUnread={chat?.lastRead < chat?.lastTimestamp}
-                    />
-                ))}
-            </div>
-            {showPopup && (
-                <Popup onClose={closePopup} width="300px">
-                    <FindUser currentUser={user} onChatCreated={closePopup}/>
-                </Popup>
-            )}
+            <Tabs currentRole={user.role}>
+                <Tab
+                    name="Workspace"
+                    component={
+                        <AssignmentList
+                            assignments={assignments}
+                            loading={loadingAssignments}
+                            selectedAssignmentId={selectedAssignment}
+                            onSelectAssignment={onSelectAssignment}
+                            selectedStatus={assignmentStatus}
+                            setSelectedStatus={setAssignmentStatus}
+                            user={user}
+                        />
+                    }
+                />
+                <Tab
+                    name="Chats"
+                    component={
+                        <ChatList
+                            chats={chats}
+                            selectedChat={selectedChat}
+                            onSelectChat={onSelectChat}
+                            loadingChats={loadingChats}
+                            user={user}
+                        />
+                    }
+                />
+            </Tabs>
         </div>
     );
 };
