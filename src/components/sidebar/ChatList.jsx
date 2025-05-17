@@ -4,11 +4,11 @@ import {faAdd} from "@fortawesome/free-solid-svg-icons";
 import SearchBar from "../common/SearchBar.jsx";
 import Chat from "./Chat.jsx";
 import Popup from "../common/Popup.jsx";
-import FindUser from "./FindUser.jsx";
 import {useState} from "react";
 import "./ChatList.css";
 import ChipSection from "../common/ChipSection.jsx";
 import RoleBased from "../common/RoleBased.js";
+import NewChat from "./NewChat.jsx";
 
 const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -79,8 +79,8 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
             </div>
 
             {showChatPopup && (
-                <Popup onClose={closeChatPopup} width="300px">
-                    <FindUser currentUser={user} onChatCreated={closeChatPopup}/>
+                <Popup onClose={closeChatPopup} width="400px">
+                    <NewChat currentUser={user} onChatCreated={closeChatPopup}/>
                 </Popup>
             )}
         </div>

@@ -1,0 +1,52 @@
+.new-chat-container {
+    padding: 20px 10px;
+}
+
+.new-chat-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.selected-users-header {
+    margin: 15px 0 12px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.selected-users-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.selected-users-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.selected-users-actions button {
+    padding: 8px 0;
+    width: 100px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4285f4;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.selected-users-actions .cancel-btn {
+    background-color: #999;
+}
+
+.selected-users-actions button:hover {
+    filter: brightness(1.1);
+}
