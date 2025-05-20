@@ -7,7 +7,7 @@ import ChipSection from "../common/ChipSection";
 import RoleBased from "../common/RoleBased.js";
 import UserDetailsCardSection from "./UserDetailsCardSection.jsx";
 
-const FindUser = ({ currentUser, onUserSelected, isGroupChat = false }) => {
+const FindUser = ({ currentUser, onUserSelected, isGroupChat }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(null);
     const [error, setError] = useState("");
@@ -18,7 +18,13 @@ const FindUser = ({ currentUser, onUserSelected, isGroupChat = false }) => {
     useEffect(() => {
         setSearchResults(null);
         setSearchTerm("");
-    }, [selectedRole, selectedField]);
+    }, [selectedRole, selectedField, isGroupChat]);
+
+    useEffect(() => {
+        if (error) {
+            setError("");
+        }
+    }, [searchTerm]);
 
     const handleSearch = async (event) => {
         if (event.key === "Enter" && searchTerm.trim()) {
@@ -28,7 +34,7 @@ const FindUser = ({ currentUser, onUserSelected, isGroupChat = false }) => {
                 setLoading(true);
 
                 const users = isGroupChat
-                    ? await findUsers(selectedRole, selectedField, searchTerm.trim())
+                    ? await findUsers(currentUser.id, selectedRole, selectedField, searchTerm.trim())
                     : await findNewUsers(currentUser.id, selectedRole, selectedField, searchTerm.trim());
 
                 if (users.length > 0) {
