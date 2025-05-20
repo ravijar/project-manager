@@ -47,9 +47,11 @@ const Dashboard = ({user, handleSignOut}) => {
         return rawMessages.map((msg) => ({
             text: msg.message,
             time: new Date(msg.timestamp.toDate()).toLocaleTimeString([], timeFormatOptions),
-            isSender: msg.sender === userId,
+            isSender: msg.senderId === userId,
             date: new Date(msg.timestamp.toDate()).toLocaleDateString(),
-            isFile: msg.isFile
+            isFile: msg.isFile,
+            senderName: msg.senderName,
+            senderRole: msg.senderRole,
         }));
     };
 
@@ -112,7 +114,7 @@ const Dashboard = ({user, handleSignOut}) => {
         setMessages((prevMessages) => [...prevMessages, createLocalMessage(newMessage, isFile)]);
 
         try {
-            await sendMessage(selectedChat.chatId, user.id, newMessage, isFile);
+            await sendMessage(selectedChat.chatId, user, newMessage, isFile);
         } catch (error) {
             console.error("Failed to send message:", error);
             setMessages((prevMessages) => prevMessages.filter((msg) => msg.text !== newMessage));

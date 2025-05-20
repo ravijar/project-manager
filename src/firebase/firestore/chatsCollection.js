@@ -54,10 +54,12 @@ export const getChat = async (chatId) => {
     }
 };
 
-export const addMessageToChat = async (chatId, sender, message, isFile) => {
+export const addMessageToChat = async (chatId, senderId, senderName, senderRole, message, isFile) => {
     try {
         await addDoc(getMessagesCollectionRef(chatId), {
-            sender,
+            senderId,
+            senderName,
+            senderRole,
             message,
             isFile,
             timestamp: getCurrentTimestamp(),

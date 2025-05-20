@@ -33,6 +33,7 @@ const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages}) => 
                             time={message.time}
                             isSender={message.isSender}
                             isFile={message.isFile}
+                            author={selectedChat.isGroup ? message.senderName : null}
                         />
                     </div>
                 ))}
