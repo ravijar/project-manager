@@ -12,7 +12,7 @@ import {
     orderBy,
     Timestamp,
     onSnapshot,
-    limit
+    limit, arrayUnion
 } from "firebase/firestore";
 
 const COLLECTION = "chats";
@@ -22,14 +22,17 @@ const getCurrentTimestamp = () => Timestamp.fromDate(new Date());
 const getChatDocRef = (chatId) => doc(db, COLLECTION, chatId);
 const getMessagesCollectionRef = (chatId) => collection(db, COLLECTION, chatId, SUB_COLLECTION);
 
-export const createChat = async (chatId, participants) => {
+export const createChat = async (chatId, participants, groupName = null, createdBy = null) => {
     const readStatus = Object.fromEntries(participants.map(uid => [uid, getCurrentTimestamp()]));
 
     try {
         await setDoc(getChatDocRef(chatId), {
             participants,
             createdAt: getCurrentTimestamp(),
-            readStatus
+            readStatus,
+            isGroup: !!groupName,
+            groupName: groupName || null,
+            createdBy: createdBy || null
         });
     } catch (error) {
         console.error("Error creating chat:", error);
@@ -119,6 +122,38 @@ export const listenToChatMeta = (chatId, callback) => {
         });
     } catch (error) {
         console.error("Error listening to chat metadata:", error);
+        throw error;
+    }
+};
+
+export const addParticipantToChat = async (chatId, userId) => {
+    try {
+        await updateDoc(getChatDocRef(chatId), {
+            participants: arrayUnion(userId),
+            [`readStatus.${userId}`]: new Date()
+        });
+    } catch (error) {
+        console.error("Error adding participant to chat:", error);
+        throw error;
+    }
+};
+
+export const removeParticipantFromChat = async (chatId, userId) => {
+    try {
+        const chatRef = getChatDocRef(chatId);
+        const chatSnap = await getDoc(chatRef);
+        if (!chatSnap.exists()) return;
+
+        const data = chatSnap.data();
+        const updatedParticipants = data.participants.filter(uid => uid !== userId);
+        const { [userId]: _, ...updatedReadStatus } = data.readStatus;
+
+        await updateDoc(chatRef, {
+            participants: updatedParticipants,
+            readStatus: updatedReadStatus
+        });
+    } catch (error) {
+        console.error("Error removing participant from chat:", error);
         throw error;
     }
 };

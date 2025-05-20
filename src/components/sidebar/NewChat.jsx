@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import FindUser from "./FindUser";
-import { createNewPrivateChat } from "../../services/chatService";
+import {createNewGroupChat, createNewPrivateChat} from "../../services/chatService";
 import "./NewChat.css";
 import UserDetailsCardSection from "./UserDetailsCardSection.jsx";
 import LoadingSpinner from "../common/LoadingSpinner.jsx";
+import RoleBased from "../common/RoleBased.js";
 
 const NewChat = ({ currentUser, onChatCreated }) => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [isGroupChat, setIsGroupChat] = useState(false);
+    const [groupName, setGroupName] = useState("");
 
     const handleUserSelected = (user) => {
         setSelectedUsers((prev) =>
@@ -22,16 +25,25 @@ const NewChat = ({ currentUser, onChatCreated }) => {
     const handleStartChats = async () => {
         setLoading(true);
         try {
-            for (const user of selectedUsers) {
-                const chatId = await createNewPrivateChat(currentUser, user);
-                onChatCreated(chatId);
+            if (isGroupChat && groupName.trim()) {
+                await createNewGroupChat(groupName, [currentUser, ...selectedUsers], currentUser);
+            } else {
+                for (const user of selectedUsers) {
+                    await createNewPrivateChat(currentUser, user);
+                }
             }
             setSelectedUsers([]);
+            onChatCreated();
         } catch (error) {
             console.error("Error starting chat(s):", error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleGroupToggle = () => {
+        setIsGroupChat(!isGroupChat);
+        if (isGroupChat) setGroupName("");
     };
 
     return (
@@ -40,6 +52,29 @@ const NewChat = ({ currentUser, onChatCreated }) => {
                 {loading && <LoadingSpinner size={10} color="#555"/>}
                 <span>Create New Chat</span>
             </div>
+
+            <RoleBased roles={["admin"]} currentRole={currentUser.role}>
+                <div className="new-chat-group-toggle">
+                    <label className="checkbox-label">
+                        <span>Group Chat:</span>
+                        <input
+                            type="checkbox"
+                            checked={isGroupChat}
+                            onChange={handleGroupToggle}
+                        />
+                    </label>
+
+                    {isGroupChat && (
+                        <input
+                            type="text"
+                            className="group-name-input"
+                            value={groupName}
+                            onChange={(e) => setGroupName(e.target.value)}
+                            placeholder="Enter group name"
+                        />
+                    )}
+                </div>
+            </RoleBased>
 
             <FindUser currentUser={currentUser} onUserSelected={handleUserSelected} />
 

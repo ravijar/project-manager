@@ -4,7 +4,7 @@ import {
     setDoc,
     getDoc,
     arrayUnion,
-    onSnapshot
+    onSnapshot, updateDoc, arrayRemove
 } from "firebase/firestore";
 
 const COLLECTION = "user_chats";
@@ -21,6 +21,18 @@ export const addChatToUser = async (userId, chatId) => {
         console.log(`Chat ID ${chatId} added to user ${userId} successfully.`);
     } catch (error) {
         console.error("Error adding chat to user:", error);
+        throw error;
+    }
+};
+
+export const removeChatFromUser = async (userId, chatId) => {
+    try {
+        await updateDoc(getUserChatDocRef(userId), {
+            chatIds: arrayRemove(chatId)
+        });
+        console.log(`Chat ID ${chatId} removed from user ${userId} successfully.`);
+    } catch (error) {
+        console.error("Error removing chat from user:", error);
         throw error;
     }
 };
