@@ -76,7 +76,11 @@ const NewChat = ({ currentUser, onChatCreated }) => {
                 </div>
             </RoleBased>
 
-            <FindUser currentUser={currentUser} onUserSelected={handleUserSelected} />
+            <FindUser
+                currentUser={currentUser}
+                onUserSelected={handleUserSelected}
+                isGroupChat={isGroupChat}
+            />
 
             {selectedUsers.length > 0 && (
                 <>

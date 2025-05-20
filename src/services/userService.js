@@ -4,6 +4,15 @@ import {generateChatId} from "./chatService.js";
 
 export const USER_ROLES = ["admin", "student", "tutor"];
 
+export const findUsers = async (role, field, fieldValue) => {
+    try {
+        return await queryUserByField(role, field, fieldValue);
+    } catch (error) {
+        console.error("Error finding users:", error);
+        throw error;
+    }
+};
+
 export const findNewUsers = async (currentUserId, role, field, fieldValue) => {
     try {
         const matchedUsers = await queryUserByField(role, field, fieldValue);

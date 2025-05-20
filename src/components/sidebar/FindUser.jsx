@@ -2,12 +2,12 @@ import React, {useState, useEffect} from "react";
 import SearchBar from "../common/SearchBar";
 import "./FindUser.css";
 import LoadingSpinner from "../common/LoadingSpinner";
-import {findNewUsers} from "../../services/userService";
+import {findNewUsers, findUsers} from "../../services/userService";
 import ChipSection from "../common/ChipSection";
 import RoleBased from "../common/RoleBased.js";
 import UserDetailsCardSection from "./UserDetailsCardSection.jsx";
 
-const FindUser = ({ currentUser, onUserSelected }) => {
+const FindUser = ({ currentUser, onUserSelected, isGroupChat = false }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(null);
     const [error, setError] = useState("");
@@ -27,12 +27,9 @@ const FindUser = ({ currentUser, onUserSelected }) => {
                 setSearchResults(null);
                 setLoading(true);
 
-                const users = await findNewUsers(
-                    currentUser.id,
-                    selectedRole,
-                    selectedField,
-                    searchTerm.trim()
-                );
+                const users = isGroupChat
+                    ? await findUsers(selectedRole, selectedField, searchTerm.trim())
+                    : await findNewUsers(currentUser.id, selectedRole, selectedField, searchTerm.trim());
 
                 if (users.length > 0) {
                     setSearchResults(users);
@@ -51,6 +48,16 @@ const FindUser = ({ currentUser, onUserSelected }) => {
     const handleResultClick = (user) => {
         if (user && onUserSelected) {
             onUserSelected(user);
+
+            setSearchResults((prev) => {
+                const updated = prev?.filter((u) => u.id !== user.id) || [];
+
+                if (updated.length === 0) {
+                    setSearchTerm("");
+                }
+
+                return updated;
+            });
         }
     };
 
