@@ -12,7 +12,7 @@ import {addNewAssignment, generateAssignmentId} from "../../services/assignmentS
 
 const FIELDS = ["Mathematics", "Physics", "Chemistry", "Biology", "Computer Science", "Economics", "History", "Geography"];
 
-const AddAssignment = ({userId, onClose}) => {
+const AddAssignment = ({user, onClose}) => {
     const [formData, setFormData] = useState({
         name: "",
         field: "",
@@ -103,7 +103,7 @@ const AddAssignment = ({userId, onClose}) => {
 
         setLoading(true);
         try {
-            await addNewAssignment(assignmentIdRef.current, formData, userId)
+            await addNewAssignment(assignmentIdRef.current, formData, user)
                 .then(() => submittedRef.current = true);
             onClose();
         } catch (err) {

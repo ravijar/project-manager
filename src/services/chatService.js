@@ -36,10 +36,19 @@ export const createNewGroupChat = async (groupName, participants, createdBy) => 
     const participantIds = participants.map(user => user.id);
 
     await createChat(chatId, participantIds, groupName, createdBy.id);
-    await Promise.all(participantIds.map((id) => addChatToUser(id, chatId)));
 
     return chatId;
+}
+
+export const createNewUserGroupChat = async (groupName, participants, createdBy) => {
+    const chatId = createNewGroupChat(groupName, participants, createdBy);
+    await Promise.all(participants.map((user) => addChatToUser(user.id, chatId)));
+    return chatId;
 };
+
+export const createNewAssignmentChat = async (assignmentId, participants, createdBy) => {
+    return await createNewGroupChat(assignmentId, participants, createdBy);
+}
 
 export const addParticipant = async (userId, chatId) => {
     await addParticipantToChat(chatId, userId);

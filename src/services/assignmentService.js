@@ -1,14 +1,16 @@
 import {addAssignment, getAssignment} from "../firebase/firestore/assignmentsCollection.js";
 import {addAssignmentToUser, listenToUserAssignments} from "../firebase/firestore/userAssignmentsCollection.js";
 import {v4 as uuidv4} from "uuid";
+import {createNewAssignmentChat} from "./chatService.js";
 
 export const generateAssignmentId = () => {
     return "ASSIGNMENT--" + uuidv4()
 };
 
-export const addNewAssignment = async (assignmentId, assignmentData, userId) => {
-    await addAssignment(assignmentId, {...assignmentData, student: userId});
-    await addAssignmentToUser(userId, assignmentId, "new");
+export const addNewAssignment = async (assignmentId, assignmentData, user) => {
+    const chatId = await createNewAssignmentChat(assignmentId, [user], user);
+    await addAssignment(assignmentId, {...assignmentData, student: user.id, chatId: chatId});
+    await addAssignmentToUser(user.id, assignmentId, "new");
 };
 
 export const syncAssignments = (userId, status, callback) => {

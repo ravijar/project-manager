@@ -74,7 +74,7 @@ const AssignmentList = (
 
             {showAssignmentPopup && (
                 <Popup onClose={closeAssignmentPopup} width="400px">
-                    <AddAssignment userId={user.id} onClose={closeAssignmentPopup}/>
+                    <AddAssignment user={user} onClose={closeAssignmentPopup}/>
                 </Popup>
             )}
         </div>

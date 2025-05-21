@@ -3,7 +3,6 @@ import ChatWindow from '../components/container/ChatWindow';
 import './Dashboard.css';
 import {useState, useEffect} from 'react';
 import {sendMessage} from '../services/messageService';
-import {syncMessages} from '../services/messageService';
 import {syncChats, selectChat} from '../services/chatService';
 import {syncAssignments} from "../services/assignmentService.js";
 

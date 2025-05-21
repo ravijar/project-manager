@@ -21,6 +21,7 @@ export const addAssignment = async (assignmentId, initialData) => {
         docs = [],
         dueBy,
         student,
+        chatId,
     } = initialData;
 
     const assignmentData = {
@@ -30,6 +31,7 @@ export const addAssignment = async (assignmentId, initialData) => {
         docs,
         dueBy,
         student,
+        chatId,
         uploadedOn: Timestamp.fromDate(new Date()),
         tutorStartedOn: null,
         tutorFinishedOn: null,
