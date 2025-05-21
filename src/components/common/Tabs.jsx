@@ -1,12 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Tabs.css';
 
-const Tabs = ({children, currentRole}) => {
+const Tabs = ({children, currentRole, onTabChange}) => {
     const [activeIndex, setActiveIndex] = useState(0);
 
     const tabs = React.Children.toArray(children).filter((child) => {
         return !child.props.roles || child.props.roles.includes(currentRole);
     });
+
+    useEffect(() => {
+        onTabChange();
+    }, [activeIndex]);
 
     return (
         <div className="tabs-container">

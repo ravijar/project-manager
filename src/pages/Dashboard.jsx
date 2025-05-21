@@ -116,6 +116,7 @@ const Dashboard = ({user, handleSignOut}) => {
                 assignmentChats={chats.filter(c => c.isAssignment)}
                 user={user}
                 onSignOut={handleSignOut}
+                onTabChange={() => setSelectedChat(null)}
             />
             {!loadingChats && !chatsError && selectedChat && (
                 <ChatWindow

@@ -14,12 +14,13 @@ const SideWindow = (
         assignmentChats,
         user,
         onSignOut,
+        onTabChange,
     }
 ) => {
     return (
         <div className="side-window">
             <Profile user={user} onSignOut={onSignOut}/>
-            <Tabs currentRole={user.role}>
+            <Tabs currentRole={user.role} onTabChange={onTabChange}>
                 <Tab
                     name="Workspace"
                     component={
