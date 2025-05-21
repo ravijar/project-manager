@@ -10,6 +10,7 @@ import {addChatToUser, listenToChatIds, removeChatFromUser} from "../firebase/fi
 import {getOtherUserFromChatId} from "./userService.js";
 import {syncMessages} from "./messageService.js";
 import {v4 as uuidv4} from "uuid";
+import {getAssignment} from "../firebase/firestore/assignmentsCollection.js";
 
 export const generateChatId = (userId1, userId2) => {
     return [userId1, userId2].sort().join("_");
@@ -31,24 +32,15 @@ export const createNewPrivateChat = async (currentUser, otherUser) => {
     return chatId;
 };
 
-export const createNewGroupChat = async (groupName, participants, createdBy) => {
+export const createNewGroupChat = async (groupName, participants, createdBy, isAssignment = false, assignmentId = null) => {
     const chatId = generateGroupChatId();
     const participantIds = participants.map(user => user.id);
 
-    await createChat(chatId, participantIds, groupName, createdBy.id);
-
-    return chatId;
-}
-
-export const createNewUserGroupChat = async (groupName, participants, createdBy) => {
-    const chatId = createNewGroupChat(groupName, participants, createdBy);
+    await createChat(chatId, participantIds, groupName, createdBy.id, isAssignment, assignmentId);
     await Promise.all(participants.map((user) => addChatToUser(user.id, chatId)));
+
     return chatId;
 };
-
-export const createNewAssignmentChat = async (assignmentId, participants, createdBy) => {
-    return await createNewGroupChat(assignmentId, participants, createdBy);
-}
 
 export const addParticipant = async (userId, chatId) => {
     await addParticipantToChat(chatId, userId);
@@ -68,6 +60,9 @@ export const syncChats = (userId, callback) => {
             try {
                 const chatMeta = await getChat(chatId);
                 const isGroup = chatMeta?.isGroup === true;
+                const isAssignment = chatMeta?.isAssignment === true;
+                const assignmentId = chatMeta?.assignmentId;
+                const assignment = isAssignment ? await getAssignment(assignmentId) : null;
 
                 const lastRead = chatMeta?.readStatus?.[userId]?.toMillis?.() || 0;
 
@@ -77,6 +72,8 @@ export const syncChats = (userId, callback) => {
                     lastTimestamp: null,
                     lastRead,
                     isGroup,
+                    isAssignment,
+                    assignment,
                 };
 
                 if (isGroup) {

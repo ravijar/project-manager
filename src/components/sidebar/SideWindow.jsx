@@ -11,12 +11,7 @@ const SideWindow = (
         loadingChats,
         selectedChat,
         onSelectChat,
-        assignments,
-        loadingAssignments,
-        selectedAssignment,
-        onSelectAssignment,
-        assignmentStatus,
-        setAssignmentStatus,
+        assignmentChats,
         user,
         onSignOut,
     }
@@ -29,12 +24,10 @@ const SideWindow = (
                     name="Workspace"
                     component={
                         <AssignmentList
-                            assignments={assignments}
-                            loading={loadingAssignments}
-                            selectedAssignmentId={selectedAssignment}
-                            onSelectAssignment={onSelectAssignment}
-                            selectedStatus={assignmentStatus}
-                            setSelectedStatus={setAssignmentStatus}
+                            assignmentChats={assignmentChats}
+                            loading={loadingChats}
+                            selectedAssignmentChat={selectedChat}
+                            onSelectAssignmentChat={onSelectChat}
                             user={user}
                         />
                     }

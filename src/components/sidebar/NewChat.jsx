@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import FindUser from "./FindUser";
-import {createNewUserGroupChat, createNewPrivateChat} from "../../services/chatService";
+import {createNewGroupChat, createNewPrivateChat} from "../../services/chatService";
 import "./NewChat.css";
 import UserDetailsCardSection from "./UserDetailsCardSection.jsx";
 import LoadingSpinner from "../common/LoadingSpinner.jsx";
@@ -26,7 +26,7 @@ const NewChat = ({ currentUser, onChatCreated }) => {
         setLoading(true);
         try {
             if (isGroupChat && groupName.trim()) {
-                await createNewUserGroupChat(groupName, [currentUser, ...selectedUsers], currentUser);
+                await createNewGroupChat(groupName, [currentUser, ...selectedUsers], currentUser);
             } else {
                 for (const user of selectedUsers) {
                     await createNewPrivateChat(currentUser, user);

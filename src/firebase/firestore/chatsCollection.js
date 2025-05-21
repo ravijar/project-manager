@@ -3,9 +3,7 @@ import {
     doc,
     setDoc,
     updateDoc,
-    deleteDoc,
     collection,
-    getDocs,
     getDoc,
     addDoc,
     query,
@@ -22,7 +20,7 @@ const getCurrentTimestamp = () => Timestamp.fromDate(new Date());
 const getChatDocRef = (chatId) => doc(db, COLLECTION, chatId);
 const getMessagesCollectionRef = (chatId) => collection(db, COLLECTION, chatId, SUB_COLLECTION);
 
-export const createChat = async (chatId, participants, groupName = null, createdBy = null) => {
+export const createChat = async (chatId, participants, groupName = null, createdBy = null, isAssignment = false, assignmentId = null) => {
     const readStatus = Object.fromEntries(participants.map(uid => [uid, getCurrentTimestamp()]));
 
     try {
@@ -32,7 +30,9 @@ export const createChat = async (chatId, participants, groupName = null, created
             readStatus,
             isGroup: !!groupName,
             groupName: groupName || null,
-            createdBy: createdBy || null
+            createdBy: createdBy || null,
+            isAssignment: isAssignment || false,
+            assignmentId: assignmentId || null,
         });
     } catch (error) {
         console.error("Error creating chat:", error);
