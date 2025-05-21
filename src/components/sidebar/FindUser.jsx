@@ -7,7 +7,7 @@ import ChipSection from "../common/ChipSection";
 import RoleBased from "../common/RoleBased.js";
 import UserDetailsCardSection from "./UserDetailsCardSection.jsx";
 
-const FindUser = ({ currentUser, onUserSelected, isGroupChat }) => {
+const FindUser = ({currentUser, onUserSelected, isGroupChat}) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(null);
     const [error, setError] = useState("");
@@ -80,9 +80,9 @@ const FindUser = ({ currentUser, onUserSelected, isGroupChat }) => {
                         <RoleBased roles={["admin"]} currentRole={currentUser.role}>
                             <ChipSection
                                 chips={[
-                                    { label: "Student", value: "student" },
-                                    { label: "Tutor", value: "tutor" },
-                                    { label: "Admin", value: "admin" },
+                                    {label: "Student", value: "student"},
+                                    {label: "Tutor", value: "tutor"},
+                                    {label: "Admin", value: "admin"},
                                 ]}
                                 activeValue={selectedRole}
                                 setActiveValue={setSelectedRole}
@@ -91,7 +91,7 @@ const FindUser = ({ currentUser, onUserSelected, isGroupChat }) => {
 
                         <RoleBased roles={["student", "tutor"]} currentRole={currentUser.role}>
                             <ChipSection
-                                chips={[{ label: "Admin", value: "admin" }]}
+                                chips={[{label: "Admin", value: "admin"}]}
                                 activeValue={selectedRole}
                                 setActiveValue={setSelectedRole}
                             />
@@ -104,8 +104,8 @@ const FindUser = ({ currentUser, onUserSelected, isGroupChat }) => {
                     <div className="chip-section-content">
                         <ChipSection
                             chips={[
-                                { label: "Name", value: "name" },
-                                { label: "Email", value: "email" },
+                                {label: "Name", value: "name"},
+                                {label: "Email", value: "email"},
                             ]}
                             activeValue={selectedField}
                             setActiveValue={setSelectedField}

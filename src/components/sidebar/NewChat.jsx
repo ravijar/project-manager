@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import FindUser from "./FindUser";
 import {createNewGroupChat, createNewPrivateChat} from "../../services/chatService";
 import "./NewChat.css";
@@ -6,7 +6,7 @@ import UserDetailsCardSection from "./UserDetailsCardSection.jsx";
 import LoadingSpinner from "../common/LoadingSpinner.jsx";
 import RoleBased from "../common/RoleBased.js";
 
-const NewChat = ({ currentUser, onChatCreated }) => {
+const NewChat = ({currentUser, onChatCreated}) => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isGroupChat, setIsGroupChat] = useState(false);

@@ -148,7 +148,7 @@ export const removeParticipantFromChat = async (chatId, userId) => {
 
         const data = chatSnap.data();
         const updatedParticipants = data.participants.filter(uid => uid !== userId);
-        const { [userId]: _, ...updatedReadStatus } = data.readStatus;
+        const {[userId]: _, ...updatedReadStatus} = data.readStatus;
 
         await updateDoc(chatRef, {
             participants: updatedParticipants,

@@ -1,7 +1,7 @@
 import './Message.css';
 import FileLink from "./FileLink.jsx";
 
-const Message = ({ text, time, isSender, isFile, author }) => {
+const Message = ({text, time, isSender, isFile, author}) => {
     return (
         <div className={`message-container ${isSender ? 'sender' : 'receiver'}`}>
             {author && !isSender && (

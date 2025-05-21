@@ -1,7 +1,7 @@
 import UserDetailsCard from "./UserDetailsCard";
 import "./UserDetailsCardSection.css";
 
-const UserDetailsCardSection = ({ users, onUserClick }) => {
+const UserDetailsCardSection = ({users, onUserClick}) => {
     if (!users || users.length === 0) return null;
 
     return (
