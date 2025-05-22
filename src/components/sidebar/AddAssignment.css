@@ -184,7 +184,7 @@ textarea {
     justify-content: center;
     border: none;
     color: white;
-    background-color: #ca2723;
+    background-color: var(--error-color);
     border-radius: var(--border-radius);
     font-size: 8px;
     font-weight: bold;
@@ -258,9 +258,9 @@ textarea {
 }
 
 .assignment-error {
-    color: #d32f2f;
+    color: var(--error-text-color);
     font-size: 12px;
-    background-color: #ffe0e0;
+    background-color: var(--error-background-color);
     padding: 8px;
     margin: 0;
     border-radius: var(--border-radius);

@@ -11,6 +11,10 @@
     --primary-color: #4285f4;
     --text-color: #333;
     --secondary-text-color: #888;
+    --error-color: #f44336;
+    --error-background-color: #ecc3c0;
+    --error-text-color: #912d26;
+    --success-color: #4caf50;
 
     /* Border radius */
     --border-radius: 5px;

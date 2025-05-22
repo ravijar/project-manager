@@ -34,7 +34,7 @@
 }
 
 .popup-close:hover {
-    color: #f44336;
+    color: var(--error-color);
 }
 
 .popup-content {

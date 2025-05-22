@@ -33,6 +33,6 @@
 }
 
 .signout-icon:hover {
-    color: #ff4d4d;
+    color: var(--error-color);
 }
   

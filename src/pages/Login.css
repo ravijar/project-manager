@@ -71,8 +71,8 @@
     width: 100%;
     box-sizing: border-box;
     margin-top: 10px;
-    background-color: #ecc3c0;
-    color: #912d26;
+    background-color: var(--error-background-color);
+    color: var(--error-text-color);
     font-size: 12px;
     padding: 8px 12px;
     border-radius: var(--border-radius);

@@ -56,21 +56,17 @@
 
 .upload-btn {
     padding: 6px 12px;
-    background-color: #4caf50;
+    background-color: var(--success-color);
     color: white;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-.upload-btn:hover {
-    background-color: #45a049;
 }
 
 .remove-btn {
     padding: 6px 12px;
-    background-color: #e53935;
+    background-color: var(--error-color);
     color: white;
     border: none;
     border-radius: var(--border-radius);
@@ -78,18 +74,19 @@
     transition: background-color 0.3s ease;
 }
 
-.remove-btn:hover {
-    background-color: #d32f2f;
+.remove-btn:hover,
+.upload-btn:hover {
+    filter: brightness(1.1);
 }
 
 .upload-success {
-    color: #4caf50;
+    color: var(--success-color);
     margin-top: 8px;
     font-size: 13px;
 }
 
 .upload-error {
-    color: #e53935;
+    color: var(--error-text-color);
     margin-top: 8px;
     font-size: 13px;
 }

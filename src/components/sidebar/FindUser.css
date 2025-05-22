@@ -4,7 +4,8 @@
 }
 
 .error-message {
-    background-color: #ecc3c0;
+    background-color: var(--error-background-color);
+    color: var(--error-text-color);
     font-size: 12px;
     font-weight: bold;
     padding: 10px;

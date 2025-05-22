@@ -43,6 +43,6 @@
 .message-author {
     font-size: 10px;
     font-weight: 600;
-    color: #3b5998;
+    color: var(--primary-color);
     margin-top: 5px;
 }
