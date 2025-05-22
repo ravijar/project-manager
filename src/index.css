@@ -9,14 +9,23 @@
 
     /* Colors */
     --primary-color: #4285f4;
-    --secondary-color: #bbb;
+    --primary-faded-color: #e6f0fc;
+    --secondary-color: #aaa;
+    --background-color: #fff;
+    --background-secondary-color: #f2f2f2;
     --text-color: #333;
     --text-secondary-color: #888;
+    --text-invert-color: #fff;
     --error-color: #f44336;
     --error-background-color: #ecc3c0;
     --error-text-color: #912d26;
     --success-color: #4caf50;
     --border-color: #ddd;
+    --overlay-background-color: rgba(0, 0, 0, 0.5);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --scrollbar-thumb-color: #ccc;
+    --scrollbar-track-color: #f1f1f1;
+    --disabled-color: #ccc;
 
     /* Border radius */
     --border-radius: 5px;

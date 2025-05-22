@@ -5,8 +5,8 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     padding: 5px 10px;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+    box-shadow: 0 1px 3px var(--shadow-color);
     box-sizing: border-box;
 }
 
@@ -29,10 +29,10 @@
 }
 
 .search-bar:hover {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
 
 .search-bar:focus-within {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
   

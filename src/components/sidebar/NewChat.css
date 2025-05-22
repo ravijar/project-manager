@@ -48,8 +48,8 @@
     width: 100%;
     border: 1px solid var(--border-color);
     padding: 10px 15px;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+    box-shadow: 0 1px 3px var(--shadow-color);
     box-sizing: border-box;
 }
 
@@ -78,7 +78,7 @@
     border: none;
     border-radius: var(--border-radius);
     background-color: var(--primary-color);
-    color: white;
+    color: var(--text-invert-color);
     cursor: pointer;
     transition: background 0.3s;
 }

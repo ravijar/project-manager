@@ -11,7 +11,7 @@
     border-radius: var(--border-radius-large);
     font-size: 12px;
     cursor: pointer;
-    color: white;
+    color: var(--text-invert-color);
     transition: background-color 0.2s;
     user-select: none;
 }
@@ -22,5 +22,4 @@
 
 .chip.active {
     background-color: var(--primary-color);
-    color: white;
 }

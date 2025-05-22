@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     padding: 10px 15px;
-    background-color: #fff;
+    background-color: var(--background-color);
     border-top: 1px solid var(--border-color);
     position: sticky;
     bottom: 0;

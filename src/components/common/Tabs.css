@@ -14,7 +14,7 @@
 .tabs-content {
     flex: 1;
     overflow: hidden;
-    background: #ffffff;
+    background: var(--background-color);
     padding: 5px;
     color: var(--text-color);
     display: flex;
@@ -25,7 +25,7 @@
     padding: 6px 14px;
     margin-right: 4px;
     background: var(--secondary-color);
-    color: white;
+    color: var(--text-invert-color);
     border-radius: var(--border-radius) var(--border-radius) 0 0;
     cursor: pointer;
     font-size: 13px;
@@ -38,7 +38,7 @@
 }
 
 .tab.active {
-    background: #ffffff;
+    background: var(--background-color);
     color: var(--text-color);
     border-bottom: 2px solid transparent;
     font-weight: 500;

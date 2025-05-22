@@ -3,7 +3,7 @@
     flex-direction: column;
     height: 100vh;
     width: calc(100vw - 280px);
-    background-color: #f9f9f9;
+    background-color: var(--background-secondary-color);
 }
 
 .chat-messages {
@@ -18,12 +18,12 @@
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-    background-color: #ccc;
+    background-color: var(--scrollbar-thumb-color);
     border-radius: var(--border-radius);
 }
 
 .chat-messages::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
+    background-color: var(--scrollbar-track-color);
 }
 
 .date-divider {
@@ -47,7 +47,7 @@
 
 .date-text {
     position: relative;
-    background-color: #f9f9f9;
+    background-color: var(--background-secondary-color);
     padding: 0 10px;
     font-size: 12px;
     color: var(--text-secondary-color);

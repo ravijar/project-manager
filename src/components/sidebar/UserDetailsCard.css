@@ -4,14 +4,14 @@
     padding: 10px;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    background-color: #f9f9f9;
+    background-color: var(--background-secondary-color);
     cursor: pointer;
     transition: background-color 0.2s ease;
     gap: 10px;
 }
 
 .user-details-card:hover {
-    background-color: #f0f0f0;
+    filter: brightness(1.1);
 }
 
 .user-avatar img {
