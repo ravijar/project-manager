@@ -3,7 +3,7 @@
     align-items: center;
     width: 100%;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     padding: 5px 10px;
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -16,13 +16,13 @@
     outline: none;
     font-size: 14px;
     padding: 5px;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
 }
 
 .search-icon {
     margin-left: 10px;
     font-size: 14px;
-    color: #888;
+    color: var(--secondary-text-color);
     cursor: pointer;
     display: flex;
     align-items: center;

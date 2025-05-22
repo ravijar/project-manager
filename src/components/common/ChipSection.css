@@ -8,10 +8,10 @@
 .chip {
     padding: 5px 10px;
     background-color: #e0e0e0;
-    border-radius: 16px;
+    border-radius: var(--border-radius-large);
     font-size: 12px;
     cursor: pointer;
-    color: #333;
+    color: var(--text-color);
     transition: background-color 0.2s;
     user-select: none;
 }
@@ -21,6 +21,6 @@
 }
 
 .chip.active {
-    background-color: #4285f4;
+    background-color: var(--primary-color);
     color: white;
 }

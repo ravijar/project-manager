@@ -14,7 +14,7 @@
 .popup {
     background-color: white;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
     max-width: 90%;
@@ -28,7 +28,7 @@
     border: none;
     font-size: 18px;
     font-weight: bold;
-    color: #ccc;
+    color: var(--secondary-text-color);
     cursor: pointer;
     transition: color 0.3s ease;
 }

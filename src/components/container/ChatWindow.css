@@ -19,7 +19,7 @@
 
 .chat-messages::-webkit-scrollbar-thumb {
     background-color: #ccc;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
 }
 
 .chat-messages::-webkit-scrollbar-track {
@@ -50,7 +50,7 @@
     background-color: #f9f9f9;
     padding: 0 10px;
     font-size: 12px;
-    color: #555;
+    color: var(--secondary-text-color);
     z-index: 2;
 }
   

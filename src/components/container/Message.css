@@ -5,7 +5,7 @@
     min-width: 50px;
     margin: 2px;
     padding: 5px 10px 2px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     position: relative;
 }
 
@@ -27,13 +27,13 @@
 .message-text {
     margin: 0 60px 5px 0;
     font-size: 14px;
-    color: #333;
+    color: var(--text-color);
     word-wrap: break-word;
 }
 
 .message-time {
     font-size: 10px;
-    color: #888;
+    color: var(--secondary-text-color);
     text-align: right;
     position: absolute;
     bottom: 0;

@@ -6,6 +6,16 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /* Colors */
+    --primary-color: #4285f4;
+    --text-color: #333;
+    --secondary-text-color: #888;
+
+    /* Border radius */
+    --border-radius: 5px;
+    --border-radius-large: 20px;
+    --border-radius-round: 50%;
 }
 
 body {
