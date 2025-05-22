@@ -17,7 +17,7 @@
 .receiver {
     align-self: flex-start;
     background-color: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 .message-body {
@@ -33,7 +33,7 @@
 
 .message-time {
     font-size: 10px;
-    color: var(--secondary-text-color);
+    color: var(--text-secondary-color);
     text-align: right;
     position: absolute;
     bottom: 0;

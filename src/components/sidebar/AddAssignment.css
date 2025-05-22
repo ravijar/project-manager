@@ -23,7 +23,7 @@
     font-size: 14px;
     color: var(--text-color);
     border-radius: var(--border-radius);
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
 }
 
 .add-assignment-container input:focus,
@@ -45,7 +45,7 @@ textarea {
     padding: 12px;
     font-size: 14px;
     border-radius: var(--border-radius);
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     background-color: white;
     color: var(--text-color);
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,0 12,0 6,6" fill="%23666"/></svg>');
@@ -65,7 +65,7 @@ textarea {
     display: flex;
     gap: 8px;
     width: 100%;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     padding: 12px;
     box-sizing: border-box;
@@ -250,7 +250,7 @@ textarea {
 }
 
 .assignment-actions .cancel-btn {
-    background-color: #999;
+    background-color: var(--secondary-color);
 }
 
 .assignment-actions button:hover {

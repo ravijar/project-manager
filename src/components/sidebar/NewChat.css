@@ -46,7 +46,7 @@
     display: flex;
     align-items: center;
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     padding: 10px 15px;
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -84,7 +84,7 @@
 }
 
 .selected-users-actions .cancel-btn {
-    background-color: #999;
+    background-color: var(--secondary-color);
 }
 
 .selected-users-actions button:hover {

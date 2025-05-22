@@ -9,12 +9,14 @@
 
     /* Colors */
     --primary-color: #4285f4;
+    --secondary-color: #bbb;
     --text-color: #333;
-    --secondary-text-color: #888;
+    --text-secondary-color: #888;
     --error-color: #f44336;
     --error-background-color: #ecc3c0;
     --error-text-color: #912d26;
     --success-color: #4caf50;
+    --border-color: #ddd;
 
     /* Border radius */
     --border-radius: 5px;

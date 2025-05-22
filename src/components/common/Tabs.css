@@ -24,8 +24,8 @@
 .tab {
     padding: 6px 14px;
     margin-right: 4px;
-    background: #e0e0e0;
-    color: var(--text-color);
+    background: var(--secondary-color);
+    color: white;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
     cursor: pointer;
     font-size: 13px;
@@ -45,5 +45,5 @@
 }
 
 .tab:hover:not(.active) {
-    background: #d5d5d5;
+    filter: brightness(1.1);
 }

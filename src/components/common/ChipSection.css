@@ -7,17 +7,17 @@
 
 .chip {
     padding: 5px 10px;
-    background-color: #e0e0e0;
+    background-color: var(--secondary-color);
     border-radius: var(--border-radius-large);
     font-size: 12px;
     cursor: pointer;
-    color: var(--text-color);
+    color: white;
     transition: background-color 0.2s;
     user-select: none;
 }
 
 .chip:hover {
-    background-color: #d5d5d5;
+    filter: brightness(1.1);
 }
 
 .chip.active {
