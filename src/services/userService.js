@@ -4,12 +4,24 @@ import {generateChatId} from "./chatService.js";
 
 export const USER_ROLES = ["admin", "student", "tutor"];
 
+export const findUsers = async (currentUserId, role, field, fieldValue) => {
+    try {
+        const matchedUsers = await queryUserByField(role, field, fieldValue);
+        return matchedUsers.filter((user) => user.id !== currentUserId);
+    } catch (error) {
+        console.error("Error finding users:", error);
+        throw error;
+    }
+};
+
 export const findNewUsers = async (currentUserId, role, field, fieldValue) => {
     try {
         const matchedUsers = await queryUserByField(role, field, fieldValue);
 
         const newUsers = [];
         for (const user of matchedUsers) {
+            if (user.id === currentUserId) continue;
+
             const chatId = generateChatId(currentUserId, user.id);
             const chatExists = await chatExistsForUser(currentUserId, chatId);
             if (!chatExists) {

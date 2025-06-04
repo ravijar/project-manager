@@ -14,9 +14,9 @@
 .tabs-content {
     flex: 1;
     overflow: hidden;
-    background: #ffffff;
+    background: var(--background-color);
     padding: 5px;
-    color: #333;
+    color: var(--text-color);
     display: flex;
     flex-direction: column;
 }
@@ -24,9 +24,9 @@
 .tab {
     padding: 6px 14px;
     margin-right: 4px;
-    background: #e0e0e0;
-    color: #333;
-    border-radius: 8px 8px 0 0;
+    background: var(--secondary-color);
+    color: var(--text-invert-color);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
     cursor: pointer;
     font-size: 13px;
     transition: background 0.2s, color 0.2s;
@@ -38,12 +38,12 @@
 }
 
 .tab.active {
-    background: #ffffff;
-    color: #000;
+    background: var(--background-color);
+    color: var(--text-color);
     border-bottom: 2px solid transparent;
     font-weight: 500;
 }
 
 .tab:hover:not(.active) {
-    background: #d5d5d5;
+    filter: brightness(1.1);
 }

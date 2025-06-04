@@ -1,0 +1,92 @@
+.new-chat-container {
+    padding: 20px 10px;
+}
+
+.new-chat-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.new-chat-group-toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 16px;
+    gap: 8px;
+}
+
+.checkbox-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    font-size: 16px;
+    width: 100%;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    margin: 0;
+}
+
+.group-name-input {
+    outline: none;
+    font-size: 14px;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    background-color: var(--background-color);
+    box-shadow: 0 1px 3px var(--shadow-color);
+    box-sizing: border-box;
+}
+
+.selected-users-header {
+    margin: 15px 0 12px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.selected-users-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.selected-users-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.selected-users-actions button {
+    padding: 8px 0;
+    width: 100px;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--primary-color);
+    color: var(--text-invert-color);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.selected-users-actions .cancel-btn {
+    background-color: var(--secondary-color);
+}
+
+.selected-users-actions button:hover {
+    filter: brightness(1.1);
+}

@@ -21,16 +21,16 @@
 .add-assignment-container textarea {
     padding: 12px;
     font-size: 14px;
-    color: #333;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    color: var(--text-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
 }
 
 .add-assignment-container input:focus,
 .add-assignment-container select:focus,
 .add-assignment-container textarea:focus {
     outline: none;
-    border: 1px solid #4285f4;
+    border: 1px solid var(--primary-color);
 }
 
 textarea {
@@ -44,10 +44,10 @@ textarea {
 
     padding: 12px;
     font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: white;
-    color: #333;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
     background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,0 12,0 6,6" fill="%23666"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -56,8 +56,8 @@ textarea {
 }
 
 .add-assignment-container select option {
-    background-color: white;
-    color: #333;
+    background-color: var(--background-color);
+    color: var(--text-color);
     font-size: 12px;
 }
 
@@ -65,8 +65,8 @@ textarea {
     display: flex;
     gap: 8px;
     width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
     padding: 12px;
     box-sizing: border-box;
 }
@@ -74,13 +74,13 @@ textarea {
 .due-by-label {
     flex: 1;
     font-size: 14px;
-    color: #333;
+    color: var(--text-color);
 }
 
 .add-assignment-container input[type="date"] {
     font-size: 14px;
     padding: 0;
-    color: #333;
+    color: var(--text-color);
     border: none;
     cursor: pointer;
 }
@@ -90,8 +90,8 @@ textarea {
     flex-direction: column;
     gap: 8px;
     width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
     padding: 12px;
     box-sizing: border-box;
 }
@@ -107,18 +107,18 @@ textarea {
 .upload-label {
     flex: 1;
     font-size: 14px;
-    color: #333;
+    color: var(--text-color);
 }
 
 .file-upload-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: #555;
-    color: white;
+    background-color: var(--secondary-color);
+    color: var(--text-invert-color);
     width: 50px;
     padding: 4px 0;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 10px;
     position: relative;
@@ -142,12 +142,12 @@ textarea {
 }
 
 .file-list-container {
-    background-color: #f1f1f1;
+    background-color: var(--background-secondary-color);
     padding: 10px 15px;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     max-height: 50px;
     overflow-y: auto;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
 }
 
 .file-list {
@@ -162,7 +162,7 @@ textarea {
 }
 
 .file-list a {
-    color: #333;
+    color: var(--text-color);
     text-decoration: none;
     word-break: break-word;
 }
@@ -183,9 +183,9 @@ textarea {
     align-items: center;
     justify-content: center;
     border: none;
-    color: white;
-    background-color: #ca2723;
-    border-radius: 4px;
+    color: var(--text-invert-color);
+    background-color: var(--error-color);
+    border-radius: var(--border-radius);
     font-size: 8px;
     font-weight: bold;
     cursor: pointer;
@@ -207,18 +207,17 @@ textarea {
 }
 
 .file-list-container::-webkit-scrollbar-track {
-    background: #f0f0f0;
-    border-radius: 4px;
+    background: var(--background-secondary-color);
+    border-radius: var(--border-radius);
 }
 
 .file-list-container::-webkit-scrollbar-thumb {
-    background-color: #bbb;
-    border-radius: 4px;
-    border: 2px solid #f0f0f0;
+    background-color: var(--scrollbar-thumb-color);
+    border-radius: var(--border-radius);
+    border: 2px solid var(--border-color);
 }
 
 .file-list-container::-webkit-scrollbar-thumb:hover {
-    background-color: #888;
     cursor: pointer;
 }
 
@@ -233,15 +232,15 @@ textarea {
     padding: 8px 0;
     width: 100px;
     border: none;
-    border-radius: 4px;
-    background-color: #4285f4;
-    color: white;
+    border-radius: var(--border-radius);
+    background-color: var(--primary-color);
+    color: var(--text-invert-color);
     cursor: pointer;
     transition: background 0.3s;
 }
 
 .assignment-actions button:disabled {
-    background-color: #ccc;
+    background-color: var(--disabled-color);
 }
 
 .assignment-actions button:disabled:hover {
@@ -250,7 +249,7 @@ textarea {
 }
 
 .assignment-actions .cancel-btn {
-    background-color: #999;
+    background-color: var(--secondary-color);
 }
 
 .assignment-actions button:hover {
@@ -258,10 +257,10 @@ textarea {
 }
 
 .assignment-error {
-    color: #d32f2f;
+    color: var(--error-text-color);
     font-size: 12px;
-    background-color: #ffe0e0;
+    background-color: var(--error-background-color);
     padding: 8px;
     margin: 0;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
 }

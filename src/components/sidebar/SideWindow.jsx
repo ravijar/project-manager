@@ -11,30 +11,24 @@ const SideWindow = (
         loadingChats,
         selectedChat,
         onSelectChat,
-        assignments,
-        loadingAssignments,
-        selectedAssignment,
-        onSelectAssignment,
-        assignmentStatus,
-        setAssignmentStatus,
+        assignmentChats,
         user,
         onSignOut,
+        onTabChange,
     }
 ) => {
     return (
         <div className="side-window">
             <Profile user={user} onSignOut={onSignOut}/>
-            <Tabs currentRole={user.role}>
+            <Tabs currentRole={user.role} onTabChange={onTabChange}>
                 <Tab
                     name="Workspace"
                     component={
                         <AssignmentList
-                            assignments={assignments}
-                            loading={loadingAssignments}
-                            selectedAssignmentId={selectedAssignment}
-                            onSelectAssignment={onSelectAssignment}
-                            selectedStatus={assignmentStatus}
-                            setSelectedStatus={setAssignmentStatus}
+                            assignmentChats={assignmentChats}
+                            loading={loadingChats}
+                            selectedAssignmentChat={selectedChat}
+                            onSelectAssignmentChat={onSelectChat}
                             user={user}
                         />
                     }

@@ -3,9 +3,7 @@ import ChatWindow from '../components/container/ChatWindow';
 import './Dashboard.css';
 import {useState, useEffect} from 'react';
 import {sendMessage} from '../services/messageService';
-import {syncMessages} from '../services/messageService';
 import {syncChats, selectChat} from '../services/chatService';
-import {syncAssignments} from "../services/assignmentService.js";
 
 const Dashboard = ({user, handleSignOut}) => {
     const [chats, setChats] = useState([]);
@@ -16,27 +14,14 @@ const Dashboard = ({user, handleSignOut}) => {
     const [messages, setMessages] = useState([]);
     const [loadingMessages, setLoadingMessages] = useState(false);
 
-    const [assignments, setAssignments] = useState([]);
-    const [loadingAssignments, setLoadingAssignments] = useState(true);
-    const [selectedAssignment, setSelectedAssignment] = useState(null);
-    const [assignmentStatus, setAssignmentStatus] = useState(null);
-    const [assignmentsError, setAssignmentsError] = useState("");
-
     const [unsubscribe, setUnsubscribe] = useState(null);
 
     useEffect(() => {
         const chatsCleanup = fetchChats();
-        const assignmentsCleanup = fetchAssignments();
-
         return () => {
             if (chatsCleanup) chatsCleanup();
-            if (assignmentsCleanup) assignmentsCleanup();
         };
     }, [user]);
-
-    useEffect(() => {
-        fetchAssignments();
-    }, [assignmentStatus])
 
     const timeFormatOptions = {
         hour: "2-digit",
@@ -47,9 +32,11 @@ const Dashboard = ({user, handleSignOut}) => {
         return rawMessages.map((msg) => ({
             text: msg.message,
             time: new Date(msg.timestamp.toDate()).toLocaleTimeString([], timeFormatOptions),
-            isSender: msg.sender === userId,
+            isSender: msg.senderId === userId,
             date: new Date(msg.timestamp.toDate()).toLocaleDateString(),
-            isFile: msg.isFile
+            isFile: msg.isFile,
+            senderName: msg.senderName,
+            senderRole: msg.senderRole,
         }));
     };
 
@@ -112,64 +99,24 @@ const Dashboard = ({user, handleSignOut}) => {
         setMessages((prevMessages) => [...prevMessages, createLocalMessage(newMessage, isFile)]);
 
         try {
-            await sendMessage(selectedChat.chatId, user.id, newMessage, isFile);
+            await sendMessage(selectedChat.chatId, user, newMessage, isFile);
         } catch (error) {
             console.error("Failed to send message:", error);
             setMessages((prevMessages) => prevMessages.filter((msg) => msg.text !== newMessage));
         }
     };
 
-    const fetchAssignments = () => {
-        if (!user?.id) return;
-
-        setLoadingAssignments(true);
-        setAssignmentsError("");
-
-        const unsubscribe = syncAssignments(user.id, assignmentStatus, (updateFnOrAssignments) => {
-            if (typeof updateFnOrAssignments === "function") {
-                setAssignments(prev => updateFnOrAssignments(prev));
-            } else {
-                setAssignments(updateFnOrAssignments);
-            }
-            setLoadingAssignments(false);
-        });
-
-        return () => {
-            unsubscribe();
-            setLoadingAssignments(false);
-        };
-    };
-
-    const handleAssignmentSelect = async (assignmentId) => {
-        setLoadingAssignments(true);
-        if (selectedAssignment && selectedAssignment.id === assignmentId) {
-            setLoadingAssignments(false);
-            return;
-        }
-
-        const assignment = assignments.find((a) => a.id === assignmentId);
-        if (!assignment) return;
-
-        setSelectedAssignment(assignment);
-
-        setLoadingAssignments(false);
-    };
-
     return (
         <div className="container">
             <SideWindow
-                chats={chats}
+                chats={chats.filter(c => !c.isAssignment)}
                 loadingChats={loadingChats}
                 selectedChat={selectedChat}
                 onSelectChat={handleChatSelect}
-                assignments={assignments}
-                loadingAssignments={loadingAssignments}
-                selectedAssignment={selectedAssignment}
-                onSelectAssignment={handleAssignmentSelect}
-                assignmentStatus={assignmentStatus}
-                setAssignmentStatus={setAssignmentStatus}
+                assignmentChats={chats.filter(c => c.isAssignment)}
                 user={user}
                 onSignOut={handleSignOut}
+                onTabChange={() => setSelectedChat(null)}
             />
             {!loadingChats && !chatsError && selectedChat && (
                 <ChatWindow

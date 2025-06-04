@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
-    background-color: #f4f4f4;
+    background-color: var(--overlay-background-color);
     box-sizing: border-box;
     gap: 30px;
 }
@@ -14,7 +14,7 @@
     flex: 1;
     max-width: 300px;
     height: 400px;
-    border-radius: 16px;
+    border-radius: var(--border-radius);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -24,14 +24,14 @@
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: white;
+    color: var(--text-invert-color);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    background-color: var(--background-color);
 }
 
 .role-box:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px var(--shadow-color);
 }
 
 .role-image {
@@ -55,39 +55,39 @@
     justify-content: center;
     align-items: center;
     font-size: 28px;
-    color: #888;
-    background-color: #fff;
+    color: var(--text-secondary-color);
+    background-color: var(--background-color);
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .role-label .subtext {
     font-size: 14px;
-    color: #aaa;
+    color: var(--text-secondary-color);
 }
 
 .role-box.student:hover .role-label {
     background-color: #8cd1a6;
-    color: #fff;
+    color: var(--text-invert-color);
 }
 
 .role-box.tutor:hover .role-label {
     background-color: #4d9de0;
-    color: #fff;
+    color: var(--text-invert-color);
 }
 
 .role-box.admin:hover .role-label {
     background-color: #f2644b;
-    color: #fff;
+    color: var(--text-invert-color);
 }
 
 .role-box.student:hover .role-label .subtext {
-    color: #eee;
+    color: var(--text-secondary-color);
 }
 
 .role-box.tutor:hover .role-label .subtext {
-    color: #eee;
+    color: var(--text-secondary-color);
 }
 
 .role-box.admin:hover .role-label .subtext {
-    color: #eee;
+    color: var(--text-secondary-color);
 }

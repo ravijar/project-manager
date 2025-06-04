@@ -4,43 +4,43 @@
     flex-direction: column;
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
+    box-shadow: 0 1px 3px var(--shadow-color);
     margin-bottom: 10px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
 }
 
 .assignment-card:hover {
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: var(--background-secondary-color);
+    box-shadow: 0 2px 5px var(--shadow-color);
     cursor: pointer;
 }
 
 .assignment-active {
-    background-color: #e8f0fe;
-    border: 2px solid #4285f4;
+    background-color: var(--primary-faded-color);
+    border: 2px solid var(--primary-color);
 }
 
 .assignment-name {
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: var(--text-color);
 }
 
 .assignment-details {
     display: flex;
     justify-content: space-between;
     font-size: 13px;
-    color: #666;
+    color: var(--text-secondary-color);
     margin-bottom: 4px;
 }
 
 .assignment-field {
     font-weight: 500;
-    color: #333;
+    color: var(--text-color);
 }
 
 .assignment-due {

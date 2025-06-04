@@ -3,15 +3,13 @@ import {
     doc,
     setDoc,
     getDoc,
-    deleteDoc,
     Timestamp
 } from "firebase/firestore";
 
 const COLLECTION = "assignments";
-const SUB_COLLECTION = "instances";
 
-const getAssignmentRef = (status, assignmentId) =>
-    doc(db, COLLECTION, status, SUB_COLLECTION, assignmentId);
+const getCurrentTimestamp = () => Timestamp.fromDate(new Date());
+const getAssignmentDocRef = (assignmentId) => doc(db, COLLECTION, assignmentId);
 
 export const addAssignment = async (assignmentId, initialData) => {
     const {
@@ -21,6 +19,7 @@ export const addAssignment = async (assignmentId, initialData) => {
         docs = [],
         dueBy,
         student,
+        chatId,
     } = initialData;
 
     const assignmentData = {
@@ -30,46 +29,32 @@ export const addAssignment = async (assignmentId, initialData) => {
         docs,
         dueBy,
         student,
-        uploadedOn: Timestamp.fromDate(new Date()),
+        chatId,
+        uploadedOn: getCurrentTimestamp(),
         tutorStartedOn: null,
         tutorFinishedOn: null,
         tutor: null,
         admin: null,
         bidders: [],
-        status: null
+        status: "ongoing"
     };
 
-    const ref = getAssignmentRef("new", assignmentId);
-    await setDoc(ref, assignmentData);
-};
-
-export const updateAssignment = async (status, assignmentId, updatedFields) => {
-    const ref = getAssignmentRef(status, assignmentId);
-    await setDoc(ref, updatedFields, {merge: true});
-};
-
-export const moveAssignment = async (fromStatus, toStatus, assignmentId) => {
-    const fromRef = getAssignmentRef(fromStatus, assignmentId);
-    const toRef = getAssignmentRef(toStatus, assignmentId);
-
-    const fromSnap = await getDoc(fromRef);
-    if (!fromSnap.exists()) throw new Error("Assignment not found in source.");
-
-    const assignmentData = fromSnap.data();
-
-    await setDoc(toRef, assignmentData);
-    await deleteDoc(fromRef);
-};
-
-export const getAssignment = async (status, assignmentId) => {
     try {
-        const assignmentRef = getAssignmentRef(status, assignmentId);
-        const snapshot = await getDoc(assignmentRef);
+        await setDoc(getAssignmentDocRef(assignmentId), assignmentData);
+    } catch (error) {
+        console.log("Error creating assignment:", error);
+        throw error;
+    }
 
-        if (snapshot.exists()) {
-            return {id: snapshot.id, ...snapshot.data()};
+};
+
+export const getAssignment = async (assignmentId) => {
+    try {
+        const assignmentDoc = await getDoc(getAssignmentDocRef(assignmentId));
+        if (assignmentDoc.exists()) {
+            return {id: assignmentDoc.id, ...assignmentDoc.data()};
         } else {
-            throw new Error(`Assignment with ID ${assignmentId} does not exist in status "${status}".`);
+            throw new Error(`Assignment with ID ${assignmentId} does not exist.`);
         }
     } catch (error) {
         console.error("Error fetching assignment:", error);

@@ -12,12 +12,10 @@ import {faAdd} from "@fortawesome/free-solid-svg-icons";
 
 const AssignmentList = (
     {
-        assignments,
+        assignmentChats,
         loading,
-        selectedAssignmentId,
-        onSelectAssignment,
-        selectedStatus,
-        setSelectedStatus,
+        selectedAssignmentChat,
+        onSelectAssignmentChat,
         user,
     }
 ) => {
@@ -26,23 +24,28 @@ const AssignmentList = (
 
     const openAssignmentPopup = () => setShowAssignmentPopup(true);
     const closeAssignmentPopup = () => setShowAssignmentPopup(false);
+    const [selectedType, setSelectedType] = useState(null);
 
-    const filteredAssignments = assignments
-        .filter((assignment) =>
-            assignment.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+    const filteredAssignmentChats = assignmentChats.filter((assignmentChat) => {
+        const lowerSearch = searchTerm.toLowerCase();
+
+        const matchesSearch = assignmentChat.assignment?.name?.toLowerCase().includes(lowerSearch);
+        const matchesType = assignmentChat.assignment?.status === selectedType;
+
+        return matchesSearch && matchesType;
+    });
 
     return (
         <div className="assignment-list-container">
             <div className="assignment-list-header">
                 <ChipSection
                     chips={[
-                        {label: "Ongoing", value: "new"},
+                        {label: "Ongoing", value: "ongoing"},
                         {label: "Completed", value: "completed"},
                         {label: "Ignored", value: "ignored"},
                     ]}
-                    activeValue={selectedStatus}
-                    setActiveValue={setSelectedStatus}
+                    activeValue={selectedType}
+                    setActiveValue={setSelectedType}
                 />
 
                 <div className="assignment-icons">
@@ -60,21 +63,23 @@ const AssignmentList = (
             </div>
 
             <div className="assignment-list-scroll">
-                {filteredAssignments.map((assignment) => (
+                {filteredAssignmentChats.map((assignmentChat) => (
                     <AssignmentCard
-                        key={assignment.id}
-                        name={assignment.name}
-                        field={assignment.field}
-                        dueBy={assignment.dueBy}
-                        selected={assignment.id === selectedAssignmentId}
-                        onClick={() => onSelectAssignment(assignment.id)}
+                        key={assignmentChat.chatId}
+                        assignmentChatId={assignmentChat.chatId}
+                        name={assignmentChat.assignment?.name}
+                        field={assignmentChat.assignment?.field}
+                        dueBy={assignmentChat.assignment?.dueBy}
+                        onClick={onSelectAssignmentChat}
+                        selected={selectedAssignmentChat && selectedAssignmentChat.chatId === assignmentChat.chatId}
+                        hasUnread={assignmentChat?.lastRead < assignmentChat?.lastTimestamp}
                     />
                 ))}
             </div>
 
             {showAssignmentPopup && (
                 <Popup onClose={closeAssignmentPopup} width="400px">
-                    <AddAssignment userId={user.id} onClose={closeAssignmentPopup}/>
+                    <AddAssignment user={user} onClose={closeAssignmentPopup}/>
                 </Popup>
             )}
         </div>

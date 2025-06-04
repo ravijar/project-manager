@@ -4,21 +4,32 @@ import {faAdd} from "@fortawesome/free-solid-svg-icons";
 import SearchBar from "../common/SearchBar.jsx";
 import Chat from "./Chat.jsx";
 import Popup from "../common/Popup.jsx";
-import FindUser from "./FindUser.jsx";
 import {useState} from "react";
 import "./ChatList.css";
 import ChipSection from "../common/ChipSection.jsx";
 import RoleBased from "../common/RoleBased.js";
+import NewChat from "./NewChat.jsx";
 
 const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showChatPopup, setShowChatPopup] = useState(false);
-    const [selectedRole, setSelectedRole] = useState(null);
+    const [selectedType, setSelectedType] = useState(null);
 
     const filteredChats = chats.filter((chat) => {
-        const matchesSearch = chat.user.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesRole = selectedRole ? chat.user.role === selectedRole : true;
-        return matchesSearch && matchesRole;
+        const lowerSearch = searchTerm.toLowerCase();
+
+        const matchesSearch = chat.isGroup
+            ? chat.groupName?.toLowerCase().includes(lowerSearch)
+            : chat.user?.name?.toLowerCase().includes(lowerSearch);
+
+        const matchesType =
+            selectedType === null
+                ? true
+                : chat.isGroup
+                    ? selectedType === "group"
+                    : chat.user?.role === selectedType;
+
+        return matchesSearch && matchesType;
     });
 
     const openChatPopup = () => setShowChatPopup(true);
@@ -35,19 +46,22 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
                             {label: "Student", value: "student"},
                             {label: "Tutor", value: "tutor"},
                             {label: "Admin", value: "admin"},
+                            {label: "Group", value: "group"},
                         ]}
-                        activeValue={selectedRole}
-                        setActiveValue={setSelectedRole}
+                        activeValue={selectedType}
+                        setActiveValue={setSelectedType}
                     />
                 </RoleBased>
 
                 <RoleBased roles={["student", "tutor"]} currentRole={user.role}>
                     <ChipSection
                         chips={[
+                            {label: "All", value: null},
                             {label: "Admin", value: "admin"},
+                            {label: "Group", value: "group"},
                         ]}
-                        activeValue={selectedRole}
-                        setActiveValue={setSelectedRole}
+                        activeValue={selectedType}
+                        setActiveValue={setSelectedType}
                     />
                 </RoleBased>
 
@@ -69,8 +83,8 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
                         key={chat.chatId}
                         chatId={chat.chatId}
                         height={60}
-                        avatarSrc={chat.user.photoURL}
-                        name={chat.user.name}
+                        avatarSrc={chat.isGroup ? "" : chat.user.photoURL}
+                        name={chat.isGroup ? chat.groupName : chat.user?.name}
                         onChatClick={onSelectChat}
                         selected={selectedChat && selectedChat.chatId === chat.chatId}
                         hasUnread={chat?.lastRead < chat?.lastTimestamp}
@@ -79,8 +93,8 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
             </div>
 
             {showChatPopup && (
-                <Popup onClose={closeChatPopup} width="300px">
-                    <FindUser currentUser={user} onChatCreated={closeChatPopup}/>
+                <Popup onClose={closeChatPopup} width="400px">
+                    <NewChat currentUser={user} onChatCreated={closeChatPopup}/>
                 </Popup>
             )}
         </div>

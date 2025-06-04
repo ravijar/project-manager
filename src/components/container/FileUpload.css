@@ -11,27 +11,27 @@
 
 .choose-btn {
     padding: 8px 16px;
-    background-color: #4285f4;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-invert-color);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .choose-btn:hover {
-    background-color: #357ae8;
+    filter(brightness(1.1));
 }
 
 .file-preview {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f5f5f5;
+    background-color: var(--background-secondary-color);
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
     width: 100%;
     max-width: 350px;
     text-align: center;
@@ -43,7 +43,7 @@
 .file-name {
     font-size: 14px;
     font-weight: 500;
-    color: #444;
+    color: var(--text-color);
     margin-bottom: 10px;
     word-break: break-word;
 }
@@ -56,40 +56,37 @@
 
 .upload-btn {
     padding: 6px 12px;
-    background-color: #4caf50;
-    color: white;
+    background-color: var(--success-color);
+    color: var(--text-invert-color);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-.upload-btn:hover {
-    background-color: #45a049;
 }
 
 .remove-btn {
     padding: 6px 12px;
-    background-color: #e53935;
-    color: white;
+    background-color: var(--error-color);
+    color: var(--text-invert-color);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.remove-btn:hover {
-    background-color: #d32f2f;
+.remove-btn:hover,
+.upload-btn:hover {
+    filter: brightness(1.1);
 }
 
 .upload-success {
-    color: #4caf50;
+    color: var(--success-color);
     margin-top: 8px;
     font-size: 13px;
 }
 
 .upload-error {
-    color: #e53935;
+    color: var(--error-text-color);
     margin-top: 8px;
     font-size: 13px;
 }
