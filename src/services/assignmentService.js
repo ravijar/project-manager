@@ -1,5 +1,6 @@
 import {addAssignment} from "../firebase/firestore/assignmentsCollection.js";
 import {addAssignmentToUser} from "../firebase/firestore/userAssignmentsCollection.js";
+import {addAssignmentField, getAllAssignmentFields} from "../firebase/firestore/assignmentFieldCollection";
 import {v4 as uuidv4} from "uuid";
 import {createNewGroupChat} from "./chatService.js";
 
@@ -11,4 +12,12 @@ export const addNewAssignment = async (assignmentId, assignmentData, user) => {
     const chatId = await createNewGroupChat(assignmentData?.name, [user], user, true, assignmentId);
     await addAssignment(assignmentId, {...assignmentData, student: user.id, chatId: chatId});
     await addAssignmentToUser(user.id, assignmentId, "new");
+};
+
+export const fetchAllAssignmentFields = async () => {
+    return await getAllAssignmentFields();
+};
+
+export const createNewAssignmentField = async (fieldName) => {
+    return await addAssignmentField(fieldName);
 };
