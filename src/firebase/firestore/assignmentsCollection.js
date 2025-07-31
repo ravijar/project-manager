@@ -3,6 +3,8 @@ import {
     doc,
     setDoc,
     getDoc,
+    updateDoc,
+    arrayUnion,
     Timestamp
 } from "firebase/firestore";
 
@@ -36,7 +38,8 @@ export const addAssignment = async (assignmentId, initialData) => {
         tutor: null,
         admin: null,
         bidders: [],
-        status: "ongoing"
+        status: "ongoing",
+        subStatus: "uploaded"
     };
 
     try {
@@ -58,6 +61,27 @@ export const getAssignment = async (assignmentId) => {
         }
     } catch (error) {
         console.error("Error fetching assignment:", error);
+        throw error;
+    }
+};
+
+export const updateAssignment = async (assignmentId, updatedFields, arrayFields = []) => {
+    const docRef = getAssignmentDocRef(assignmentId);
+
+    try {
+        const updatePayload = {};
+
+        for (const [key, value] of Object.entries(updatedFields)) {
+            if (arrayFields.includes(key)) {
+                updatePayload[key] = arrayUnion(value);
+            } else {
+                updatePayload[key] = value;
+            }
+        }
+
+        await updateDoc(docRef, updatePayload);
+    } catch (error) {
+        console.error("Failed to update assignment fields:", error);
         throw error;
     }
 };
