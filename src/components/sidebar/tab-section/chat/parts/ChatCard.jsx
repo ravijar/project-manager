@@ -1,7 +1,7 @@
-import './Chat.css';
-import Avatar from '../common/Avatar';
+import './ChatCard.css';
+import Avatar from '../../../../common/avatar/Avatar.jsx';
 
-const Chat = ({height, avatarSrc, name, onChatClick, chatId, selected, hasUnread}) => {
+const ChatCard = ({height, avatarSrc, name, onChatClick, chatId, selected, hasUnread}) => {
     return (
         <div
             className={`chat ${selected ? 'chat-active' : ''}`}
@@ -16,4 +16,4 @@ const Chat = ({height, avatarSrc, name, onChatClick, chatId, selected, hasUnread
     );
 };
 
-export default Chat;
+export default ChatCard;

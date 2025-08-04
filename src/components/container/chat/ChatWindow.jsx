@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from "react";
 import "./ChatWindow.css";
-import Message from "./Message";
-import ChatInfoBar from "./ChatInfoBar";
-import FooterBar from "./FooterBar";
+import Message from "./parts/Message.jsx";
+import ChatInfoBar from "./parts/ChatInfoBar.jsx";
+import FooterBar from "./parts/FooterBar.jsx";
 
 const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages}) => {
     const scrollRef = useRef(null);

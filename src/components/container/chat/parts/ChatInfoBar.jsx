@@ -1,6 +1,6 @@
-import Avatar from '../common/Avatar';
+import Avatar from '../../../common/avatar/Avatar.jsx';
 import './ChatInfoBar.css';
-import LoadingSpinner from '../common/LoadingSpinner';
+import LoadingSpinner from '../../../common/loading-spinner/LoadingSpinner.jsx';
 
 const ChatInfoBar = ({avatarSrc, name, loadingMessages}) => {
     return (

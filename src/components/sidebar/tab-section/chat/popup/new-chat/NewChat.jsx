@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import FindUser from "./FindUser";
-import {createNewGroupChat, createNewPrivateChat} from "../../services/chatService";
+import FindUser from "../../parts/FindUser.jsx";
+import {createNewGroupChat, createNewPrivateChat} from "../../../../../../services/chatService.js";
 import "./NewChat.css";
-import UserDetailsCardSection from "./UserDetailsCardSection.jsx";
-import LoadingSpinner from "../common/LoadingSpinner.jsx";
-import RoleBased from "../common/RoleBased.js";
+import UserDetailsCardSection from "../../parts/UserDetailsCardSection.jsx";
+import LoadingSpinner from "../../../../../common/loading-spinner/LoadingSpinner.jsx";
+import RoleBased from "../../../../../common/RoleBased.js";
 
 const NewChat = ({currentUser, onChatCreated}) => {
     const [selectedUsers, setSelectedUsers] = useState([]);
