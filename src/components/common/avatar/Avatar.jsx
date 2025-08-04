@@ -1,5 +1,5 @@
 import './Avatar.css';
-import placeholderAvatar from '../../assets/placeholder-avatar.png';
+import placeholderAvatar from '../../../assets/placeholder-avatar.png';
 
 const Avatar = ({src, size}) => {
     return (

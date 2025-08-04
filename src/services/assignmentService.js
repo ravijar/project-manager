@@ -12,7 +12,7 @@ export const generateAssignmentId = () => {
 export const addNewAssignment = async (assignmentId, assignmentData, user) => {
     const chatId = await createNewGroupChat(assignmentData?.name, [user], user, true, assignmentId);
     await addAssignment(assignmentId, {...assignmentData, student: user.id, chatId: chatId});
-    await addAssignmentToUser(user.id, assignmentId, "new");
+    await addAssignmentToUser(user.id, assignmentId);
 };
 
 export const fetchAssignmentById = async (assignmentId) => {
@@ -30,6 +30,7 @@ export const assignAdminToAssignment = async (assignmentId, adminUserId) => {
         const chatId = assignment.chatId;
 
         await addParticipant(adminUserId, chatId);
+        await addAssignmentToUser(adminUserId, assignmentId);
         await updateAssignment(assignmentId, {
             admin: adminUserId,
             subStatus: "admin_assigned"
@@ -46,7 +47,7 @@ export const assignTutorToAssignment = async (assignmentId, tutorUserId) => {
         const chatId = assignment.chatId;
 
         await addParticipant(tutorUserId, chatId);
-
+        await addAssignmentToUser(tutorUserId, assignmentId);
         await updateAssignment(assignmentId, {
             tutor: tutorUserId,
             tutorStartedOn: Timestamp.fromDate(new Date()),

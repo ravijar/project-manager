@@ -6,13 +6,13 @@ import {
     getFileNameFromUrl,
     getOriginalFileName,
     uploadFile
-} from "../../services/fileService";
-import LoadingSpinner from "../common/LoadingSpinner";
+} from "../../../../../../services/fileService.js";
+import LoadingSpinner from "../../../../../common/loading-spinner/LoadingSpinner.jsx";
 import {
     addNewAssignment,
     generateAssignmentId,
     fetchAllAssignmentFields
-} from "../../services/assignmentService.js";
+} from "../../../../../../services/assignmentService.js";
 
 const AddAssignment = ({user, onClose}) => {
     const [formData, setFormData] = useState({

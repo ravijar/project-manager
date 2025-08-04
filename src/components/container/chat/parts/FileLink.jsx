@@ -1,4 +1,4 @@
-import {getFileNameFromUrl, getOriginalFileName} from "../../services/fileService.js";
+import {getFileNameFromUrl, getOriginalFileName} from "../../../../services/fileService.js";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFile, faDownload} from "@fortawesome/free-solid-svg-icons";
 

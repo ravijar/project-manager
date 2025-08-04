@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react";
-import {uploadFile} from "../../services/fileService.js";
-import LoadingSpinner from "../common/LoadingSpinner";
+import {uploadFile} from "../../../../../services/fileService.js";
+import LoadingSpinner from "../../../../common/loading-spinner/LoadingSpinner.jsx";
 import "./FileUpload.css";
 
 const FileUpload = ({chatId, onFileUploaded}) => {

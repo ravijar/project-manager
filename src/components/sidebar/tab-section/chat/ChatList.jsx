@@ -1,14 +1,14 @@
-import LoadingSpinner from "../common/LoadingSpinner.jsx";
+import LoadingSpinner from "../../../common/loading-spinner/LoadingSpinner.jsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAdd} from "@fortawesome/free-solid-svg-icons";
-import SearchBar from "../common/SearchBar.jsx";
-import Chat from "./Chat.jsx";
-import Popup from "../common/Popup.jsx";
+import SearchBar from "../../../common/search-bar/SearchBar.jsx";
+import ChatCard from "./parts/ChatCard.jsx";
+import Popup from "../../../common/popup/Popup.jsx";
 import {useState} from "react";
 import "./ChatList.css";
-import ChipSection from "../common/ChipSection.jsx";
-import RoleBased from "../common/RoleBased.js";
-import NewChat from "./NewChat.jsx";
+import ChipSection from "../../../common/chip-section/ChipSection.jsx";
+import RoleBased from "../../../common/RoleBased.js";
+import NewChat from "./popup/new-chat/NewChat.jsx";
 
 const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -66,7 +66,7 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
                 </RoleBased>
 
                 <div className="chat-icons">
-                    <div className="icon-button" onClick={openChatPopup} title="New Chat">
+                    <div className="icon-button" onClick={openChatPopup} title="New ChatCard">
                         <FontAwesomeIcon icon={faAdd}/>
                     </div>
                     {loadingChats && <LoadingSpinner size={16} color="#4285f4"/>}
@@ -79,7 +79,7 @@ const ChatList = ({chats, selectedChat, onSelectChat, loadingChats, user}) => {
 
             <div className="chat-list-scroll">
                 {filteredChats.map((chat) => (
-                    <Chat
+                    <ChatCard
                         key={chat.chatId}
                         chatId={chat.chatId}
                         height={60}

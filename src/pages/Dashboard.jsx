@@ -1,5 +1,5 @@
 import SideWindow from '../components/sidebar/SideWindow';
-import ChatWindow from '../components/container/ChatWindow';
+import ChatWindow from '../components/container/chat/ChatWindow.jsx';
 import './Dashboard.css';
 import {useState, useEffect} from 'react';
 import {sendMessage} from '../services/messageService';

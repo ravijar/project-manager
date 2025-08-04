@@ -1,6 +1,6 @@
 import React from 'react';
 import './UserDetailsCard.css';
-import Avatar from "../common/Avatar.jsx";
+import Avatar from "../../../../common/avatar/Avatar.jsx";
 
 const UserDetailsCard = ({name, email, role, avatarSrc, onClick}) => {
     return (
