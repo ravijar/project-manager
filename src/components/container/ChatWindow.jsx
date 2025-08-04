@@ -36,7 +36,7 @@ const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages}) => 
                             author={
                                 selectedChat.isGroup
                                     ? selectedChat.isAssignment
-                                        ? message.senderRole
+                                        ? message.senderRole?.charAt(0).toUpperCase() + message.senderRole?.slice(1)
                                         : message.senderName
                                     : null
                             }
