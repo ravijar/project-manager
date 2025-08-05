@@ -1,4 +1,4 @@
-import {addAssignment, getAssignment, updateAssignment} from "../firebase/firestore/assignmentsCollection.js";
+import {addAssignment, getAssignment, updateAssignment, getAllAssignments} from "../firebase/firestore/assignmentsCollection.js";
 import {addAssignmentToUser} from "../firebase/firestore/userAssignmentsCollection.js";
 import {addAssignmentField, getAllAssignmentFields} from "../firebase/firestore/assignmentFieldCollection";
 import {v4 as uuidv4} from "uuid";
@@ -87,4 +87,13 @@ export const fetchAllAssignmentFields = async () => {
 
 export const createNewAssignmentField = async (fieldName) => {
     return await addAssignmentField(fieldName);
+};
+
+export const fetchAllAssignments = async () => {
+    try {
+        return await getAllAssignments();
+    } catch (error) {
+        console.error("Failed to fetch all assignments:", error);
+        throw error;
+    }
 };

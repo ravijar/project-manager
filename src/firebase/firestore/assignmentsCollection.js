@@ -5,7 +5,9 @@ import {
     getDoc,
     updateDoc,
     arrayUnion,
-    Timestamp
+    Timestamp,
+    getDocs,
+    collection
 } from "firebase/firestore";
 
 const COLLECTION = "assignments";
@@ -82,6 +84,26 @@ export const updateAssignment = async (assignmentId, updatedFields, arrayFields 
         await updateDoc(docRef, updatePayload);
     } catch (error) {
         console.error("Failed to update assignment fields:", error);
+        throw error;
+    }
+};
+
+export const getAllAssignments = async () => {
+    try {
+        const assignmentsCollection = collection(db, COLLECTION);
+        const assignmentsSnapshot = await getDocs(assignmentsCollection);
+        
+        const assignments = [];
+        assignmentsSnapshot.forEach((doc) => {
+            assignments.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        
+        return assignments;
+    } catch (error) {
+        console.error("Error fetching all assignments:", error);
         throw error;
     }
 };

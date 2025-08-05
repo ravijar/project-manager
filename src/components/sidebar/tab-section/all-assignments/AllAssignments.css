@@ -1,0 +1,116 @@
+.all-assignments {
+    padding: 16px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.assignments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.assignments-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.assignment-count {
+    background: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #666;
+}
+
+.assignments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.assignment-item {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    transition: box-shadow 0.2s ease;
+}
+
+.assignment-item:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.assignment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.assignment-header h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+    margin-right: 8px;
+}
+
+.status-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-badge.ongoing {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.assignment-details {
+    font-size: 12px;
+    color: #666;
+}
+
+.assignment-details p {
+    margin: 4px 0;
+}
+
+.assignment-details strong {
+    color: #34495e;
+}
+
+.description {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.loading, .error, .no-assignments {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-size: 14px;
+}
+
+.error {
+    color: #e74c3c;
+}
+
+.no-assignments {
+    color: #7f8c8d;
+    font-style: italic;
+} 

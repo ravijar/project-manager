@@ -4,6 +4,7 @@ import ChatList from "./tab-section/chat/ChatList.jsx";
 import Tabs from "../common/tab-section/Tabs.jsx";
 import Tab from "../common/tab-section/Tab.js";
 import AssignmentList from "./tab-section/workspace/AssignmentList.jsx";
+import AllAssignments from "./tab-section/all-assignments/AllAssignments.jsx";
 
 const SideWindow = (
     {
@@ -41,6 +42,14 @@ const SideWindow = (
                             selectedChat={selectedChat}
                             onSelectChat={onSelectChat}
                             loadingChats={loadingChats}
+                            user={user}
+                        />
+                    }
+                />
+                <Tab
+                    name="All Assignments"
+                    component={
+                        <AllAssignments
                             user={user}
                         />
                     }
