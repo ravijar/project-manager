@@ -48,6 +48,7 @@ const SideWindow = (
                 />
                 <Tab
                     name="All Assignments"
+                    roles={["admin", "tutor"]}
                     component={
                         <AllAssignments
                             user={user}
