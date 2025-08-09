@@ -1,4 +1,4 @@
-import UserDetailsCard from "./UserDetailsCard";
+import UserDetailsCard from "./UserDetailsCard.jsx";
 import "./UserDetailsCardSection.css";
 
 const UserDetailsCardSection = ({users, onUserClick}) => {

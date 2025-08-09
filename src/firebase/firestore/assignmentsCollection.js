@@ -3,7 +3,11 @@ import {
     doc,
     setDoc,
     getDoc,
-    Timestamp
+    updateDoc,
+    arrayUnion,
+    Timestamp,
+    getDocs,
+    collection
 } from "firebase/firestore";
 
 const COLLECTION = "assignments";
@@ -36,7 +40,8 @@ export const addAssignment = async (assignmentId, initialData) => {
         tutor: null,
         admin: null,
         bidders: [],
-        status: "ongoing"
+        status: "ongoing",
+        subStatus: "uploaded"
     };
 
     try {
@@ -58,6 +63,47 @@ export const getAssignment = async (assignmentId) => {
         }
     } catch (error) {
         console.error("Error fetching assignment:", error);
+        throw error;
+    }
+};
+
+export const updateAssignment = async (assignmentId, updatedFields, arrayFields = []) => {
+    const docRef = getAssignmentDocRef(assignmentId);
+
+    try {
+        const updatePayload = {};
+
+        for (const [key, value] of Object.entries(updatedFields)) {
+            if (arrayFields.includes(key)) {
+                updatePayload[key] = arrayUnion(value);
+            } else {
+                updatePayload[key] = value;
+            }
+        }
+
+        await updateDoc(docRef, updatePayload);
+    } catch (error) {
+        console.error("Failed to update assignment fields:", error);
+        throw error;
+    }
+};
+
+export const getAllAssignments = async () => {
+    try {
+        const assignmentsCollection = collection(db, COLLECTION);
+        const assignmentsSnapshot = await getDocs(assignmentsCollection);
+        
+        const assignments = [];
+        assignmentsSnapshot.forEach((doc) => {
+            assignments.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        
+        return assignments;
+    } catch (error) {
+        console.error("Error fetching all assignments:", error);
         throw error;
     }
 };

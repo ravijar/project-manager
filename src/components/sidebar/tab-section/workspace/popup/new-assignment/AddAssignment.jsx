@@ -6,11 +6,13 @@ import {
     getFileNameFromUrl,
     getOriginalFileName,
     uploadFile
-} from "../../services/fileService";
-import LoadingSpinner from "../common/LoadingSpinner";
-import {addNewAssignment, generateAssignmentId} from "../../services/assignmentService.js";
-
-const FIELDS = ["Mathematics", "Physics", "Chemistry", "Biology", "Computer Science", "Economics", "History", "Geography"];
+} from "../../../../../../services/fileService.js";
+import LoadingSpinner from "../../../../../common/loading-spinner/LoadingSpinner.jsx";
+import {
+    addNewAssignment,
+    generateAssignmentId,
+    fetchAllAssignmentFields
+} from "../../../../../../services/assignmentService.js";
 
 const AddAssignment = ({user, onClose}) => {
     const [formData, setFormData] = useState({
@@ -21,6 +23,7 @@ const AddAssignment = ({user, onClose}) => {
         docs: [],
     });
 
+    const [availableFields, setAvailableFields] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -31,12 +34,23 @@ const AddAssignment = ({user, onClose}) => {
     useEffect(() => {
         assignmentIdRef.current = generateAssignmentId();
 
+        fetchFields();
+
         return () => {
             if (!submittedRef.current) {
                 cleanupUploadedFiles();
             }
+        };
+    }, []);
+
+    const fetchFields = async () => {
+        try {
+            const fields = await fetchAllAssignmentFields();
+            setAvailableFields(fields.map(field => field.name));
+        } catch (error) {
+            console.error("Failed to fetch fields:", error);
         }
-    }, [])
+    };
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -87,7 +101,6 @@ const AddAssignment = ({user, onClose}) => {
         }
     };
 
-
     const handleCancel = async () => {
         setLoading(true);
         await cleanupUploadedFiles();
@@ -132,7 +145,7 @@ const AddAssignment = ({user, onClose}) => {
 
             <select name="field" value={formData.field} onChange={handleInputChange}>
                 <option value="" disabled>Select Field</option>
-                {FIELDS.map((field) => (
+                {availableFields.map((field) => (
                     <option key={field} value={field}>{field}</option>
                 ))}
             </select>

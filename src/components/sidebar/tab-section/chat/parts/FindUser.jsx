@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from "react";
-import SearchBar from "../common/SearchBar";
+import SearchBar from "../../../../common/search-bar/SearchBar.jsx";
 import "./FindUser.css";
-import LoadingSpinner from "../common/LoadingSpinner";
-import {findNewUsers, findUsers} from "../../services/userService";
-import ChipSection from "../common/ChipSection";
-import RoleBased from "../common/RoleBased.js";
+import LoadingSpinner from "../../../../common/loading-spinner/LoadingSpinner.jsx";
+import {findNewUsers, findUsers} from "../../../../../services/userService.js";
+import ChipSection from "../../../../common/chip-section/ChipSection.jsx";
+import RoleBased from "../../../../common/RoleBased.js";
 import UserDetailsCardSection from "./UserDetailsCardSection.jsx";
 
 const FindUser = ({currentUser, onUserSelected, isGroupChat}) => {

@@ -2,8 +2,8 @@ import React, {useState} from "react";
 import "./FooterBar.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPaperclip} from "@fortawesome/free-solid-svg-icons";
-import Popup from "../common/Popup";
-import FileUpload from "./FileUpload.jsx";
+import Popup from "../../../common/popup/Popup.jsx";
+import FileUpload from "../popup/file-upload/FileUpload.jsx";
 
 const FooterBar = ({onSendMessage, chatId}) => {
     const [message, setMessage] = useState("");

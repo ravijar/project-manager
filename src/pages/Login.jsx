@@ -1,5 +1,5 @@
 import "./Login.css";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import LoadingSpinner from "../components/common/loading-spinner/LoadingSpinner.jsx";
 import googleLogo from "../assets/google-logo.png";
 
 const Login = ({onSignIn, loading, error, selectedRole}) => {
