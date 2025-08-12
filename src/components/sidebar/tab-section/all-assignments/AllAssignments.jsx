@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import SearchBar from "../../../common/search-bar/SearchBar.jsx";
 import ChipSection from "../../../common/chip-section/ChipSection.jsx";
 import RoleBased from "../../../common/RoleBased.js";
-import { fetchAllAssignments, assignAdminToAssignment, assignTutorToAssignment, addBidToAssignment } from '../../../../services/assignmentService.js';
+import { fetchAllAssignments, assignAdminToAssignment, assignTutorToAssignment, addBidToAssignment, updateAssignmentSubStatus } from '../../../../services/assignmentService.js';
 import AdminAssignmentPopup from "./assignments-popup/AdminAssignmentPopup.jsx";
 import TutorAssignmentPopup from "./assignments-popup/TutorAssignmentPopup.jsx";
 import './AllAssignments.css';
@@ -115,38 +115,70 @@ const AllAssignments = ({ user }) => {
     };
 
 
-    // Tutor bid handler
+    // Tutor bid handler (no local subStatus change)
     const handlePlaceBid = async (assignment, amount) => {
         try {
-          setIsBidding(true);
-          await addBidToAssignment(assignment.id, user.id, amount);
-      
-          console.log(
-            `Bid of ${amount} successfully placed by user ${user.id} on assignment ${assignment.id}`
-          );
-      
-          // Optional: update local state so UI reflects immediately
+            const value = Number(amount);
+            if (!Number.isFinite(value) || value <= 0) {
+                console.error("Invalid bid amount:", amount);
+                return;
+            }
+
+            setIsBidding(true);
+            await addBidToAssignment(assignment.id, user.id, value);
+
+            console.log(
+                `Bid of ${value} successfully placed by user ${user.id} on assignment ${assignment.id}`
+            );
+
+            // Optimistic UI: append/replace this user's bid locally
+            setAssignments((prev) =>
+                prev.map((a) => {
+                    if (a.id !== assignment.id) return a;
+
+                    const prevBidders = Array.isArray(a.bidders) ? a.bidders : [];
+                    const existingIdx = prevBidders.findIndex(
+                        (b) => b.bidderId === user.id
+                    );
+
+                    let nextBidders;
+                    if (existingIdx >= 0) {
+                        nextBidders = [...prevBidders];
+                        nextBidders[existingIdx] = { bidderId: user.id, bid: value };
+                    } else {
+                        nextBidders = [...prevBidders, { bidderId: user.id, bid: value }];
+                    }
+
+                    return {
+                        ...a,
+                        bidders: nextBidders,
+                        // subStatus is not changed here — admin controls that
+                    };
+                })
+            );
+        } catch (err) {
+            console.error("Place bid failed:", err);
+        } finally {
+            setIsBidding(false);
+            handleClosePopup();
+        }
+    };
+
+
+    const handleMarkBidding = async (assignment) => {
+        try {
+          await updateAssignmentSubStatus(assignment.id, "bidding");
           setAssignments((prev) =>
             prev.map((a) =>
-              a.id === assignment.id
-                ? {
-                    ...a,
-                    subStatus: "bidding",
-                    bidders: Array.isArray(a.bidders)
-                      ? [...a.bidders, { bidderId: user.id, bid: amount }]
-                      : [{ bidderId: user.id, bid: amount }],
-                  }
-                : a
+              a.id === assignment.id ? { ...a, subStatus: "bidding" } : a
             )
           );
+          console.log(`SubStatus set to bidding for ${assignment.id}`);
         } catch (err) {
-          console.error("Place bid failed:", err);
-        } finally {
-          setIsBidding(false);
-          handleClosePopup();
+          console.error("Failed to update subStatus:", err);
         }
       };
-      
+
     return (
         <RoleBased roles={["admin", "tutor"]} currentRole={user.role}>
             {loading ? (
@@ -218,6 +250,7 @@ const AllAssignments = ({ user }) => {
                         assignment={selectedAssignment}
                         onClose={handleClosePopup}
                         onSelfAssign={handleSelfAssign}
+                        onMarkBidding={handleMarkBidding}
                         isAssigning={isAssigning}
                     />
                 ) : (

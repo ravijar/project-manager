@@ -61,25 +61,22 @@ export const assignTutorToAssignment = async (assignmentId, tutorUserId) => {
 
 export const addBidToAssignment = async (assignmentId, bidderId, bidAmount) => {
     try {
-        const assignment = await fetchAssignmentById(assignmentId);
-        const updates = {
-            bidders: { bidderId, bid: bidAmount }
-        };
-
-        if (assignment.subStatus !== "bidding") {
-            updates.subStatus = "bidding";
-        }
-
-        await updateAssignment(
-            assignmentId,
-            updates,
-            ["bidders"]
-        );
+      const updates = {
+        bidders: { bidderId, bid: bidAmount },
+      };
+  
+      await updateAssignment(
+        assignmentId,
+        updates,
+        ["bidders"] // keep your merge/field-mask behavior if needed
+      );
+      console.log(`Bid added by ${bidderId} on ${assignmentId}: ${bidAmount}`);
     } catch (error) {
-        console.error("Failed to add bid to assignment:", error);
-        throw error;
+      console.error("Failed to add bid to assignment:", error);
+      throw error;
     }
-};
+  };
+  
 
 export const fetchAllAssignmentFields = async () => {
     return await getAllAssignmentFields();
@@ -97,3 +94,16 @@ export const fetchAllAssignments = async () => {
         throw error;
     }
 };
+
+export const updateAssignmentSubStatus = async (assignmentId, newSubStatus) => {
+    try {
+      if (!newSubStatus) throw new Error("newSubStatus is required");
+      await updateAssignment(assignmentId, { subStatus: newSubStatus });
+      console.log(`SubStatus of ${assignmentId} set to ${newSubStatus}`);
+    } catch (error) {
+      console.error("Failed to update subStatus:", error);
+      throw error;
+    }
+  };
+
+  

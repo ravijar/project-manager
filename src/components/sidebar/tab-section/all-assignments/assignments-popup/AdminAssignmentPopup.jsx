@@ -6,6 +6,7 @@ const AdminAssignmentPopup = ({
   assignment,
   onClose,
   onSelfAssign,
+  onMarkBidding,
   isAssigning = false,
 }) => {
   const formatDate = (d) =>
@@ -86,6 +87,13 @@ const AdminAssignmentPopup = ({
             title="Assign this to yourself"
           >
             {isAssigning ? "Assigning..." : "Self Assign"}
+          </button>
+          <button
+            className="btn"
+            onClick={() => onMarkBidding?.(assignment)}
+            title="Mark this assignment as Bidding"
+          >
+            Set Sub Status: bidding
           </button>
         </div>
       </div>
