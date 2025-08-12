@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import SearchBar from "../../../common/search-bar/SearchBar.jsx";
 import ChipSection from "../../../common/chip-section/ChipSection.jsx";
 import RoleBased from "../../../common/RoleBased.js";
-import { fetchAllAssignments } from '../../../../services/assignmentService.js';
+import { fetchAllAssignments, assignAdminToAssignment, assignTutorToAssignment, addBidToAssignment } from '../../../../services/assignmentService.js';
 import AdminAssignmentPopup from "./assignments-popup/AdminAssignmentPopup.jsx";
 import TutorAssignmentPopup from "./assignments-popup/TutorAssignmentPopup.jsx";
 import './AllAssignments.css';
@@ -43,7 +43,7 @@ const AllAssignments = ({ user }) => {
             value: field,
             label: field
         }));
-        
+
         return [
             { value: 'all', label: 'All' },
             ...fieldOptions
@@ -53,30 +53,30 @@ const AllAssignments = ({ user }) => {
     // Filter assignments based on search term and selected field
     const filteredAssignments = useMemo(() => {
         return assignments.filter((assignment) => {
-            // Role-based subStatus filtering
-            if (user.role === "admin" && assignment.subStatus !== "uploaded") {
-                return false;
-            }
-            if (user.role === "tutor" && assignment.subStatus !== "admin_assigned") {
-                return false;
-            }
-    
+            // // Role-based subStatus filtering
+            // if (user.role === "admin" && assignment.subStatus !== "uploaded") {
+            //     return false;
+            // }
+            // if (user.role === "tutor" && assignment.subStatus !== "admin_assigned") {
+            //     return false;
+            // }
+
             const lowerSearch = searchTerm.toLowerCase();
-    
-            const matchesSearch = 
+
+            const matchesSearch =
                 assignment.name?.toLowerCase().includes(lowerSearch) ||
                 assignment.field?.toLowerCase().includes(lowerSearch) ||
                 assignment.description?.toLowerCase().includes(lowerSearch);
-    
-            const matchesType = 
+
+            const matchesType =
                 !selectedType || selectedType === 'all' || selectedType === ''
-                    ? true 
+                    ? true
                     : assignment.field === selectedType;
-    
+
             return matchesSearch && matchesType;
         });
     }, [assignments, searchTerm, selectedType, user.role]);
-    
+
 
     // Handle opening assignment popup
     const handleAssignmentClick = (assignment) => {
@@ -94,8 +94,18 @@ const AllAssignments = ({ user }) => {
     const handleSelfAssign = async (assignment) => {
         try {
             setIsAssigning(true);
-            // TODO: Implement service call to self-assign
-            console.log("Self-assigning assignment:", assignment.id);
+            await assignAdminToAssignment(assignment.id, user.id); // Calls service
+            console.log(`Admin ${user.id} assigned to ${assignment.id}`);
+
+            // Optionally update local state so UI reflects immediately
+            setAssignments((prev) =>
+                prev.map((a) =>
+                    a.id === assignment.id
+                        ? { ...a, admin: user.id, subStatus: "admin_assigned" }
+                        : a
+                )
+            );
+
         } catch (err) {
             console.error("Self-assign failed:", err);
         } finally {
@@ -104,20 +114,39 @@ const AllAssignments = ({ user }) => {
         }
     };
 
-    // Tutor bid handler
-    const handlePlaceBid = async (assignment) => {
-        try {
-            setIsBidding(true);
-            // TODO: Implement service call to place bid
-            console.log("Placing bid for assignment:", assignment.id);
-        } catch (err) {
-            console.error("Place bid failed:", err);
-        } finally {
-            setIsBidding(false);
-            handleClosePopup();
-        }
-    };
 
+    // Tutor bid handler
+    const handlePlaceBid = async (assignment, amount) => {
+        try {
+          setIsBidding(true);
+          await addBidToAssignment(assignment.id, user.id, amount);
+      
+          console.log(
+            `Bid of ${amount} successfully placed by user ${user.id} on assignment ${assignment.id}`
+          );
+      
+          // Optional: update local state so UI reflects immediately
+          setAssignments((prev) =>
+            prev.map((a) =>
+              a.id === assignment.id
+                ? {
+                    ...a,
+                    subStatus: "bidding",
+                    bidders: Array.isArray(a.bidders)
+                      ? [...a.bidders, { bidderId: user.id, bid: amount }]
+                      : [{ bidderId: user.id, bid: amount }],
+                  }
+                : a
+            )
+          );
+        } catch (err) {
+          console.error("Place bid failed:", err);
+        } finally {
+          setIsBidding(false);
+          handleClosePopup();
+        }
+      };
+      
     return (
         <RoleBased roles={["admin", "tutor"]} currentRole={user.role}>
             {loading ? (
@@ -133,31 +162,31 @@ const AllAssignments = ({ user }) => {
                     {/* Search and Filter Section */}
                     <div className="filters-section">
                         {uniqueFields.length > 0 && (
-                            <ChipSection 
+                            <ChipSection
                                 chips={uniqueFields}
                                 activeValue={selectedType}
                                 setActiveValue={setSelectedType}
                             />
                         )}
-                        <SearchBar 
+                        <SearchBar
                             value={searchTerm}
                             onChange={setSearchTerm}
                             placeholder="Search assignments..."
                         />
                     </div>
-                    
+
                     <div className="assignments-list">
                         {filteredAssignments.length === 0 ? (
                             <div className="no-assignments">
-                                {assignments.length === 0 
-                                    ? "No assignments found." 
+                                {assignments.length === 0
+                                    ? "No assignments found."
                                     : "No assignments match your search criteria."
                                 }
                             </div>
                         ) : (
                             filteredAssignments.map((assignment) => (
-                                <div 
-                                    key={assignment.id} 
+                                <div
+                                    key={assignment.id}
                                     className="assignment-item clickable"
                                     onClick={() => handleAssignmentClick(assignment)}
                                 >
@@ -167,7 +196,7 @@ const AllAssignments = ({ user }) => {
                                             {assignment.status}
                                         </span>
                                     </div>
-                                    
+
                                     <div className="assignment-details">
                                         <p><strong>Field:</strong> {assignment.field}</p>
                                         <p><strong>Sub Status:</strong> {assignment.subStatus}</p>
@@ -181,7 +210,7 @@ const AllAssignments = ({ user }) => {
                     </div>
                 </div>
             )}
-            
+
             {/* Role-based popups */}
             {showPopup && selectedAssignment && (
                 user.role === "admin" ? (
