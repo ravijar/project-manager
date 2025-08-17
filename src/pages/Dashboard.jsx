@@ -130,38 +130,42 @@ const Dashboard = ({user, handleSignOut}) => {
         }
     };
 
-    const handleNewMessage = async (newMessage, isFile = false) => {
-        if (!selectedChat) {
-            console.error("No chat selected.");
+    const handleNewMessage = async (chat, newMessage, isFile = false) => {
+        if (!chat) {
+            console.error("No chat provided.");
             return;
         }
 
-        setMessages((prevMessages) => [...prevMessages, createLocalMessage(newMessage, isFile)]);
+        const localMsg = createLocalMessage(newMessage, isFile);
+        setMessages((prev) => [...prev, localMsg]);
 
-        if (selectedChat.isAssignment && selectedChat.assignment?.chatIds) {
-            const { group, tutor, student } = selectedChat.assignment.chatIds || {};
-            if (selectedChat.chatId === group) {
-                setAssignmentMessages(prev => ({ ...prev, group: [...prev.group, createLocalMessage(newMessage, isFile)] }));
-            } else if (selectedChat.chatId === tutor) {
-                setAssignmentMessages(prev => ({ ...prev, tutor: [...prev.tutor, createLocalMessage(newMessage, isFile)] }));
-            } else if (selectedChat.chatId === student) {
-                setAssignmentMessages(prev => ({ ...prev, student: [...prev.student, createLocalMessage(newMessage, isFile)] }));
+        if (chat.isAssignment && chat.assignment?.chatIds) {
+            const { group, tutor, student } = chat.assignment.chatIds || {};
+            const id = chat.chatId;
+            if (id === group) {
+                setAssignmentMessages((prev) => ({ ...prev, group: [...prev.group, localMsg] }));
+            } else if (id === tutor) {
+                setAssignmentMessages((prev) => ({ ...prev, tutor: [...prev.tutor, localMsg] }));
+            } else if (id === student) {
+                setAssignmentMessages((prev) => ({ ...prev, student: [...prev.student, localMsg] }));
             }
         }
 
         try {
-            await sendMessage(selectedChat.chatId, user, newMessage, isFile);
+            await sendMessage(chat.chatId, user, newMessage, isFile);
         } catch (error) {
             console.error("Failed to send message:", error);
-            setMessages((prevMessages) => prevMessages.filter((msg) => msg.text !== newMessage));
-            if (selectedChat.isAssignment && selectedChat.assignment?.chatIds) {
-                const { group, tutor, student } = selectedChat.assignment.chatIds || {};
-                if (selectedChat.chatId === group) {
-                    setAssignmentMessages(prev => ({ ...prev, group: prev.group.filter((m) => m.text !== newMessage) }));
-                } else if (selectedChat.chatId === tutor) {
-                    setAssignmentMessages(prev => ({ ...prev, tutor: prev.tutor.filter((m) => m.text !== newMessage) }));
-                } else if (selectedChat.chatId === student) {
-                    setAssignmentMessages(prev => ({ ...prev, student: prev.student.filter((m) => m.text !== newMessage) }));
+            setMessages((prev) => prev.filter((m) => m.text !== newMessage));
+
+            if (chat.isAssignment && chat.assignment?.chatIds) {
+                const { group, tutor, student } = chat.assignment.chatIds || {};
+                const id = chat.chatId;
+                if (id === group) {
+                    setAssignmentMessages((prev) => ({ ...prev, group: prev.group.filter((m) => m.text !== newMessage) }));
+                } else if (id === tutor) {
+                    setAssignmentMessages((prev) => ({ ...prev, tutor: prev.tutor.filter((m) => m.text !== newMessage) }));
+                } else if (id === student) {
+                    setAssignmentMessages((prev) => ({ ...prev, student: prev.student.filter((m) => m.text !== newMessage) }));
                 }
             }
         }
