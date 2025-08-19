@@ -8,9 +8,14 @@ const AdminAssignmentPopup = ({
   onSelfAssign,
   onMarkBidding,
   isAssigning = false,
+  isMarkingBidding = false, // NEW: for disabling “Enable Bidding” while processing
 }) => {
   const formatDate = (d) =>
     d?.toDate?.() ? d.toDate().toLocaleDateString() : d;
+
+  const isUploaded = assignment?.subStatus === "uploaded";
+  const isAdminAssigned = assignment?.subStatus === "admin_assigned";
+  // const isBidding = assignment?.subStatus === "bidding"; // (not used, but here if you need)
 
   return (
     <Popup onClose={onClose} width="600px">
@@ -80,21 +85,29 @@ const AdminAssignmentPopup = ({
         </div>
 
         <div className="popup-actions">
-          <button
-            className="btn primary"
-            onClick={() => onSelfAssign?.(assignment)}
-            disabled={isAssigning}
-            title="Assign this to yourself"
-          >
-            {isAssigning ? "Assigning..." : "Self Assign"}
-          </button>
-          <button
-            className="btn"
-            onClick={() => onMarkBidding?.(assignment)}
-            title="Mark this assignment as Bidding"
-          >
-            Set Sub Status: bidding
-          </button>
+          {/* Only show when subStatus is 'uploaded' */}
+          {isUploaded && (
+            <button
+              className="btn primary"
+              onClick={() => onSelfAssign?.(assignment)}
+              disabled={isAssigning}
+              title="Assign this to yourself"
+            >
+              {isAssigning ? "Assigning..." : "Self Assign"}
+            </button>
+          )}
+
+          {/* Only show after self-assign → 'admin_assigned' */}
+          {isAdminAssigned && (
+            <button
+              className="btn"
+              onClick={() => onMarkBidding?.(assignment)}
+              disabled={isMarkingBidding}
+              title="Enable bidding for this assignment"
+            >
+              {isMarkingBidding ? "Enabling..." : "Enable Bidding"}
+            </button>
+          )}
         </div>
       </div>
     </Popup>

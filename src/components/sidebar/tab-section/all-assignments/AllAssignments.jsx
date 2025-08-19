@@ -2,7 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import SearchBar from "../../../common/search-bar/SearchBar.jsx";
 import ChipSection from "../../../common/chip-section/ChipSection.jsx";
 import RoleBased from "../../../common/RoleBased.js";
-import { fetchAllAssignments, assignAdminToAssignment, assignTutorToAssignment, addBidToAssignment, updateAssignmentSubStatus } from '../../../../services/assignmentService.js';
+import {
+    fetchAllAssignments,
+    assignAdminToAssignment,
+    assignTutorToAssignment,
+    addBidToAssignment,
+    updateAssignmentSubStatus
+} from '../../../../services/assignmentService.js';
 import AdminAssignmentPopup from "./assignments-popup/AdminAssignmentPopup.jsx";
 import TutorAssignmentPopup from "./assignments-popup/TutorAssignmentPopup.jsx";
 import './AllAssignments.css';
@@ -18,6 +24,7 @@ const AllAssignments = ({ user }) => {
 
     const [isAssigning, setIsAssigning] = useState(false);
     const [isBidding, setIsBidding] = useState(false);
+    const [isMarkingBidding, setIsMarkingBidding] = useState(false); // NEW
 
     useEffect(() => {
         const loadAssignments = async () => {
@@ -36,7 +43,6 @@ const AllAssignments = ({ user }) => {
         loadAssignments();
     }, []);
 
-    // Extract unique fields for chip options
     const uniqueFields = useMemo(() => {
         const fields = [...new Set(assignments.map(assignment => assignment.field))];
         const fieldOptions = fields.filter(field => field).map(field => ({
@@ -50,17 +56,8 @@ const AllAssignments = ({ user }) => {
         ];
     }, [assignments]);
 
-    // Filter assignments based on search term and selected field
     const filteredAssignments = useMemo(() => {
         return assignments.filter((assignment) => {
-            // // Role-based subStatus filtering
-            // if (user.role === "admin" && assignment.subStatus !== "uploaded") {
-            //     return false;
-            // }
-            // if (user.role === "tutor" && assignment.subStatus !== "admin_assigned") {
-            //     return false;
-            // }
-
             const lowerSearch = searchTerm.toLowerCase();
 
             const matchesSearch =
@@ -77,45 +74,47 @@ const AllAssignments = ({ user }) => {
         });
     }, [assignments, searchTerm, selectedType, user.role]);
 
-
-    // Handle opening assignment popup
     const handleAssignmentClick = (assignment) => {
         setSelectedAssignment(assignment);
         setShowPopup(true);
     };
 
-    // Handle closing popup
     const handleClosePopup = () => {
         setShowPopup(false);
         setSelectedAssignment(null);
     };
 
-    // Admin self-assign handler
+    // ADMIN: Self-assign — service returns the updated assignment; keep popup open.
     const handleSelfAssign = async (assignment) => {
         try {
             setIsAssigning(true);
-            await assignAdminToAssignment(assignment.id, user.id); // Calls service
-            console.log(`Admin ${user.id} assigned to ${assignment.id}`);
 
-            // Optionally update local state so UI reflects immediately
+            // Service MUST return the updated assignment (with admin + subStatus)
+            const updated = await assignAdminToAssignment(assignment.id, user.id);
+
+            // Update list
             setAssignments((prev) =>
-                prev.map((a) =>
-                    a.id === assignment.id
-                        ? { ...a, admin: user.id, subStatus: "admin_assigned" }
-                        : a
-                )
+                prev.map((a) => (a.id === updated.id ? updated : a))
             );
 
+            // Update the open popup object so UI shows "Enable Bidding"
+            setSelectedAssignment((prev) =>
+                prev?.id === updated.id ? updated : prev
+            );
+
+            console.log(
+                `Admin ${user.id} assigned; subStatus → ${updated.subStatus} for ${updated.id}`
+            );
         } catch (err) {
             console.error("Self-assign failed:", err);
         } finally {
             setIsAssigning(false);
-            handleClosePopup();
+            // Do NOT close the popup here
         }
     };
 
 
-    // Tutor bid handler (no local subStatus change)
+    // TUTOR: Place bid (unchanged)
     const handlePlaceBid = async (assignment, amount) => {
         try {
             const value = Number(amount);
@@ -127,11 +126,6 @@ const AllAssignments = ({ user }) => {
             setIsBidding(true);
             await addBidToAssignment(assignment.id, user.id, value);
 
-            console.log(
-                `Bid of ${value} successfully placed by user ${user.id} on assignment ${assignment.id}`
-            );
-
-            // Optimistic UI: append/replace this user's bid locally
             setAssignments((prev) =>
                 prev.map((a) => {
                     if (a.id !== assignment.id) return a;
@@ -149,11 +143,7 @@ const AllAssignments = ({ user }) => {
                         nextBidders = [...prevBidders, { bidderId: user.id, bid: value }];
                     }
 
-                    return {
-                        ...a,
-                        bidders: nextBidders,
-                        // subStatus is not changed here — admin controls that
-                    };
+                    return { ...a, bidders: nextBidders };
                 })
             );
         } catch (err) {
@@ -164,20 +154,32 @@ const AllAssignments = ({ user }) => {
         }
     };
 
-
+    // ADMIN: Enable bidding → subStatus: 'bidding' (keep popup open is fine)
     const handleMarkBidding = async (assignment) => {
         try {
-          await updateAssignmentSubStatus(assignment.id, "bidding");
-          setAssignments((prev) =>
-            prev.map((a) =>
-              a.id === assignment.id ? { ...a, subStatus: "bidding" } : a
-            )
-          );
-          console.log(`SubStatus set to bidding for ${assignment.id}`);
+            setIsMarkingBidding(true);
+            await updateAssignmentSubStatus(assignment.id, "bidding");
+
+            setAssignments((prev) =>
+                prev.map((a) =>
+                    a.id === assignment.id ? { ...a, subStatus: "bidding" } : a
+                )
+            );
+
+            // reflect in the open popup
+            setSelectedAssignment((prev) =>
+                prev && prev.id === assignment.id
+                    ? { ...prev, subStatus: "bidding" }
+                    : prev
+            );
+
+            console.log(`SubStatus → bidding for ${assignment.id}`);
         } catch (err) {
-          console.error("Failed to update subStatus:", err);
+            console.error("Failed to update subStatus:", err);
+        } finally {
+            setIsMarkingBidding(false);
         }
-      };
+    };
 
     return (
         <RoleBased roles={["admin", "tutor"]} currentRole={user.role}>
@@ -191,7 +193,6 @@ const AllAssignments = ({ user }) => {
                 </div>
             ) : (
                 <div className="all-assignments">
-                    {/* Search and Filter Section */}
                     <div className="filters-section">
                         {uniqueFields.length > 0 && (
                             <ChipSection
@@ -233,7 +234,12 @@ const AllAssignments = ({ user }) => {
                                         <p><strong>Field:</strong> {assignment.field}</p>
                                         <p><strong>Sub Status:</strong> {assignment.subStatus}</p>
                                         {assignment.dueBy && (
-                                            <p><strong>Due:</strong> {assignment.dueBy.toDate?.() ? assignment.dueBy.toDate().toLocaleDateString() : assignment.dueBy}</p>
+                                            <p>
+                                                <strong>Due:</strong>{" "}
+                                                {assignment.dueBy.toDate?.()
+                                                    ? assignment.dueBy.toDate().toLocaleDateString()
+                                                    : assignment.dueBy}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
@@ -252,6 +258,7 @@ const AllAssignments = ({ user }) => {
                         onSelfAssign={handleSelfAssign}
                         onMarkBidding={handleMarkBidding}
                         isAssigning={isAssigning}
+                        isMarkingBidding={isMarkingBidding} // NEW
                     />
                 ) : (
                     <TutorAssignmentPopup
