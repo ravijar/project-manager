@@ -54,7 +54,7 @@ export const getChat = async (chatId) => {
     }
 };
 
-export const addMessageToChat = async (chatId, senderId, senderName, senderRole, message, isFile) => {
+export const addMessageToChat = async (chatId, senderId, senderName, senderRole, message, isFile, isForwarded=false) => {
     try {
         await addDoc(getMessagesCollectionRef(chatId), {
             senderId,
@@ -63,6 +63,7 @@ export const addMessageToChat = async (chatId, senderId, senderName, senderRole,
             message,
             isFile,
             timestamp: getCurrentTimestamp(),
+            isForwarded
         });
     } catch (error) {
         console.error("Error adding message to chat:", error);
