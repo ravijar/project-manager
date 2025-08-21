@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./Workspace.css";
 import ChatWindow from "../chat/ChatWindow.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const GUTTER_SIZE = 2;
 const MIN_TOP_PX = 120;
 const MIN_CHAT_PX = 240;
 
-const Workspace = ({ topPanel = null, leftChatProps = {}, rightChatProps = {} }) => {
+const Workspace = ({ topPanel = null, leftChatProps = {}, rightChatProps = {}, midForwardProps = null }) => {
     const gridRef = useRef(null);
 
     const [topPx, setTopPx] = useState(220);
@@ -178,6 +180,25 @@ const Workspace = ({ topPanel = null, leftChatProps = {}, rightChatProps = {} })
                             onTouchStart={onColDown}
                             aria-label="Resize chat panels"
                         />
+
+                        {twoChats && midForwardProps?.show ? (
+                            <div className="forward-btn-area">
+                                <button
+                                    className="mid-forward-button"
+                                    onClick={midForwardProps.onForward}
+                                    title={
+                                        midForwardProps.direction === "student-to-tutor"
+                                            ? "Forward Student → Tutor"
+                                            : "Forward Tutor → Student"
+                                    }
+                                >
+                                    <FontAwesomeIcon
+                                        icon={midForwardProps.direction === "student-to-tutor" ? faArrowRight : faArrowLeft}
+                                        size="lg"
+                                    />
+                                </button>
+                            </div>
+                        ) : null}
 
                         <div className="workspace-right">
                             {hasRight ? (

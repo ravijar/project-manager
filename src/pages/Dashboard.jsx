@@ -178,19 +178,23 @@ const Dashboard = ({user, handleSignOut}) => {
     };
 
     const toggleSelectStudent = (id) => {
+        if (selectedTutorIds.size > 0) return;
         setSelectedStudentIds(prev => {
             const n = new Set(prev);
             if (n.has(id)) n.delete(id); else n.add(id);
             return n;
         });
     };
+
     const toggleSelectTutor = (id) => {
+        if (selectedStudentIds.size > 0) return;
         setSelectedTutorIds(prev => {
             const n = new Set(prev);
             if (n.has(id)) n.delete(id); else n.add(id);
             return n;
         });
     };
+
     const clearSelections = () => {
         setSelectedStudentIds(new Set());
         setSelectedTutorIds(new Set());
@@ -201,7 +205,10 @@ const Dashboard = ({user, handleSignOut}) => {
         const tutorChat = selectedAssignmentChats?.tutor;
         if (!studentChat || !tutorChat) return;
 
-        if (forwardDirection === "student-to-tutor") {
+        const dir = leftHasSel ? "student-to-tutor" : rightHasSel ? "tutor-to-student" : null;
+        if (!dir) return;
+
+        if (dir === "student-to-tutor") {
             const sourceMsgs = assignmentMessages.student.filter(m => selectedStudentIds.has(m.id));
             for (const m of sourceMsgs) {
                 await sendMessage(tutorChat.chatId, user, m.text, !!m.isFile, true);
@@ -214,6 +221,10 @@ const Dashboard = ({user, handleSignOut}) => {
         }
         clearSelections();
     };
+
+    const leftHasSel = selectedStudentIds.size > 0;
+    const rightHasSel = selectedTutorIds.size > 0;
+    const effectiveDirection = leftHasSel ? "student-to-tutor" : rightHasSel ? "tutor-to-student" : "student-to-tutor";
 
     return (
         <div className="container">
@@ -238,26 +249,6 @@ const Dashboard = ({user, handleSignOut}) => {
 
             {!loadingChats && !chatsError && selectedChat && selectedChat?.isAssignment && (
                 <Workspace
-                    topPanel={
-                        (selectedAssignmentChats?.student && selectedAssignmentChats?.tutor) ? (
-                            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,width:"100%"}}>
-                                <button
-                                    onClick={() => setForwardDirection(d => d === "student-to-tutor" ? "tutor-to-student" : "student-to-tutor")}
-                                >
-                                    {forwardDirection === "student-to-tutor" ? "Student → Tutor" : "Tutor → Student"}
-                                </button>
-                                <button
-                                    onClick={handleForward}
-                                    disabled={
-                                        (forwardDirection === "student-to-tutor" && selectedStudentIds.size === 0) ||
-                                        (forwardDirection === "tutor-to-student" && selectedTutorIds.size === 0)
-                                    }
-                                >
-                                    Forward
-                                </button>
-                            </div>
-                        ) : null
-                    }
                     leftChatProps={
                         selectedAssignmentChats?.student
                             ? {
@@ -265,7 +256,7 @@ const Dashboard = ({user, handleSignOut}) => {
                                 selectedChat: selectedAssignmentChats?.student,
                                 onNewMessage: handleNewMessage,
                                 loadingMessages,
-                                selectable: true,
+                                selectable: !rightHasSel,
                                 selectedIds: selectedStudentIds,
                                 onToggleSelect: toggleSelectStudent
                             }
@@ -278,12 +269,17 @@ const Dashboard = ({user, handleSignOut}) => {
                                 selectedChat: selectedAssignmentChats?.tutor,
                                 onNewMessage: handleNewMessage,
                                 loadingMessages,
-                                selectable: true,
+                                selectable: !leftHasSel,
                                 selectedIds: selectedTutorIds,
                                 onToggleSelect: toggleSelectTutor
                             }
                             : {}
                     }
+                    midForwardProps={{
+                        show: !!(selectedAssignmentChats?.student && selectedAssignmentChats?.tutor && (leftHasSel || rightHasSel)),
+                        direction: effectiveDirection,
+                        onForward: handleForward
+                    }}
                 />
             )}
         </div>
