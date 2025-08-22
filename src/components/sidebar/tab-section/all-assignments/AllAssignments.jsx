@@ -43,18 +43,24 @@ const AllAssignments = ({ user }) => {
         loadAssignments();
     }, []);
 
-    const uniqueFields = useMemo(() => {
-        const fields = [...new Set(assignments.map(assignment => assignment.field))];
-        const fieldOptions = fields.filter(field => field).map(field => ({
-            value: field,
-            label: field
-        }));
+    const uniqueSubStatuses = useMemo(() => {
+        const subs = [...new Set(assignments.map(a => a.subStatus))];
+
+        const subsOptions = subs
+            .filter(s => s)
+            .map(s => ({
+                value: s,
+                label: s
+                    .replace(/_/g, " ")                 // underscores → spaces
+                    .replace(/\b\w/g, c => c.toUpperCase()) // capitalize each word
+            }));
 
         return [
             { value: 'all', label: 'All' },
-            ...fieldOptions
+            ...subsOptions
         ];
     }, [assignments]);
+
 
     const filteredAssignments = useMemo(() => {
         return assignments.filter((assignment) => {
@@ -68,11 +74,12 @@ const AllAssignments = ({ user }) => {
             const matchesType =
                 !selectedType || selectedType === 'all' || selectedType === ''
                     ? true
-                    : assignment.field === selectedType;
+                    : assignment.subStatus === selectedType;
 
             return matchesSearch && matchesType;
         });
     }, [assignments, searchTerm, selectedType, user.role]);
+
 
     const handleAssignmentClick = (assignment) => {
         setSelectedAssignment(assignment);
@@ -178,6 +185,7 @@ const AllAssignments = ({ user }) => {
             console.error("Failed to update subStatus:", err);
         } finally {
             setIsMarkingBidding(false);
+            handleClosePopup();
         }
     };
 
@@ -194,9 +202,9 @@ const AllAssignments = ({ user }) => {
             ) : (
                 <div className="all-assignments">
                     <div className="filters-section">
-                        {uniqueFields.length > 0 && (
+                        {uniqueSubStatuses.length > 0 && (
                             <ChipSection
-                                chips={uniqueFields}
+                                chips={uniqueSubStatuses}
                                 activeValue={selectedType}
                                 setActiveValue={setSelectedType}
                             />
