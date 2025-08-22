@@ -276,3 +276,87 @@
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
+
+
+/* Horizontal layout when bidding is visible */
+.popup-horizontal {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+/* Let each side grow */
+.popup-horizontal .assignment-popup {
+    flex: 1 1 0;
+    min-width: 0;
+}
+.bidding-panel {
+    margin-top: 16px;
+    flex: 1 1 0;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.bidding-panel h3 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    color: #2c3e50;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+}
+
+.no-bids {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* Bids table */
+.bids-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.bids-table thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: #34495e;
+    border-bottom: 1px solid #e6e9ef;
+    padding: 8px;
+}
+
+.bids-table tbody td {
+    font-size: 14px;
+    color: #555;
+    border-bottom: 1px solid #f0f2f6;
+    padding: 8px;
+    vertical-align: middle;
+}
+
+.bids-table tbody tr:hover {
+    background: #f9fbff;
+}
+
+.mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Truncate long bidder IDs but keep them copyable */
+.truncate {
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Stack panels on small screens */
+@media (max-width: 760px) {
+    .popup-horizontal {
+        flex-direction: column;
+    }
+}

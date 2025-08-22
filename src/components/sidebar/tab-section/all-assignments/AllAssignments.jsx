@@ -24,7 +24,9 @@ const AllAssignments = ({ user }) => {
 
     const [isAssigning, setIsAssigning] = useState(false);
     const [isBidding, setIsBidding] = useState(false);
-    const [isMarkingBidding, setIsMarkingBidding] = useState(false); // NEW
+    const [isMarkingBidding, setIsMarkingBidding] = useState(false);
+
+    const isTutor = user.role === "tutor";
 
     useEffect(() => {
         const loadAssignments = async () => {
@@ -46,20 +48,21 @@ const AllAssignments = ({ user }) => {
     const uniqueSubStatuses = useMemo(() => {
         const subs = [...new Set(assignments.map(a => a.subStatus))];
 
-        const subsOptions = subs
-            .filter(s => s)
-            .map(s => ({
-                value: s,
-                label: s
-                    .replace(/_/g, " ")                 // underscores → spaces
-                    .replace(/\b\w/g, c => c.toUpperCase()) // capitalize each word
-            }));
+        // Tutors only care about "bidding"
+        const visibleSubs = isTutor
+            ? (subs.includes("bidding") ? ["bidding"] : [])
+            : subs.filter(s => s);
+
+        const subsOptions = visibleSubs.map(s => ({
+            value: s,
+            label: s.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())
+        }));
 
         return [
             { value: 'all', label: 'All' },
             ...subsOptions
         ];
-    }, [assignments]);
+    }, [assignments, isTutor]);
 
 
     const filteredAssignments = useMemo(() => {
@@ -76,9 +79,12 @@ const AllAssignments = ({ user }) => {
                     ? true
                     : assignment.subStatus === selectedType;
 
-            return matchesSearch && matchesType;
+            // Gate for tutors: ONLY bidding
+            const matchesTutorGate = isTutor ? assignment.subStatus === "bidding" : true;
+
+            return matchesSearch && matchesType && matchesTutorGate;
         });
-    }, [assignments, searchTerm, selectedType, user.role]);
+    }, [assignments, searchTerm, selectedType, isTutor]);
 
 
     const handleAssignmentClick = (assignment) => {
@@ -120,7 +126,6 @@ const AllAssignments = ({ user }) => {
         }
     };
 
-
     // TUTOR: Place bid (unchanged)
     const handlePlaceBid = async (assignment, amount) => {
         try {
@@ -161,7 +166,7 @@ const AllAssignments = ({ user }) => {
         }
     };
 
-    // ADMIN: Enable bidding → subStatus: 'bidding' (keep popup open is fine)
+    // ADMIN: Enable bidding → subStatus: 'bidding' (now closes popup after success)
     const handleMarkBidding = async (assignment) => {
         try {
             setIsMarkingBidding(true);
@@ -189,6 +194,23 @@ const AllAssignments = ({ user }) => {
         }
     };
 
+    // ADMIN: Select a bidder → assign tutor (service returns updated doc)
+    const handleSelectBidder = async (assignment, bid) => {
+        try {
+            const updated = await assignTutorToAssignment(assignment.id, bid.bidderId);
+
+            setAssignments(prev => prev.map(a => (a.id === updated.id ? updated : a)));
+            setSelectedAssignment(prev => (prev?.id === updated.id ? updated : prev));
+
+            console.log(`Bidder selected: ${bid.bidderId} @ ${bid.bid} for ${assignment.id}`);
+        } catch (err) {
+            console.error("Select bidder failed:", err);
+        } finally {
+            handleClosePopup();
+        }
+    };
+
+
     return (
         <RoleBased roles={["admin", "tutor"]} currentRole={user.role}>
             {loading ? (
@@ -202,7 +224,7 @@ const AllAssignments = ({ user }) => {
             ) : (
                 <div className="all-assignments">
                     <div className="filters-section">
-                        {uniqueSubStatuses.length > 0 && (
+                        {!isTutor && uniqueSubStatuses.length > 0 && (
                             <ChipSection
                                 chips={uniqueSubStatuses}
                                 activeValue={selectedType}
@@ -265,8 +287,9 @@ const AllAssignments = ({ user }) => {
                         onClose={handleClosePopup}
                         onSelfAssign={handleSelfAssign}
                         onMarkBidding={handleMarkBidding}
+                        onSelectBidder={handleSelectBidder}
                         isAssigning={isAssigning}
-                        isMarkingBidding={isMarkingBidding} // NEW
+                        isMarkingBidding={isMarkingBidding}
                     />
                 ) : (
                     <TutorAssignmentPopup

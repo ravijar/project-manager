@@ -71,29 +71,37 @@ export const assignAdminToAssignment = async (assignmentId, adminUserId) => {
 };
 
 
+// services/assignmentService.js
 export const assignTutorToAssignment = async (assignmentId, tutorUserId) => {
     try {
-        const assignment = await fetchAssignmentById(assignmentId);
-        const groupChatId = assignment.chatIds?.group;
-
-        groupChatId && await addParticipant(tutorUserId, groupChatId);
-
-        await addAssignmentToUser(tutorUserId, assignmentId);
-
-        await updateAssignment(assignmentId, {
-            tutor: tutorUserId,
-            tutorStartedOn: Timestamp.fromDate(new Date()),
-            subStatus: "tutor_assigned"
-        });
-
-        assignment.admin && await createNewPrivateChat({ ...assignment, tutor: tutorUserId }, "tutor");
-
+      const assignment = await fetchAssignmentById(assignmentId);
+      const groupChatId = assignment.chatIds?.group;
+  
+      if (groupChatId) {
+        await addParticipant(tutorUserId, groupChatId);
+      }
+  
+      await addAssignmentToUser(tutorUserId, assignmentId);
+  
+      await updateAssignment(assignmentId, {
+        tutor: tutorUserId,
+        tutorStartedOn: Timestamp.fromDate(new Date()),
+        subStatus: "tutor_assigned",
+      });
+  
+      if (assignment.admin) {
+        await createNewPrivateChat({ ...assignment, tutor: tutorUserId }, "tutor");
+      }
+  
+      // Return the fresh, updated doc
+      const updated = await fetchAssignmentById(assignmentId);
+      return updated;
     } catch (error) {
-        console.error("Failed to assign tutor to assignment:", error);
-        throw error;
+      console.error("Failed to assign tutor to assignment:", error);
+      throw error;
     }
-};
-
+  };
+  
 export const addBidToAssignment = async (assignmentId, bidderId, bidAmount) => {
     try {
         const updates = {
