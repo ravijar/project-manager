@@ -23,7 +23,7 @@ export const addAssignment = async (assignmentId, initialData) => {
         docs = [],
         dueBy,
         student,
-        chatId,
+        chatIds = {},
     } = initialData;
 
     const assignmentData = {
@@ -33,7 +33,11 @@ export const addAssignment = async (assignmentId, initialData) => {
         docs,
         dueBy,
         student,
-        chatId,
+        chatIds: {
+            group: chatIds.group ?? null,
+            tutor: chatIds.tutor ?? null,
+            student: chatIds.student ?? null,
+        },
         uploadedOn: getCurrentTimestamp(),
         tutorStartedOn: null,
         tutorFinishedOn: null,
@@ -41,7 +45,7 @@ export const addAssignment = async (assignmentId, initialData) => {
         admin: null,
         bidders: [],
         status: "ongoing",
-        subStatus: "uploaded"
+        subStatus: "uploaded",
     };
 
     try {

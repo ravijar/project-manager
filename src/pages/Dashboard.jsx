@@ -3,15 +3,18 @@ import ChatWindow from '../components/container/chat/ChatWindow.jsx';
 import './Dashboard.css';
 import {useState, useEffect} from 'react';
 import {sendMessage} from '../services/messageService';
-import {syncChats, selectChat} from '../services/chatService';
+import {syncChats, selectChat, getChatById} from '../services/chatService';
+import Workspace from "../components/container/workspace/Workspace.jsx";
 
 const Dashboard = ({user, handleSignOut}) => {
     const [chats, setChats] = useState([]);
     const [loadingChats, setLoadingChats] = useState(true);
     const [selectedChat, setSelectedChat] = useState(null);
+    const [selectedAssignmentChats, setSelectedAssignmentChats] = useState({ group: null, tutor: null, student: null });
     const [chatsError, setChatsError] = useState("");
 
     const [messages, setMessages] = useState([]);
+    const [assignmentMessages, setAssignmentMessages] = useState({});
     const [loadingMessages, setLoadingMessages] = useState(false);
 
     const [unsubscribe, setUnsubscribe] = useState(null);
@@ -81,28 +84,90 @@ const Dashboard = ({user, handleSignOut}) => {
         if (!chat) return;
 
         setSelectedChat(chat);
+        setAssignmentMessages({ group: [], tutor: [], student: [] });
+
+        const unsubs = [];
 
         const unsub = await selectChat(chatId, user.id, (fetchedMessages) => {
             setMessages(formatMessages(fetchedMessages, user.id));
         });
 
-        setUnsubscribe(() => unsub);
+        unsubs.push(unsub);
+        setUnsubscribe(() => () => unsubs.forEach(u => u && u()));
         setLoadingMessages(false);
+
+        if (chat.isAssignment) {
+            const { chatIds } = (chat.assignment || selectedChat?.assignment || {});
+            setSelectedAssignmentChats({ group: null, tutor: null, student: null });
+            if (chatIds?.group) {
+                const u = await selectChat(chatIds.group, user.id, (msgs) => {
+                    setAssignmentMessages(prev => ({ ...prev, group: formatMessages(msgs, user.id) }));
+                });
+                unsubs.push(u);
+            }
+            if (chatIds?.tutor) {
+                const u = await selectChat(chatIds.tutor, user.id, (msgs) => {
+                    setAssignmentMessages(prev => ({ ...prev, tutor: formatMessages(msgs, user.id) }));
+                });
+                unsubs.push(u);
+            }
+            if (chatIds?.student) {
+                const u = await selectChat(chatIds.student, user.id, (msgs) => {
+                    setAssignmentMessages(prev => ({ ...prev, student: formatMessages(msgs, user.id) }));
+                });
+                unsubs.push(u);
+            }
+
+            const [groupChat, tutorChat, studentChat] = await Promise.all([
+                chatIds?.group ? getChatById(chatIds.group, user.id) : null,
+                chatIds?.tutor ? getChatById(chatIds.tutor, user.id) : null,
+                chatIds?.student ? getChatById(chatIds.student, user.id) : null,
+            ]);
+
+            setSelectedAssignmentChats({ group: groupChat, tutor: tutorChat, student: studentChat });
+
+            setUnsubscribe(() => () => unsubs.forEach(u => u && u()));
+        }
     };
 
-    const handleNewMessage = async (newMessage, isFile = false) => {
-        if (!selectedChat) {
-            console.error("No chat selected.");
+    const handleNewMessage = async (chat, newMessage, isFile = false) => {
+        if (!chat) {
+            console.error("No chat provided.");
             return;
         }
 
-        setMessages((prevMessages) => [...prevMessages, createLocalMessage(newMessage, isFile)]);
+        const localMsg = createLocalMessage(newMessage, isFile);
+        setMessages((prev) => [...prev, localMsg]);
+
+        if (chat.isAssignment && chat.assignment?.chatIds) {
+            const { group, tutor, student } = chat.assignment.chatIds || {};
+            const id = chat.chatId;
+            if (id === group) {
+                setAssignmentMessages((prev) => ({ ...prev, group: [...prev.group, localMsg] }));
+            } else if (id === tutor) {
+                setAssignmentMessages((prev) => ({ ...prev, tutor: [...prev.tutor, localMsg] }));
+            } else if (id === student) {
+                setAssignmentMessages((prev) => ({ ...prev, student: [...prev.student, localMsg] }));
+            }
+        }
 
         try {
-            await sendMessage(selectedChat.chatId, user, newMessage, isFile);
+            await sendMessage(chat.chatId, user, newMessage, isFile);
         } catch (error) {
             console.error("Failed to send message:", error);
-            setMessages((prevMessages) => prevMessages.filter((msg) => msg.text !== newMessage));
+            setMessages((prev) => prev.filter((m) => m.text !== newMessage));
+
+            if (chat.isAssignment && chat.assignment?.chatIds) {
+                const { group, tutor, student } = chat.assignment.chatIds || {};
+                const id = chat.chatId;
+                if (id === group) {
+                    setAssignmentMessages((prev) => ({ ...prev, group: prev.group.filter((m) => m.text !== newMessage) }));
+                } else if (id === tutor) {
+                    setAssignmentMessages((prev) => ({ ...prev, tutor: prev.tutor.filter((m) => m.text !== newMessage) }));
+                } else if (id === student) {
+                    setAssignmentMessages((prev) => ({ ...prev, student: prev.student.filter((m) => m.text !== newMessage) }));
+                }
+            }
         }
     };
 
@@ -118,12 +183,37 @@ const Dashboard = ({user, handleSignOut}) => {
                 onSignOut={handleSignOut}
                 onTabChange={() => setSelectedChat(null)}
             />
-            {!loadingChats && !chatsError && selectedChat && (
+            {!loadingChats && !chatsError && selectedChat && !selectedChat?.isAssignment && (
                 <ChatWindow
                     messages={messages}
                     selectedChat={selectedChat}
                     onNewMessage={handleNewMessage}
                     loadingMessages={loadingMessages}
+                />
+            )}
+
+            {!loadingChats && !chatsError && selectedChat && selectedChat?.isAssignment && (
+                <Workspace
+                    leftChatProps={
+                        selectedAssignmentChats?.student
+                            ? {
+                                messages: assignmentMessages.student,
+                                selectedChat: selectedAssignmentChats?.student,
+                                onNewMessage: handleNewMessage,
+                                loadingMessages
+                            }
+                            : {}
+                    }
+                    rightChatProps={
+                        selectedAssignmentChats?.tutor
+                            ? {
+                                messages: assignmentMessages.tutor,
+                                selectedChat: selectedAssignmentChats?.tutor,
+                                onNewMessage: handleNewMessage,
+                                loadingMessages
+                            }
+                            : {}
+                    }
                 />
             )}
         </div>

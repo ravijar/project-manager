@@ -5,13 +5,13 @@ import {faPaperclip} from "@fortawesome/free-solid-svg-icons";
 import Popup from "../../../common/popup/Popup.jsx";
 import FileUpload from "../popup/file-upload/FileUpload.jsx";
 
-const FooterBar = ({onSendMessage, chatId}) => {
+const FooterBar = ({onSendMessage, chat}) => {
     const [message, setMessage] = useState("");
     const [showPopup, setShowPopup] = useState(false);
 
     const handleKeyPress = (event) => {
         if (event.key === "Enter" && message.trim()) {
-            onSendMessage(message);
+            onSendMessage(chat, message);
             setMessage("");
         }
     };
@@ -38,8 +38,8 @@ const FooterBar = ({onSendMessage, chatId}) => {
             {showPopup && (
                 <Popup onClose={closePopup} width="400px">
                     <FileUpload
-                        chatId={chatId}
-                        onFileUploaded={(url) => onSendMessage(url, true)}
+                        chatId={chat.chatId}
+                        onFileUploaded={(url) => onSendMessage(chat, url, true)}
                         onClose={closePopup}
                     />
                 </Popup>

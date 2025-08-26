@@ -49,3 +49,26 @@ export const getOtherUserFromChatId = async (chatId, currentUserId) => {
         return null;
     }
 };
+
+export const getOtherUserFromParticipants = async (participants, currentUserId) => {
+    try {
+        const otherUserId = participants.find(id => id !== currentUserId);
+
+        if (!otherUserId) return null;
+
+        return await readUser(otherUserId);
+    } catch (error) {
+        console.error("Error fetching other user from chat ID:", error);
+        return null;
+    }
+};
+
+export const getUserById = async (userId) => {
+    try {
+      return await readUser(userId);
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      return null;
+    }
+  };
+  

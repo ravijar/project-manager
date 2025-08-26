@@ -7,7 +7,7 @@ import {
     updateReadStatus
 } from "../firebase/firestore/chatsCollection.js";
 import {addChatToUser, listenToChatIds, removeChatFromUser} from "../firebase/firestore/userChatsCollection.js";
-import {getOtherUserFromChatId} from "./userService.js";
+import {getOtherUserFromParticipants} from "./userService.js";
 import {syncMessages} from "./messageService.js";
 import {v4 as uuidv4} from "uuid";
 import {getAssignment} from "../firebase/firestore/assignmentsCollection.js";
@@ -17,6 +17,44 @@ export const generateChatId = (userId1, userId2) => {
 };
 
 export const generateGroupChatId = () => ["group", uuidv4()].join("_");
+
+export const getChatById = async (chatId, userId) => {
+    try {
+        const chatMeta = await getChat(chatId);
+        if (!chatMeta) return null;
+
+        const isGroup = chatMeta?.isGroup === true;
+        const isAssignment = chatMeta?.isAssignment === true;
+        const assignmentId = chatMeta?.assignmentId;
+        const assignment = isAssignment ? await getAssignment(assignmentId) : null;
+        const lastRead = chatMeta?.readStatus?.[userId]?.toMillis?.() || 0;
+        const participants = chatMeta?.participants ?? [];
+
+        const chatData = {
+            chatId,
+            lastMessage: null,
+            lastTimestamp: null,
+            lastRead,
+            isGroup,
+            isAssignment,
+            assignment,
+            participants,
+        };
+
+        if (isGroup) {
+            chatData.groupName = chatMeta?.groupName || "Unnamed Group";
+        } else {
+            const userData = await getOtherUserFromParticipants(participants, userId);
+            if (!userData) return null;
+            chatData.user = userData;
+        }
+
+        return chatData;
+    } catch (error) {
+        console.error("Error in getChatById:", error);
+        return null;
+    }
+};
 
 export const sortChatsByLastMessage = (chats) => {
     return chats.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
@@ -56,40 +94,9 @@ export const syncChats = (userId, callback) => {
     const chatListeners = new Map();
 
     const unsubscribe = listenToChatIds(userId, async (chatIds) => {
-        const chatDetails = await Promise.all(chatIds.map(async (chatId) => {
-            try {
-                const chatMeta = await getChat(chatId);
-                const isGroup = chatMeta?.isGroup === true;
-                const isAssignment = chatMeta?.isAssignment === true;
-                const assignmentId = chatMeta?.assignmentId;
-                const assignment = isAssignment ? await getAssignment(assignmentId) : null;
-
-                const lastRead = chatMeta?.readStatus?.[userId]?.toMillis?.() || 0;
-
-                const chatData = {
-                    chatId,
-                    lastMessage: null,
-                    lastTimestamp: null,
-                    lastRead,
-                    isGroup,
-                    isAssignment,
-                    assignment,
-                };
-
-                if (isGroup) {
-                    chatData.groupName = chatMeta?.groupName || "Unnamed Group";
-                } else {
-                    const userData = await getOtherUserFromChatId(chatId, userId);
-                    if (!userData) return null;
-                    chatData.user = userData;
-                }
-
-                return chatData;
-            } catch (err) {
-                console.warn(`Error processing chat ${chatId}:`, err);
-                return null;
-            }
-        }));
+        const chatDetails = await Promise.all(
+            chatIds.map((chatId) => getChatById(chatId, userId))
+        );
 
         const enrichedChats = chatDetails.filter(Boolean);
 
