@@ -76,6 +76,19 @@ const TutorAssignmentPopup = ({
             </div>
           )}
 
+          {/* Lowest bidding */}
+          {Array.isArray(assignment.bidders) && assignment.bidders.length > 0 && (
+            <div className="detail-row">
+              <span className="detail-label">Lowest Bid:</span>
+              <div className="detail-value">
+                {Math.min(...assignment.bidders.map(b => Number(b.bid))).toLocaleString(
+                  undefined,
+                  { style: "currency", currency: "LKR" }
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Bid input */}
           <div className="detail-row">
             <span className="detail-label">Your Bid:</span>
@@ -91,17 +104,23 @@ const TutorAssignmentPopup = ({
               />
             </div>
           </div>
+
+
         </div>
 
         <div className="popup-actions">
-          <button
-            className="btn primary"
-            onClick={handleBidClick}
-            disabled={isBidding || !bidAmount || Number(bidAmount) <= 0}
-            title="Place a bid for this assignment"
-          >
-            {isBidding ? "Submitting..." : "Bid"}
-          </button>
+
+          <div>
+            <button
+              className="btn primary"
+              onClick={handleBidClick}
+              disabled={isBidding || !bidAmount || Number(bidAmount) <= 0}
+              title="Place a bid for this assignment"
+            >
+              {isBidding ? "Submitting..." : "Bid"}
+            </button>
+          </div>
+          
         </div>
       </div>
     </Popup>

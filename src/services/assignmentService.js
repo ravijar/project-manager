@@ -1,10 +1,10 @@
-import {addAssignment, getAssignment, updateAssignment, getAllAssignments} from "../firebase/firestore/assignmentsCollection.js";
-import {addAssignmentToUser} from "../firebase/firestore/userAssignmentsCollection.js";
-import {addAssignmentField, getAllAssignmentFields} from "../firebase/firestore/assignmentFieldCollection";
-import {v4 as uuidv4} from "uuid";
-import {addParticipant, createNewGroupChat} from "./chatService.js";
-import {Timestamp} from "firebase/firestore";
-import {createChat} from "../firebase/firestore/chatsCollection.js";
+import { addAssignment, getAssignment, updateAssignment, getAllAssignments } from "../firebase/firestore/assignmentsCollection.js";
+import { addAssignmentToUser } from "../firebase/firestore/userAssignmentsCollection.js";
+import { addAssignmentField, getAllAssignmentFields } from "../firebase/firestore/assignmentFieldCollection";
+import { v4 as uuidv4 } from "uuid";
+import { addParticipant, createNewGroupChat } from "./chatService.js";
+import { Timestamp } from "firebase/firestore";
+import { createChat } from "../firebase/firestore/chatsCollection.js";
 
 export const generateAssignmentId = () => {
     return "assignment_" + uuidv4()
@@ -22,7 +22,7 @@ export const addNewAssignment = async (assignmentId, assignmentData, user) => {
         student: null,
     };
 
-    await addAssignment(assignmentId, {...assignmentData, student: user.id, chatIds});
+    await addAssignment(assignmentId, { ...assignmentData, student: user.id, chatIds });
     await addAssignmentToUser(user.id, assignmentId);
 };
 
@@ -51,64 +51,75 @@ export const assignAdminToAssignment = async (assignmentId, adminUserId) => {
         const assignment = await fetchAssignmentById(assignmentId);
         const groupChatId = assignment.chatIds?.group;
 
-        groupChatId && await addParticipant(adminUserId, groupChatId);
-
+        if (groupChatId) await addParticipant(adminUserId, groupChatId);
         await addAssignmentToUser(adminUserId, assignmentId);
 
-        await updateAssignment(assignmentId, {
-            admin: adminUserId,
-            subStatus: "admin_assigned"
-        });
+        const patch = { admin: adminUserId, subStatus: "admin_assigned" };
+        await updateAssignment(assignmentId, patch);
 
-        assignment.student && await createNewPrivateChat({ ...assignment, admin: adminUserId }, "student");
+        if (assignment.student) {
+            await createNewPrivateChat({ ...assignment, ...patch }, "student");
+        }
 
+        // return something the UI can trust
+        return { ...assignment, ...patch };
+        // or: return await fetchAssignmentById(assignmentId); // canonical from DB
     } catch (error) {
         console.error("Failed to assign admin to assignment:", error);
         throw error;
     }
 };
 
+
+// services/assignmentService.js
 export const assignTutorToAssignment = async (assignmentId, tutorUserId) => {
     try {
-        const assignment = await fetchAssignmentById(assignmentId);
-        const groupChatId = assignment.chatIds?.group;
-
-        groupChatId && await addParticipant(tutorUserId, groupChatId);
-
-        await addAssignmentToUser(tutorUserId, assignmentId);
-
-        await updateAssignment(assignmentId, {
-            tutor: tutorUserId,
-            tutorStartedOn: Timestamp.fromDate(new Date()),
-            subStatus: "tutor_assigned"
-        });
-
-        assignment.admin && await createNewPrivateChat({ ...assignment, tutor: tutorUserId }, "tutor");
-
-    } catch (error) {
-        console.error("Failed to assign tutor to assignment:", error);
-        throw error;
-    }
-};
-
-export const addBidToAssignment = async (assignmentId, bidderId, bidAmount) => {
-    try {
-      const updates = {
-        bidders: { bidderId, bid: bidAmount },
-      };
+      const assignment = await fetchAssignmentById(assignmentId);
+      const groupChatId = assignment.chatIds?.group;
   
-      await updateAssignment(
-        assignmentId,
-        updates,
-        ["bidders"] // keep your merge/field-mask behavior if needed
-      );
-      console.log(`Bid added by ${bidderId} on ${assignmentId}: ${bidAmount}`);
+      if (groupChatId) {
+        await addParticipant(tutorUserId, groupChatId);
+      }
+  
+      await addAssignmentToUser(tutorUserId, assignmentId);
+  
+      await updateAssignment(assignmentId, {
+        tutor: tutorUserId,
+        tutorStartedOn: Timestamp.fromDate(new Date()),
+        subStatus: "tutor_assigned",
+      });
+  
+      if (assignment.admin) {
+        await createNewPrivateChat({ ...assignment, tutor: tutorUserId }, "tutor");
+      }
+  
+      // Return the fresh, updated doc
+      const updated = await fetchAssignmentById(assignmentId);
+      return updated;
     } catch (error) {
-      console.error("Failed to add bid to assignment:", error);
+      console.error("Failed to assign tutor to assignment:", error);
       throw error;
     }
   };
   
+export const addBidToAssignment = async (assignmentId, bidderId, bidAmount) => {
+    try {
+        const updates = {
+            bidders: { bidderId, bid: bidAmount },
+        };
+
+        await updateAssignment(
+            assignmentId,
+            updates,
+            ["bidders"] // keep your merge/field-mask behavior if needed
+        );
+        console.log(`Bid added by ${bidderId} on ${assignmentId}: ${bidAmount}`);
+    } catch (error) {
+        console.error("Failed to add bid to assignment:", error);
+        throw error;
+    }
+};
+
 
 export const fetchAllAssignmentFields = async () => {
     return await getAllAssignmentFields();
@@ -129,13 +140,13 @@ export const fetchAllAssignments = async () => {
 
 export const updateAssignmentSubStatus = async (assignmentId, newSubStatus) => {
     try {
-      if (!newSubStatus) throw new Error("newSubStatus is required");
-      await updateAssignment(assignmentId, { subStatus: newSubStatus });
-      console.log(`SubStatus of ${assignmentId} set to ${newSubStatus}`);
+        if (!newSubStatus) throw new Error("newSubStatus is required");
+        await updateAssignment(assignmentId, { subStatus: newSubStatus });
+        console.log(`SubStatus of ${assignmentId} set to ${newSubStatus}`);
     } catch (error) {
-      console.error("Failed to update subStatus:", error);
-      throw error;
+        console.error("Failed to update subStatus:", error);
+        throw error;
     }
-  };
+};
 
-  
+
