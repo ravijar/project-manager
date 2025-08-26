@@ -1,5 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import Popup from "../../../../common/popup/Popup.jsx";
+import { getUserById } from "../../../../../services/userService.js";
 import '../AllAssignments.css';
 
 const AdminAssignmentPopup = ({
@@ -11,6 +12,8 @@ const AdminAssignmentPopup = ({
   isAssigning = false,
   isMarkingBidding = false,
 }) => {
+  const [bidderMap, setBidderMap] = useState({}); // { [bidderId]: {name, email, ...} }
+
   const formatDate = (d) =>
     d?.toDate?.() ? d.toDate().toLocaleDateString() : d;
 
@@ -23,6 +26,31 @@ const AdminAssignmentPopup = ({
     const arr = Array.isArray(assignment?.bidders) ? [...assignment.bidders] : [];
     return arr.sort((a, b) => Number(a.bid) - Number(b.bid));
   }, [assignment?.bidders]);
+
+  // Load bidder details (name/email) for the current assignment
+  useEffect(() => {
+    if (!isBidding) return;
+    const ids = Array.from(
+      new Set((assignment?.bidders ?? []).map(b => b.bidderId))
+    );
+    if (ids.length === 0) {
+      setBidderMap({});
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const entries = await Promise.all(
+        ids.map(async (id) => [id, await getUserById(id)])
+      );
+      if (cancelled) return;
+      const map = {};
+      for (const [id, user] of entries) {
+        if (user) map[id] = user;
+      }
+      setBidderMap(map);
+    })();
+    return () => { cancelled = true; };
+  }, [isBidding, assignment?.id, assignment?.bidders]);
 
   return (
     <Popup onClose={onClose} width={isBidding ? "900px" : "600px"}>
@@ -129,14 +157,14 @@ const AdminAssignmentPopup = ({
               <table className="bids-table">
                 <colgroup>
                   <col style={{ width: '40px' }} />     {/* # */}
-                  <col />                             {/* Bidder ID (auto, truncates) */}
+                  <col />                               {/* Bidder */}
                   <col style={{ width: '80px' }} />     {/* Bid */}
                   <col style={{ width: '140px' }} />    {/* Action */}
                 </colgroup>
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Bidder ID</th>
+                    <th>Bidder</th>
                     <th>Bid</th>
                     <th></th>
                   </tr>
@@ -145,7 +173,9 @@ const AdminAssignmentPopup = ({
                   {sortedBidders.map((b, idx) => (
                     <tr key={`${b.bidderId}-${idx}`}>
                       <td>{idx + 1}</td>
-                      <td className="mono truncate">{b.bidderId}</td>
+                      <td className="truncate" title={bidderMap[b.bidderId]?.email || b.bidderId}>
+                        {bidderMap[b.bidderId]?.name || b.bidderId}
+                      </td>
                       <td>{Number(b.bid)}</td>
                       <td>
                         <button

@@ -62,3 +62,13 @@ export const getOtherUserFromParticipants = async (participants, currentUserId) 
         return null;
     }
 };
+
+export const getUserById = async (userId) => {
+    try {
+      return await readUser(userId);
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      return null;
+    }
+  };
+  
