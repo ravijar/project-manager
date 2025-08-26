@@ -4,7 +4,7 @@ import Message from "./parts/Message.jsx";
 import ChatInfoBar from "./parts/ChatInfoBar.jsx";
 import FooterBar from "./parts/FooterBar.jsx";
 
-const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages}) => {
+const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages, selectable=false, selectedIds, onToggleSelect}) => {
     const scrollRef = useRef(null);
 
     useEffect(() => {
@@ -29,6 +29,7 @@ const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages}) => 
                             </div>
                         ) : null}
                         <Message
+                            id={message.id}
                             text={message.text}
                             time={message.time}
                             isSender={message.isSender}
@@ -40,6 +41,10 @@ const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages}) => 
                                         : message.senderName
                                     : null
                             }
+                            isForwarded={message.isForwarded}
+                            selectable={selectable}
+                            selected={!!selectedIds?.has?.(message.id)}
+                            onToggleSelect={onToggleSelect}
                         />
                     </div>
                 ))}

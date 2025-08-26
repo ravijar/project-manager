@@ -105,3 +105,37 @@
     font-size: 14px;
 }
 
+.forward-btn-area {
+    grid-column: 2 / 3; /* sits in the gutter column */
+    grid-row: 3 / 4;    /* chat row */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; /* let resize gutter work, except on the button */
+    position: relative;
+    z-index: 6;
+}
+
+.mid-forward-button {
+    pointer-events: auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--text-secondary-color);
+    line-height: 1;
+}
+
+.mid-forward-button:hover {
+    background: var(--primary-color);
+    color: var(--background-color);
+    cursor: pointer;
+}
+
+
