@@ -5,6 +5,7 @@ import Tabs from "../common/tab-section/Tabs.jsx";
 import Tab from "../common/tab-section/Tab.js";
 import AssignmentList from "./tab-section/workspace/AssignmentList.jsx";
 import AllAssignments from "./tab-section/all-assignments/AllAssignments.jsx";
+import MarketingAgentHome from './tab-section/marketing-agent/MarketingAgentHome.jsx';
 
 const SideWindow = (
     {
@@ -51,6 +52,15 @@ const SideWindow = (
                     roles={["admin", "tutor"]}
                     component={
                         <AllAssignments
+                            user={user}
+                        />
+                    }
+                />
+                <Tab
+                    name="Marketing Agent"
+                    roles={["admin"]}
+                    component={
+                        <MarketingAgentHome
                             user={user}
                         />
                     }
