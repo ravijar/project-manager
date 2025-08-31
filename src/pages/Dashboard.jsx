@@ -19,7 +19,6 @@ const Dashboard = ({user, handleSignOut}) => {
 
     const [selectedStudentIds, setSelectedStudentIds] = useState(new Set());
     const [selectedTutorIds, setSelectedTutorIds] = useState(new Set());
-    const [forwardDirection, setForwardDirection] = useState("student-to-tutor");
 
     const [unsubscribe, setUnsubscribe] = useState(null);
 
@@ -33,7 +32,7 @@ const Dashboard = ({user, handleSignOut}) => {
     const timeFormatOptions = {
         hour: "2-digit",
         minute: "2-digit"
-    }
+    };
 
     const formatMessages = (rawMessages, userId) => {
         return rawMessages.map((msg) => ({
@@ -226,6 +225,52 @@ const Dashboard = ({user, handleSignOut}) => {
     const rightHasSel = selectedTutorIds.size > 0;
     const effectiveDirection = leftHasSel ? "student-to-tutor" : rightHasSel ? "tutor-to-student" : "student-to-tutor";
 
+    const isAdmin = user?.role === "admin";
+    const isTutor = user?.role === "tutor";
+    const isStudent = user?.role === "student";
+
+    const studentChatProps = selectedAssignmentChats?.student
+        ? {
+            messages: assignmentMessages.student,
+            selectedChat: selectedAssignmentChats.student,
+            onNewMessage: handleNewMessage,
+            loadingMessages,
+            selectable: isAdmin && !rightHasSel,
+            selectedIds: selectedStudentIds,
+            onToggleSelect: toggleSelectStudent
+        }
+        : {};
+
+    const tutorChatProps = selectedAssignmentChats?.tutor
+        ? {
+            messages: assignmentMessages.tutor,
+            selectedChat: selectedAssignmentChats.tutor,
+            onNewMessage: handleNewMessage,
+            loadingMessages,
+            selectable: isAdmin && !leftHasSel,
+            selectedIds: selectedTutorIds,
+            onToggleSelect: toggleSelectTutor
+        }
+        : {};
+
+    let leftChatProps = {};
+    let rightChatProps = {};
+    let showForwardButton = false;
+
+    if (isAdmin) {
+        leftChatProps = studentChatProps;
+        rightChatProps = tutorChatProps;
+        showForwardButton = !!(selectedAssignmentChats?.student && selectedAssignmentChats?.tutor && (leftHasSel || rightHasSel));
+    } else if (isTutor) {
+        leftChatProps = tutorChatProps;
+        rightChatProps = {};
+        showForwardButton = false;
+    } else if (isStudent) {
+        leftChatProps = studentChatProps;
+        rightChatProps = {};
+        showForwardButton = false;
+    }
+
     return (
         <div className="container">
             <SideWindow
@@ -249,34 +294,10 @@ const Dashboard = ({user, handleSignOut}) => {
 
             {!loadingChats && !chatsError && selectedChat && selectedChat?.isAssignment && (
                 <Workspace
-                    leftChatProps={
-                        selectedAssignmentChats?.student
-                            ? {
-                                messages: assignmentMessages.student,
-                                selectedChat: selectedAssignmentChats?.student,
-                                onNewMessage: handleNewMessage,
-                                loadingMessages,
-                                selectable: !rightHasSel,
-                                selectedIds: selectedStudentIds,
-                                onToggleSelect: toggleSelectStudent
-                            }
-                            : {}
-                    }
-                    rightChatProps={
-                        selectedAssignmentChats?.tutor
-                            ? {
-                                messages: assignmentMessages.tutor,
-                                selectedChat: selectedAssignmentChats?.tutor,
-                                onNewMessage: handleNewMessage,
-                                loadingMessages,
-                                selectable: !leftHasSel,
-                                selectedIds: selectedTutorIds,
-                                onToggleSelect: toggleSelectTutor
-                            }
-                            : {}
-                    }
+                    leftChatProps={leftChatProps}
+                    rightChatProps={rightChatProps}
                     midForwardProps={{
-                        show: !!(selectedAssignmentChats?.student && selectedAssignmentChats?.tutor && (leftHasSel || rightHasSel)),
+                        show: showForwardButton,
                         direction: effectiveDirection,
                         onForward: handleForward
                     }}
