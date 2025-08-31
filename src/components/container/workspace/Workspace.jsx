@@ -3,6 +3,7 @@ import "./Workspace.css";
 import ChatWindow from "../chat/ChatWindow.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import LoadingSpinner from "../../common/loading-spinner/LoadingSpinner.jsx";
 
 const GUTTER_SIZE = 2;
 const MIN_TOP_PX = 120;
@@ -116,9 +117,15 @@ const Workspace = ({ topPanel = null, leftChatProps = {}, rightChatProps = {}, m
 
     const hasLeft = !!leftChatProps?.selectedChat;
     const hasRight = !!rightChatProps?.selectedChat;
+
+    const leftBusy = leftChatProps?.loadingMessages ?? true;
+    const rightBusy = rightChatProps?.loadingMessages ?? true;
+
     const twoChats = hasLeft && hasRight;
     const oneChat = (hasLeft || hasRight) && !twoChats;
+
     const singleChatProps = hasLeft ? leftChatProps : rightChatProps;
+    const singleBusy = singleChatProps?.loadingMessages ?? true;
 
     const gridStyle = {
         gridTemplateRows: `${topPx}px ${GUTTER_SIZE}px 1fr`,
@@ -146,6 +153,8 @@ const Workspace = ({ topPanel = null, leftChatProps = {}, rightChatProps = {}, m
         return () => window.removeEventListener("resize", handleResize);
     }, [rightFr, applyConstraintsRow, applyConstraintsCol]);
 
+    const loadingArea = <div className="loading-area"><LoadingSpinner size={40} /></div>;
+
     return (
         <div className="workspace">
             <div className="workspace-grid" ref={gridRef} style={gridStyle}>
@@ -162,16 +171,12 @@ const Workspace = ({ topPanel = null, leftChatProps = {}, rightChatProps = {}, m
 
                 {oneChat ? (
                     <div className="workspace-single">
-                        <ChatWindow {...singleChatProps} />
+                        {singleBusy ? loadingArea : <ChatWindow {...singleChatProps} />}
                     </div>
                 ) : (
                     <>
                         <div className="workspace-left">
-                            {hasLeft ? (
-                                <ChatWindow {...leftChatProps} />
-                            ) : (
-                                <div className="empty-cell">Select a left chat…</div>
-                            )}
+                            {leftBusy ? loadingArea : hasLeft ? <ChatWindow {...leftChatProps} /> : loadingArea}
                         </div>
 
                         <div
@@ -181,7 +186,7 @@ const Workspace = ({ topPanel = null, leftChatProps = {}, rightChatProps = {}, m
                             aria-label="Resize chat panels"
                         />
 
-                        {twoChats && midForwardProps?.show ? (
+                        {hasLeft && hasRight && !leftBusy && !rightBusy && midForwardProps?.show ? (
                             <div className="forward-btn-area">
                                 <button
                                     className="mid-forward-button"
@@ -201,11 +206,7 @@ const Workspace = ({ topPanel = null, leftChatProps = {}, rightChatProps = {}, m
                         ) : null}
 
                         <div className="workspace-right">
-                            {hasRight ? (
-                                <ChatWindow {...rightChatProps} />
-                            ) : (
-                                <div className="empty-cell">Select a right chat…</div>
-                            )}
+                            {rightBusy ? loadingArea : hasRight ? <ChatWindow {...rightChatProps} /> : loadingArea}
                         </div>
                     </>
                 )}
