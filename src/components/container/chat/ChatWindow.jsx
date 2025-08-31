@@ -18,6 +18,7 @@ const ChatWindow = ({messages, selectedChat, onNewMessage, loadingMessages, sele
             <ChatInfoBar
                 avatarSrc={selectedChat && !selectedChat.isGroup && selectedChat.user.photoURL}
                 name={selectedChat && (selectedChat.isGroup ? selectedChat.groupName : selectedChat.user?.name)}
+                role={selectedChat && !selectedChat.isGroup ? selectedChat.user?.role : undefined}
                 loadingMessages={loadingMessages}
             />
             <div className="chat-messages" ref={scrollRef}>
