@@ -25,7 +25,7 @@
 }
 
 .chat-name {
-    margin-left: 20px;
+    margin-left: 8px;
     font-size: 16px;
     font-weight: bold;
     color: var(--text-color);

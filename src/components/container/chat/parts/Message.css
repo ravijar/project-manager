@@ -29,7 +29,7 @@
     font-size: 14px;
     color: var(--text-color);
     word-wrap: break-word;
-    line-height: 1;
+    line-height: 1.1;
 }
 
 .message-time {

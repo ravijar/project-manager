@@ -8,7 +8,7 @@ const ChatCard = ({height, avatarSrc, name, onChatClick, chatId, selected, hasUn
             style={{height}}
             onClick={() => onChatClick(chatId)}
         >
-            <Avatar src={avatarSrc} size={height - 16}/>
+            <Avatar src={avatarSrc} size={height - 24}/>
             <span className="chat-name">{name}</span>
 
             {hasUnread && <div className="unread-indicator"/>}

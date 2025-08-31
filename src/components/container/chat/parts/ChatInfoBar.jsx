@@ -5,11 +5,11 @@ import LoadingSpinner from '../../../common/loading-spinner/LoadingSpinner.jsx';
 const ChatInfoBar = ({avatarSrc, name, loadingMessages}) => {
     return (
         <div className="chat-info-bar">
-            <Avatar src={avatarSrc} size={40}/>
+            <Avatar src={avatarSrc} size={30}/>
             <span className="chat-info-name">{name}</span>
             {loadingMessages && (
                 <div className="chat-info-spinner">
-                    <LoadingSpinner size={20} color="#3498db"/>
+                    <LoadingSpinner size={15} color="#3498db"/>
                 </div>
             )}
         </div>

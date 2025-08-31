@@ -1,7 +1,7 @@
 .footer-bar {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
+    padding: 8px 10px;
     background-color: var(--background-color);
     border-top: 1px solid var(--border-color);
     position: sticky;
@@ -11,8 +11,8 @@
 
 .message-input {
     flex: 1;
-    padding: 10px;
-    font-size: 16px;
+    padding: 5px 10px;
+    font-size: 14px;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-large);
     outline: none;
@@ -22,7 +22,7 @@
     background: none;
     border: none;
     font-size: 18px;
-    margin-right: 10px;
+    margin-right: 5px;
     cursor: pointer;
     color: var(--secondary-color);
 }

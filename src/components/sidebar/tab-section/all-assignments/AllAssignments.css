@@ -51,7 +51,6 @@
     padding: 16px;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    min-height: 200px;
     display: flex;
     flex-direction: column;
 }

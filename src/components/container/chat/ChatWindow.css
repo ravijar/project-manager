@@ -14,7 +14,7 @@
 }
 
 .chat-messages::-webkit-scrollbar {
-    width: 8px;
+    width: 4px;
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
