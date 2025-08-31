@@ -6,7 +6,8 @@ import ProtectedRoute from './components/routes/ProtectedRoute';
 import PublicRoute from './components/routes/PublicRoute';
 import {getStoredUser, signIn, signOut} from './services/authService';
 import {useState, useEffect} from "react";
-import {RoleMismatchError} from "./errors/RoleMismatchError"
+import {RoleMismatchError} from "./errors/RoleMismatchError";
+import { AuthContext } from "./context/AuthContext";
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -47,39 +48,54 @@ const App = () => {
     };
 
     return (
-        <Router>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <PublicRoute user={user}>
-                            <Home setSelectedRole={setSelectedRole}/>
-                        </PublicRoute>
-                    }
-                />
-                <Route
-                    path="/login"
-                    element={
-                        <PublicRoute user={user} selectedRole={selectedRole}>
-                            <Login
-                                onSignIn={handleSignIn}
-                                loading={loading}
-                                error={error}
-                                selectedRole={selectedRole}
-                            />
-                        </PublicRoute>
-                    }
-                />
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute user={user}>
-                            <Dashboard user={user} handleSignOut={handleSignOut}/>
-                        </ProtectedRoute>
-                    }
-                />
-            </Routes>
-        </Router>
+        <AuthContext.Provider
+            value={{
+                user,
+                loading,
+                error,
+                selectedRole,
+                setSelectedRole,
+                signIn: handleSignIn,
+                signOut: handleSignOut,
+                setUser,
+                setError,
+                setLoading,
+            }}
+        >
+            <Router>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            <PublicRoute user={user}>
+                                <Home setSelectedRole={setSelectedRole}/>
+                            </PublicRoute>
+                        }
+                    />
+                    <Route
+                        path="/login"
+                        element={
+                            <PublicRoute user={user} selectedRole={selectedRole}>
+                                <Login
+                                    onSignIn={handleSignIn}
+                                    loading={loading}
+                                    error={error}
+                                    selectedRole={selectedRole}
+                                />
+                            </PublicRoute>
+                        }
+                    />
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute user={user}>
+                                <Dashboard user={user} handleSignOut={handleSignOut}/>
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </Router>
+        </AuthContext.Provider>
     );
 };
 
