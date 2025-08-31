@@ -212,7 +212,7 @@ export default function MarketingAgentHome({ user }) {
 
             <div className="side-list">
               {(assignmentsByUser[selectedUser.id] || []).map((a) => (
-                <div key={a.id} className="assignment-card">
+                <div key={a.id} className="assignment-card-agent">
                   <div className="a-title">{a.title}</div>
                   <div className="a-sub">
                     <span className={`badge ${a.status.toLowerCase()}`}>
