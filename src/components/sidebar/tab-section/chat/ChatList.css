@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px;
+    padding: 10px 15px;
     font-size: 14px;
     gap: 12px;
     flex-wrap: wrap;
@@ -37,7 +37,7 @@
 }
 
 .chat-list-search {
-    padding: 5px 15px 20px 15px;
+    padding: 5px 15px 10px 15px;
 }
 
 .chat-list-scroll {

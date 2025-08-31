@@ -22,15 +22,15 @@
 }
 
 .tab {
-    padding: 6px 14px;
+    padding: 5px 10px;
     margin-right: 4px;
     background: var(--secondary-color);
     color: var(--text-invert-color);
     border-radius: var(--border-radius) var(--border-radius) 0 0;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     transition: background 0.2s, color 0.2s;
-    max-width: 100px;
+    max-width: 90px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
